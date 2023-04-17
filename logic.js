@@ -2,7 +2,7 @@ const grid = document.getElementById("game-grid");
 const gridRow = 13;
 const gridCol = 15;
 const cellSize = 50;
-let bomberManCurrenPosition = [1, 1];
+let bomberManCurrenPosition = {y: 1, x: 1}
 
 const buildGrid = () => {
   for (let row = 0; row < gridRow; row++) {
@@ -32,6 +32,7 @@ const buildGrid = () => {
 
 const createCellsArr = () => {
   let oneDArr = [].slice.call(document.getElementsByClassName("cell"));
+  console.log(oneDArr);
   let twoDArr = [];
   for (let i = 0; i < gridCol; i++) {
     twoDArr.push(oneDArr.slice(i * gridCol, i * gridCol + gridCol));
@@ -53,44 +54,49 @@ const createInternalBoard = () => {
 
 buildGrid();
 const cellsArr = createCellsArr();
-console.log(cellsArr);
 const internalBoard = createInternalBoard();
 
 const isWalkable = (tilePosition) => {
-  return tilePosition[0] % 2 === 1 || tilePosition[1] % 2 === 1 || !(tilePosition[0] === 0 || tilePosition[1] === 0 || tilePosition[0] === gridCol - 1 || tilePosition[1] === gridRow - 1);
+  return (tilePosition[0] % 2 === 1 || tilePosition[1] % 2 === 1) && tilePosition[0] > 0 && tilePosition[0] < gridRow -1 && tilePosition[1] > 0 && tilePosition[1] < gridCol -1
 };
 
 const move = (direction) => {
   switch (direction) {
     case "ArrowUp":
-      if (
-        isWalkable([bomberManCurrenPosition[0], bomberManCurrenPosition[1] - 1])
-      ) {
-        bomberManCurrenPosition[1] = bomberManCurrenPosition[1] - 1;
-      }
+        if (
+            isWalkable([bomberManCurrenPosition.y - 1, bomberManCurrenPosition.x])
+          ) {
+            cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.remove("bomber-man")
+            bomberManCurrenPosition.y = bomberManCurrenPosition.y - 1;
+            cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.add("bomber-man")
+          }
       break;
     case "ArrowDown":
       if (
-        isWalkable([bomberManCurrenPosition[0] + 1, bomberManCurrenPosition[1]])
+        isWalkable([bomberManCurrenPosition.y + 1, bomberManCurrenPosition.x])
       ) {
-        cellsArr[bomberManCurrenPosition[0]][bomberManCurrenPosition[1]].classList.remove("bomber-man")
-        bomberManCurrenPosition[0] = bomberManCurrenPosition[0] + 1;
-        cellsArr[bomberManCurrenPosition[0]][bomberManCurrenPosition[1]].classList.add("bomber-man")
+        cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.remove("bomber-man")
+        bomberManCurrenPosition.y = bomberManCurrenPosition.y + 1;
+        cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.add("bomber-man")
       }
       break;
     case "ArrowRight":
-      if (
-        isWalkable([bomberManCurrenPosition[0] + 1, bomberManCurrenPosition[1]])
-      ) {
-        bomberManCurrenPosition[0] = bomberManCurrenPosition[0] + 1;
-      }
+        if (
+            isWalkable([bomberManCurrenPosition.y, bomberManCurrenPosition.x + 1])
+          ) {
+            cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.remove("bomber-man")
+            bomberManCurrenPosition.x = bomberManCurrenPosition.x + 1;
+            cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.add("bomber-man")
+          }
       break;
     case "ArrowLeft":
-      if (
-        isWalkable([bomberManCurrenPosition[0] - 1, bomberManCurrenPosition[1]])
-      ) {
-        bomberManCurrenPosition[0] = bomberManCurrenPosition[0] - 1;
-      }
+        if (
+            isWalkable([bomberManCurrenPosition.y, bomberManCurrenPosition.x -1])
+          ) {
+            cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.remove("bomber-man")
+            bomberManCurrenPosition.x = bomberManCurrenPosition.x - 1;
+            cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.add("bomber-man")
+          }
       break;
   }
 };
