@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#grid-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    width: 90vw;
+    position: relative;
+}
+
+#game-grid {
+    position: absolute;
+    width: 750px;
+    height: 600px;
+
+}
+
+.cell {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    border: 0.5px solid black;
+}
+
+.indestructible {
+    background: grey;
+}
+
+.walkable {
+    background: green;
+}
