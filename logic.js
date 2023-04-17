@@ -57,14 +57,14 @@ const cellsArr = createCellsArr();
 const internalBoard = createInternalBoard();
 
 const isWalkable = (tilePosition) => {
-  return (tilePosition[0] % 2 === 1 || tilePosition[1] % 2 === 1) && tilePosition[0] > 0 && tilePosition[0] < gridRow -1 && tilePosition[1] > 0 && tilePosition[1] < gridCol -1
+  return (tilePosition[0] % 2 === 1 || tilePosition[1] % 2 === 1) && tilePosition[0] > 0 && tilePosition[0] < gridCol -1 && tilePosition[1] > 0 && tilePosition[1] < gridRow -1
 };
 
 const move = (direction) => {
   switch (direction) {
     case "ArrowUp":
         if (
-            isWalkable([bomberManCurrenPosition.y - 1, bomberManCurrenPosition.x])
+            isWalkable([bomberManCurrenPosition.x, bomberManCurrenPosition.y -1])
           ) {
             cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.remove("bomber-man")
             bomberManCurrenPosition.y = bomberManCurrenPosition.y - 1;
@@ -73,7 +73,7 @@ const move = (direction) => {
       break;
     case "ArrowDown":
       if (
-        isWalkable([bomberManCurrenPosition.y + 1, bomberManCurrenPosition.x])
+        isWalkable([bomberManCurrenPosition.x, bomberManCurrenPosition.y + 1])
       ) {
         cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.remove("bomber-man")
         bomberManCurrenPosition.y = bomberManCurrenPosition.y + 1;
@@ -82,7 +82,7 @@ const move = (direction) => {
       break;
     case "ArrowRight":
         if (
-            isWalkable([bomberManCurrenPosition.y, bomberManCurrenPosition.x + 1])
+            isWalkable([bomberManCurrenPosition.x + 1, bomberManCurrenPosition.y])
           ) {
             cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.remove("bomber-man")
             bomberManCurrenPosition.x = bomberManCurrenPosition.x + 1;
@@ -91,7 +91,7 @@ const move = (direction) => {
       break;
     case "ArrowLeft":
         if (
-            isWalkable([bomberManCurrenPosition.y, bomberManCurrenPosition.x -1])
+            isWalkable([bomberManCurrenPosition.x - 1, bomberManCurrenPosition.y])
           ) {
             cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].classList.remove("bomber-man")
             bomberManCurrenPosition.x = bomberManCurrenPosition.x - 1;
