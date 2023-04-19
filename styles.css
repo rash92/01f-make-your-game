@@ -24,19 +24,28 @@
   position: absolute;
   height: 64px;
   width: 64px;
-  border: 0.1px solid black;
 }
 
 .indestructible {
-  background: grey;
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-position-x: -192px;
+  background-position-y: -192px;
+  background-size: 896px 1532px;
 }
 
 .walkable {
-  background: green;
+  background: #388700;
 }
 
 .breakable {
-  background: red;
+    background-image: url("sprites.png");
+    width: 64px;
+    height: 64px;
+    background-position-x: -256px;
+    background-position-y: -192px;
+    background-size: 896px 1532px;
 }
 
 .bomber-man {
@@ -45,6 +54,8 @@
   background-image: url("sprites.png");
   /* background-repeat: no-repeat; */
   background-size: 896px 1532px;
+  /* transition-timing-function: ease; */
+  transition-timing-function: ease-out;
 }
 
 .bomb {

@@ -3,7 +3,8 @@ const gridRow = 13;
 const gridCol = 15;
 const cellSize = 64;
 let bomberManCurrenPosition = { y: 1, x: 1 };
-let rightAnimation = 0;
+let horizontalAnimation = 0;
+let verticalAnimation = 3;
 
 const buildGrid = () => {
   for (let row = 0; row < gridRow; row++) {
@@ -24,7 +25,12 @@ const buildGrid = () => {
       ) {
         cell.classList.add("indestructible");
       } else {
-        cell.classList.add("walkable");
+        if(Math.random() < 0.75 || (row >= 1 && row <= 2 && col >= 1 && col <= 2)) {
+            cell.classList.add("walkable");
+        } else {
+            cell.classList.add("breakable")
+        }
+        
       }
       grid.append(cell);
     }
@@ -54,7 +60,7 @@ const createInternalBoard = () => {
 buildGrid();
 const cellsArr = createCellsArr();
 const internalBoard = createInternalBoard();
-// setSprite(bomberMan, 0, 1);
+setSprite(horizontalAnimation, 1);
 
 const isWalkable = (tilePosition) => {
   return (
@@ -75,8 +81,6 @@ function setSprite(spriteX, spriteY) {
 }
 
 const move = (direction) => {
-    const animationArr = [0, 1, 2]
-
   switch (direction) {
     case "ArrowUp":
       if (
@@ -89,7 +93,18 @@ const move = (direction) => {
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.add("bomber-man");
-        setSprite(3, 1)
+        setSprite(verticalAnimation, 1);
+      }
+      switch (verticalAnimation) {
+        case 3:
+          verticalAnimation = 4;
+          break;
+        case 4:
+          verticalAnimation = 5;
+          break;
+        case 5:
+          verticalAnimation = 3;
+          break;
       }
       break;
     case "ArrowDown":
@@ -103,11 +118,21 @@ const move = (direction) => {
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.add("bomber-man");
-        setSprite(3, 0)
+        setSprite(verticalAnimation, 0);
+      }
+      switch (verticalAnimation) {
+        case 3:
+          verticalAnimation = 4;
+          break;
+        case 4:
+          verticalAnimation = 5;
+          break;
+        case 5:
+          verticalAnimation = 3;
+          break;
       }
       break;
     case "ArrowRight":
-        console.log(rightAnimation);
       if (
         isWalkable([bomberManCurrenPosition.x + 1, bomberManCurrenPosition.y])
       ) {
@@ -118,19 +143,19 @@ const move = (direction) => {
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.add("bomber-man");
-        setSprite(rightAnimation, 1);
+        setSprite(horizontalAnimation, 1);
       }
-        switch(rightAnimation) {
-            case 0:
-                rightAnimation = 1
-                break;  
-            case 1:  
-                rightAnimation = 2
-                break;
-            case 2:
-                rightAnimation = 0
-                break;
-        }
+      switch (horizontalAnimation) {
+        case 0:
+          horizontalAnimation = 1;
+          break;
+        case 1:
+          horizontalAnimation = 2;
+          break;
+        case 2:
+          horizontalAnimation = 0;
+          break;
+      }
       break;
     case "ArrowLeft":
       if (
@@ -143,7 +168,18 @@ const move = (direction) => {
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.add("bomber-man");
-        setSprite(0, 0);
+        setSprite(horizontalAnimation, 0);
+      }
+      switch (horizontalAnimation) {
+        case 0:
+          horizontalAnimation = 1;
+          break;
+        case 1:
+          horizontalAnimation = 2;
+          break;
+        case 2:
+          horizontalAnimation = 0;
+          break;
       }
       break;
   }
