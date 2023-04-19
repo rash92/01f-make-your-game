@@ -3,6 +3,7 @@ const gridRow = 13;
 const gridCol = 15;
 const cellSize = 64;
 let bomberManCurrenPosition = { y: 1, x: 1 };
+let rightAnimation = 0;
 
 const buildGrid = () => {
   for (let row = 0; row < gridRow; row++) {
@@ -106,6 +107,7 @@ const move = (direction) => {
       }
       break;
     case "ArrowRight":
+        console.log(rightAnimation);
       if (
         isWalkable([bomberManCurrenPosition.x + 1, bomberManCurrenPosition.y])
       ) {
@@ -116,8 +118,19 @@ const move = (direction) => {
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.add("bomber-man");
-        setSprite(0, 1);
+        setSprite(rightAnimation, 1);
       }
+        switch(rightAnimation) {
+            case 0:
+                rightAnimation = 1
+                break;  
+            case 1:  
+                rightAnimation = 2
+                break;
+            case 2:
+                rightAnimation = 0
+                break;
+        }
       break;
     case "ArrowLeft":
       if (
