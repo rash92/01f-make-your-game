@@ -1,57 +1,60 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 #grid-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
-    width: 90vw;
-    position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  width: 90vw;
+  position: relative;
 }
 
 #game-grid {
-    position: absolute;
-    width: 750px;
-    height: 600px;
-
+  position: absolute;
+  width: 750px;
+  height: 600px;
 }
 
 .cell {
-    position: absolute;
-    height: 50px;
-    width: 50px;
-    border: 0.1px solid black;
+  position: absolute;
+  height: 64px;
+  width: 64px;
+  border: 0.1px solid black;
 }
 
 .indestructible {
-    background: grey;
+  background: grey;
 }
 
 .walkable {
-    background: green;
+  background: green;
 }
 
 .breakable {
-    background: red;
+  background: red;
 }
 
 .bomber-man {
-    background: yellow;
+  width: 64px;
+  height: 64px;
+  background-image: url("sprites.png");
+  /* background-repeat: no-repeat; */
+  background-size: 896px 1532px;
 }
 
 .bomb {
-    background: purple;
+  background: purple;
 }
 
 .enemy {
-    background: orange;
+  background: orange;
 }
 
 .power-up {
-    background: blue;
+  background: blue;
 }

@@ -22,3 +22,10 @@ Meets and enemy
 Bombs
 Explosion radius for normal bomb 2 blocks each direction
 Special bombs 4 blocks in each direction
+
+
+first enemy at spriteIndex = 840
+
+TO DO ;
+
+Make sure eventlistener is in the gameLoop()
