@@ -60,9 +60,35 @@
 }
 
 .enemy {
-  background: orange;
+    background-image: url("sprites.png");
+    width: 64px;
+    height: 64px;
+    background-position-y: -960px;
+    background-size: 896px 1532px;
+    animation: enemy-animation 1s steps(1) infinite;
 }
 
 .power-up {
   background: blue;
+}
+
+@keyframes enemy-animation {
+    0% {
+        background-position-x: -64px;
+    }
+    20% {
+        background-position-x: -128px;
+    }
+    40% {
+        background-position-x: -192px;
+    }
+    60% {
+        background-position-x: -256px;
+    }
+    80% {
+        background-position-x: -320px;
+    }
+    100% {
+        background-position-x: -384px;
+    }
 }

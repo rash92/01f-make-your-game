@@ -27,17 +27,17 @@ const buildGrid = () => {
         cell.classList.add("indestructible");
       } else if (
         (row >= 1 && row <= 2 && col >= 1 && col <= 2) ||
-        Math.random() < 0.75
+        Math.random() < 0.70
       ) {
         cell.classList.add("walkable");
-        if(
-            (row >= 4 && row <= 13 && col >= 4 && col <= 15 ) && enemyCount > 0
-          ) {
-            cell.classList.add("enemy");
-            enemyCount--
-          }
       } else {
-        cell.classList.add("breakable");
+        if(Math.random() < 0.25 && enemyCount > 0) {
+            cell.classList.add("enemy")
+            enemyCount--
+        } else {
+            cell.classList.add("breakable");
+        }
+        
       }
       grid.append(cell);
     }
