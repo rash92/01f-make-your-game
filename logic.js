@@ -14,9 +14,9 @@ const buildGrid = () => {
       cell.style.left = `${col * cellSize}px`;
       cell.classList.add("cell");
       if (row === 1 && col === 1) {
+        cell.classList.add("walkable")
         cell.classList.add("bomber-man");
-      }
-      if (
+      } else if (
         row === 0 ||
         col === 0 ||
         row === gridRow - 1 ||
@@ -24,13 +24,13 @@ const buildGrid = () => {
         (row % 2 === 0 && col % 2 === 0)
       ) {
         cell.classList.add("indestructible");
+      } else if (
+        (row >= 1 && row <= 2 && col >= 1 && col <= 2) ||
+        Math.random() < 0.75
+      ) {
+        cell.classList.add("walkable");
       } else {
-        if(Math.random() < 0.75 || (row >= 1 && row <= 2 && col >= 1 && col <= 2)) {
-            cell.classList.add("walkable");
-        } else {
-            cell.classList.add("breakable")
-        }
-        
+        cell.classList.add("breakable");
       }
       grid.append(cell);
     }
@@ -63,13 +63,7 @@ const internalBoard = createInternalBoard();
 setSprite(horizontalAnimation, 1);
 
 const isWalkable = (tilePosition) => {
-  return (
-    (tilePosition[0] % 2 === 1 || tilePosition[1] % 2 === 1) &&
-    tilePosition[0] > 0 &&
-    tilePosition[0] < gridCol - 1 &&
-    tilePosition[1] > 0 &&
-    tilePosition[1] < gridRow - 1
-  );
+    return cellsArr[tilePosition[1]][tilePosition[0]].classList.contains("walkable")
 };
 
 function setSprite(spriteX, spriteY) {
