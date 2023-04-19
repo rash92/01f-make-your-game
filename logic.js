@@ -88,6 +88,7 @@ const move = (direction) => {
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.add("bomber-man");
+        setSprite(3, 1)
       }
       break;
     case "ArrowDown":
@@ -101,14 +102,13 @@ const move = (direction) => {
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.add("bomber-man");
+        setSprite(3, 0)
       }
       break;
     case "ArrowRight":
-        setSprite(animationArr[0], 1);
       if (
         isWalkable([bomberManCurrenPosition.x + 1, bomberManCurrenPosition.y])
       ) {
-        setSprite(animationArr[1], 1);
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.remove("bomber-man");
@@ -116,7 +116,7 @@ const move = (direction) => {
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.add("bomber-man");
-        setSprite(animationArr[2], 1);
+        setSprite(0, 1);
       }
       break;
     case "ArrowLeft":
@@ -130,8 +130,8 @@ const move = (direction) => {
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
         ].classList.add("bomber-man");
+        setSprite(0, 0);
       }
-      // setSprite(bomberMan, 0, 0);
       break;
   }
 };
