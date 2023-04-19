@@ -5,6 +5,7 @@ const cellSize = 64;
 let bomberManCurrenPosition = { y: 1, x: 1 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
+let enemyCount = 3;
 
 const buildGrid = () => {
   for (let row = 0; row < gridRow; row++) {
@@ -29,6 +30,12 @@ const buildGrid = () => {
         Math.random() < 0.75
       ) {
         cell.classList.add("walkable");
+        if(
+            (row >= 4 && row <= 13 && col >= 4 && col <= 15 ) && enemyCount > 0
+          ) {
+            cell.classList.add("enemy");
+            enemyCount--
+          }
       } else {
         cell.classList.add("breakable");
       }
