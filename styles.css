@@ -48,15 +48,21 @@
   background-size: 896px 1532px;
 }
 
+.bomberManWrapper {
+    position: relative;
+}
+
 .bomber-man {
   width: 64px;
   height: 64px;
   background-image: url("sprites.png");
   background-size: 896px 1532px;
   position: absolute;
+  z-index: 2;
 }
 
 .bomb {
+  background: #388700;
   background-image: url("sprites.png");
   width: 64px;
   height: 64px;
@@ -112,6 +118,15 @@
   background-position-y: -960px;
   background-size: 896px 1532px;
   animation: enemy-animation 1s steps(1) infinite;
+}
+
+.death {
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-position-y: -198px;
+  background-size: 896px 1532px;
+  animation: death 1s steps(1) 1;
 }
 
 .power-up {
@@ -263,5 +278,29 @@
   100% {
     background-position-y: -512px;
     background-position-x: -128px;
+  }
+}
+
+@keyframes death {
+  0% {
+    background-position-x: -64px;
+  }
+  17% {
+    background-position-x: -128px;
+  }
+  34% {
+    background-position-x: -192px;
+  }
+  51% {
+    background-position-x: -256px;
+  }
+  68% {
+    background-position-x: -320px;
+  }
+  85% {
+    background-position-x: -384px;
+  }
+  100% {
+    background-position-x: -448px;
   }
 }
