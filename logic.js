@@ -1,8 +1,6 @@
 const grid = document.getElementById("game-grid");
 const bomberManWrapper = document.createElement("div");
 bomberManWrapper.classList.add("bomberManWrapper");
-const enemyWrapper = document.createElement("div");
-enemyWrapper.classList.add("enemyWrapper");
 const gridRow = 13;
 const gridCol = 15;
 const cellSize = 64;
@@ -10,7 +8,7 @@ let bomberManCurrenPosition = { y: 1, x: 1 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
 let enemyCount = 3;
-let bombPlaced = false
+let bombPlaced = false;
 
 const buildGrid = () => {
   for (let row = 0; row < gridRow; row++) {
@@ -206,7 +204,7 @@ const bomb = () => {
     cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x - 1];
   const bombElement = document.createElement("div");
   bombElement.classList.add("bomb");
-  bombPlaced = true
+  bombPlaced = true;
   bomberManCell.appendChild(bombElement);
   bomberManCell.classList.remove("walkable");
   bombElement.addEventListener("animationend", () => {
@@ -219,7 +217,7 @@ const bomb = () => {
     bomberManCell.addEventListener("animationend", () => {
       bomberManCell.classList.remove("explosion-middle");
       bomberManCell.classList.add("walkable");
-      bombPlaced = false
+      bombPlaced = false;
     });
 
     // Explosion Top
@@ -230,6 +228,13 @@ const bomb = () => {
         explosionTop.addEventListener("animationend", () => {
           explosionTop.classList.remove("breakable-block-destruction");
           explosionTop.classList.add("walkable");
+        });
+      }
+      if (explosionTop.hasChildNodes()) {
+        explosionTop.firstChild.classList.remove("enemy");
+        explosionTop.firstChild.classList.add("enemy-death");
+        explosionTop.firstChild.addEventListener("animationend", () => {
+          explosionTop.firstChild.remove("enemy-death");
         });
       }
       if (explosionTop.contains(bomberManWrapper)) {
@@ -255,6 +260,13 @@ const bomb = () => {
           explosionBottom.classList.add("walkable");
         });
       }
+      if (explosionBottom.hasChildNodes()) {
+        explosionBottom.firstChild.classList.remove("enemy");
+        explosionBottom.firstChild.classList.add("enemy-death");
+        explosionBottom.firstChild.addEventListener("animationend", () => {
+          explosionBottom.firstChild.remove("enemy-death");
+        });
+      }
       if (explosionBottom.contains(bomberManWrapper)) {
         bomberManWrapper.classList.remove("bomber-man");
         bomberManWrapper.classList.add("death");
@@ -278,6 +290,13 @@ const bomb = () => {
           explosionRight.classList.add("walkable");
         });
       }
+      if (explosionRight.hasChildNodes()) {
+        explosionRight.firstChild.classList.remove("enemy");
+        explosionRight.firstChild.classList.add("enemy-death");
+        explosionRight.firstChild.addEventListener("animationend", () => {
+          explosionRight.firstChild.remove("enemy-death");
+        });
+      }
       if (explosionRight.contains(bomberManWrapper)) {
         bomberManWrapper.classList.remove("bomber-man");
         bomberManWrapper.classList.add("death");
@@ -299,6 +318,13 @@ const bomb = () => {
         explosionLeft.addEventListener("animationend", () => {
           explosionLeft.classList.remove("breakable-block-destruction");
           explosionLeft.classList.add("walkable");
+        });
+      }
+      if (explosionLeft.hasChildNodes()) {
+        explosionLeft.firstChild.classList.remove("enemy");
+        explosionLeft.firstChild.classList.add("enemy-death");
+        explosionLeft.firstChild.addEventListener("animationend", () => {
+          explosionLeft.firstChild.remove("enemy-death");
         });
       }
       if (explosionLeft.contains(bomberManWrapper)) {
@@ -325,9 +351,7 @@ document.addEventListener("keydown", (e) => {
       move(e.key);
       break;
     case "x":
-        if(!bombPlaced) {
-            bomb();
-        }
+      if (!bombPlaced) bomb();
       break;
     case "p":
       break;
