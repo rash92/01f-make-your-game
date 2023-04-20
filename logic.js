@@ -15,7 +15,7 @@ const buildGrid = () => {
       cell.style.left = `${col * cellSize}px`;
       cell.classList.add("cell");
       if (row === 1 && col === 1) {
-        cell.classList.add("walkable")
+        cell.classList.add("walkable");
         cell.classList.add("bomber-man");
       } else if (
         row === 0 ||
@@ -27,17 +27,16 @@ const buildGrid = () => {
         cell.classList.add("indestructible");
       } else if (
         (row >= 1 && row <= 2 && col >= 1 && col <= 2) ||
-        Math.random() < 0.70
+        Math.random() < 0.7
       ) {
         cell.classList.add("walkable");
       } else {
-        if(Math.random() < 0.25 && enemyCount > 0) {
-            cell.classList.add("enemy")
-            enemyCount--
+        if (Math.random() < 0.25 && enemyCount > 0) {
+          cell.classList.add("enemy");
+          enemyCount--;
         } else {
-            cell.classList.add("breakable");
+          cell.classList.add("breakable");
         }
-        
       }
       grid.append(cell);
     }
@@ -70,7 +69,9 @@ const internalBoard = createInternalBoard();
 setSprite(horizontalAnimation, 1);
 
 const isWalkable = (tilePosition) => {
-    return cellsArr[tilePosition[1]][tilePosition[0]].classList.contains("walkable")
+  return cellsArr[tilePosition[1]][tilePosition[0]].classList.contains(
+    "walkable"
+  );
 };
 
 function setSprite(spriteX, spriteY) {
@@ -186,6 +187,83 @@ const move = (direction) => {
   }
 };
 
+const bomb = () => {
+  const bomberManCell =
+    cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x];
+  const explosionTop =
+    cellsArr[bomberManCurrenPosition.y - 1][bomberManCurrenPosition.x];
+  const explosionBottom =
+    cellsArr[bomberManCurrenPosition.y + 1][bomberManCurrenPosition.x];
+  const explosionRight =
+    cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x + 1];
+  const explosionLeft =
+    cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x - 1];
+  const bombElement = document.createElement("div");
+  bombElement.classList.add("bomb");
+  bomberManCell.appendChild(bombElement);
+  bomberManCell.classList.remove("walkable");
+  bombElement.addEventListener("animationend", () => {
+    bombElement.remove();
+
+    // Explosion Middle
+    setTimeout(() => {
+        bomberManCell.classList.add("explosion-middle");
+      }, 0);
+      bomberManCell.addEventListener("animationend", () => {
+        bomberManCell.classList.remove("explosion-middle");
+        bomberManCell.classList.add("walkable");
+      });
+
+    // Explosion Top
+    if (!explosionTop.classList.contains("indestructible")) {
+      explosionTop.classList.add("explosion-top");
+      explosionTop.addEventListener("animationend", () => {
+        explosionTop.classList.remove("explosion-top");
+        if(explosionTop.classList.contains("breakable")) {
+            explosionTop.classList.remove("breakable")
+            explosionTop.classList.add("walkable")
+        }
+      });
+    }
+
+    // Explosion Bottom
+    if (!explosionBottom.classList.contains("indestructible")) {
+      explosionBottom.classList.add("explosion-bottom");
+      explosionBottom.addEventListener("animationend", () => {
+        explosionBottom.classList.remove("explosion-bottom");
+        if(explosionBottom.classList.contains("breakable")) {
+            explosionBottom.classList.remove("breakable")
+            explosionBottom.classList.add("walkable")
+        }
+      });
+    }
+
+    // Explosion Right
+    if (!explosionRight.classList.contains("indestructible")) {
+      explosionRight.classList.add("explosion-right");
+      explosionRight.addEventListener("animationend", () => {
+        explosionRight.classList.remove("explosion-right");
+        if(explosionRight.classList.contains("breakable")) {
+            explosionRight.classList.remove("breakable")
+            explosionRight.classList.add("walkable")
+        }
+      });
+    }
+
+    // Explosion Left
+    if (!explosionLeft.classList.contains("indestructible")) {
+      explosionLeft.classList.add("explosion-left");
+      explosionLeft.addEventListener("animationend", () => {
+        explosionLeft.classList.remove("explosion-left");
+        if(explosionLeft.classList.contains("breakable")) {
+            explosionLeft.classList.remove("breakable")
+            explosionLeft.classList.add("walkable")
+        }
+      });
+    }
+  });
+};
+
 document.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "ArrowUp":
@@ -195,6 +273,7 @@ document.addEventListener("keydown", (e) => {
       move(e.key);
       break;
     case "x":
+      bomb();
       break;
     case "p":
       break;

@@ -40,12 +40,12 @@
 }
 
 .breakable {
-    background-image: url("sprites.png");
-    width: 64px;
-    height: 64px;
-    background-position-x: -256px;
-    background-position-y: -192px;
-    background-size: 896px 1532px;
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-position-x: -256px;
+  background-position-y: -192px;
+  background-size: 896px 1532px;
 }
 
 .bomber-man {
@@ -53,19 +53,65 @@
   height: 64px;
   background-image: url("sprites.png");
   background-size: 896px 1532px;
+  position: absolute;
 }
 
 .bomb {
-  background: purple;
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-position-y: -192px;
+  background-size: 896px 1532px;
+  animation: bomb-animation 1s steps(1) 2;
+}
+
+.explosion-top {
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-size: 896px 1532px;
+  animation: explosion-top 1s steps(1) 1;
+}
+
+.explosion-right {
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-size: 896px 1532px;
+  animation: explosion-right 1s steps(1) 1;
+}
+
+.explosion-left {
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-size: 896px 1532px;
+  animation: explosion-left 1s steps(1) 1;
+}
+
+.explosion-middle {
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-size: 896px 1532px;
+  animation: explosion-middle 1s steps(1) 1;
+}
+
+.explosion-bottom {
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-size: 896px 1532px;
+  animation: explosion-bottom 1s steps(1) 1;
 }
 
 .enemy {
-    background-image: url("sprites.png");
-    width: 64px;
-    height: 64px;
-    background-position-y: -960px;
-    background-size: 896px 1532px;
-    animation: enemy-animation 1s steps(1) infinite;
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-position-y: -960px;
+  background-size: 896px 1532px;
+  animation: enemy-animation 1s steps(1) infinite;
 }
 
 .power-up {
@@ -73,22 +119,149 @@
 }
 
 @keyframes enemy-animation {
-    0% {
-        background-position-x: -64px;
-    }
-    20% {
-        background-position-x: -128px;
-    }
-    40% {
-        background-position-x: -192px;
-    }
-    60% {
-        background-position-x: -256px;
-    }
-    80% {
-        background-position-x: -320px;
-    }
-    100% {
-        background-position-x: -384px;
-    }
+  0% {
+    background-position-x: -64px;
+  }
+  20% {
+    background-position-x: -128px;
+  }
+  40% {
+    background-position-x: -192px;
+  }
+  60% {
+    background-position-x: -256px;
+  }
+  80% {
+    background-position-x: -320px;
+  }
+  100% {
+    background-position-x: -384px;
+  }
+}
+
+@keyframes bomb-animation {
+  0% {
+    background-position-x: -64px;
+  }
+  50% {
+    background-position-x: -128px;
+  }
+  100% {
+    background-position-x: -192px;
+  }
+}
+
+@keyframes explosion-middle {
+  0% {
+    background-position-y: -384px;
+    background-position-x: -128px;
+  }
+  25% {
+    background-position-y: -384px;
+    background-position-x: -448px;
+  }
+  50% {
+    background-position-y: -704px;
+    background-position-x: -128px;
+  }
+  75% {
+    background-position-y: -704px;
+    background-position-x: -448px;
+  }
+  100% {
+    background-position-y: -384px;
+    background-position-x: -128px;
+  }
+}
+
+@keyframes explosion-top {
+  0% {
+    background-position-y: -256px;
+    background-position-x: -128px;
+  }
+  25% {
+    background-position-y: -256px;
+    background-position-x: -448px;
+  }
+  50% {
+    background-position-y: -576px;
+    background-position-x: -128px;
+  }
+  75% {
+    background-position-y: -576px;
+    background-position-x: -448px;
+  }
+  100% {
+    background-position-y: -256px;
+    background-position-x: -128px;
+  }
+}
+
+@keyframes explosion-right {
+  0% {
+    background-position-y: -384px;
+    background-position-x: -256px;
+  }
+  25% {
+    background-position-y: -384px;
+    background-position-x: -576px;
+  }
+  50% {
+    background-position-y: -704px;
+    background-position-x: -256px;
+  }
+  75% {
+    background-position-y: -704px;
+    background-position-x: -576px;
+  }
+  100% {
+    background-position-y: -384px;
+    background-position-x: -256px;
+  }
+}
+
+@keyframes explosion-left {
+  0% {
+    background-position-y: -384px;
+    background-position-x: -64px;
+  }
+  25% {
+    background-position-y: -384px;
+    background-position-x: -320px;
+  }
+  50% {
+    background-position-y: -704px;
+    background-position-x: -64px;
+  }
+  75% {
+    background-position-y: -704px;
+    background-position-x: -320px;
+  }
+  100% {
+    background-position-y: -384px;
+    background-position-x: -64px;
+  }
+}
+
+@keyframes explosion-bottom {
+  0% {
+    background-position-y: -512px;
+    background-position-x: -128px;
+  }
+  25% {
+    background-position-y: -512px;
+    background-position-x: -448px;
+  }
+  50% {
+    background-position-y: -832px;
+    background-position-x: -128px;
+  }
+  75% {
+    background-position-y: -832px;
+    background-position-x: -448px;
+  }
+  100% {
+    background-position-y: -512px;
+    background-position-x: -128px;
+  }
 }
