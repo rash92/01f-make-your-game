@@ -48,8 +48,9 @@
   background-size: 896px 1532px;
 }
 
-.bomberManWrapper, .enemyWrapper {
-    position: relative;
+.bomberManWrapper,
+.enemyWrapper {
+  position: relative;
 }
 
 .bomber-man {
@@ -109,6 +110,15 @@
   height: 64px;
   background-size: 896px 1532px;
   animation: explosion-bottom 1s steps(1) 1;
+}
+
+.breakable-block-destruction {
+  background: #388700;
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-size: 896px 1532px;
+  animation: block-destruction 1s steps(1) 1;
 }
 
 .enemy {
@@ -279,6 +289,37 @@
   100% {
     background-position-y: -512px;
     background-position-x: -128px;
+  }
+}
+
+@keyframes block-destruction {
+  0% {
+    background-position-y: -192px;
+    background-position-x: -256px;
+  }
+  17% {
+    background-position-y: -192px;
+    background-position-x: -320px;
+  }
+  34% {
+    background-position-y: -192px;
+    background-position-x: -384px;
+  }
+  51% {
+    background-position-y: -192px;
+    background-position-x: -448px;
+  }
+  68% {
+    background-position-y: -192px;
+    background-position-x: -512px;
+  }
+  85% {
+    background-position-y: -192px;
+    background-position-x: -576px;
+  }
+  100% {
+    background-position-y: -192px;
+    background-position-x: -640px;
   }
 }
 
