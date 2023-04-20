@@ -1,6 +1,8 @@
 const grid = document.getElementById("game-grid");
-const bomberManWrapper = document.createElement("div")
-bomberManWrapper.classList.add("bomberManWrapper")
+const bomberManWrapper = document.createElement("div");
+bomberManWrapper.classList.add("bomberManWrapper");
+const enemyWrapper = document.createElement("div");
+enemyWrapper.classList.add("enemyWrapper");
 const gridRow = 13;
 const gridCol = 15;
 const cellSize = 64;
@@ -19,7 +21,7 @@ const buildGrid = () => {
       if (row === 1 && col === 1) {
         cell.classList.add("walkable");
         bomberManWrapper.classList.add("bomber-man");
-        cell.appendChild(bomberManWrapper)
+        cell.appendChild(bomberManWrapper);
       } else if (
         row === 0 ||
         col === 0 ||
@@ -36,7 +38,10 @@ const buildGrid = () => {
       } else {
         if (Math.random() < 0.25 && enemyCount > 0) {
           cell.classList.add("walkable");
-          cell.classList.add("enemy");
+          const enemyWrapper = document.createElement("div");
+          enemyWrapper.classList.add("enemyWrapper");
+          enemyWrapper.classList.add("enemy");
+          cell.appendChild(enemyWrapper);
           enemyCount--;
         } else {
           cell.classList.add("breakable");
@@ -92,13 +97,13 @@ const move = (direction) => {
       if (
         isWalkable([bomberManCurrenPosition.x, bomberManCurrenPosition.y - 1])
       ) {
-        bomberManWrapper.remove()
+        bomberManWrapper.remove();
         bomberManCurrenPosition.y = bomberManCurrenPosition.y - 1;
         bomberManWrapper.classList.add("bomber-man");
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
-        ].appendChild(bomberManWrapper)
-        setSprite(horizontalAnimation, 1);
+        ].appendChild(bomberManWrapper);
+        setSprite(verticalAnimation, 1);
       }
       switch (verticalAnimation) {
         case 3:
@@ -116,13 +121,13 @@ const move = (direction) => {
       if (
         isWalkable([bomberManCurrenPosition.x, bomberManCurrenPosition.y + 1])
       ) {
-        bomberManWrapper.remove()
+        bomberManWrapper.remove();
         bomberManCurrenPosition.y = bomberManCurrenPosition.y + 1;
         bomberManWrapper.classList.add("bomber-man");
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
-        ].appendChild(bomberManWrapper)
-        setSprite(horizontalAnimation, 0);
+        ].appendChild(bomberManWrapper);
+        setSprite(verticalAnimation, 0);
       }
       switch (verticalAnimation) {
         case 3:
@@ -140,12 +145,12 @@ const move = (direction) => {
       if (
         isWalkable([bomberManCurrenPosition.x + 1, bomberManCurrenPosition.y])
       ) {
-        bomberManWrapper.remove()
+        bomberManWrapper.remove();
         bomberManCurrenPosition.x = bomberManCurrenPosition.x + 1;
         bomberManWrapper.classList.add("bomber-man");
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
-        ].appendChild(bomberManWrapper)
+        ].appendChild(bomberManWrapper);
         setSprite(horizontalAnimation, 1);
       }
       switch (horizontalAnimation) {
@@ -164,12 +169,12 @@ const move = (direction) => {
       if (
         isWalkable([bomberManCurrenPosition.x - 1, bomberManCurrenPosition.y])
       ) {
-        bomberManWrapper.remove()
+        bomberManWrapper.remove();
         bomberManCurrenPosition.x = bomberManCurrenPosition.x - 1;
         bomberManWrapper.classList.add("bomber-man");
         cellsArr[bomberManCurrenPosition.y][
           bomberManCurrenPosition.x
-        ].appendChild(bomberManWrapper)
+        ].appendChild(bomberManWrapper);
         setSprite(horizontalAnimation, 0);
       }
       switch (horizontalAnimation) {
@@ -220,15 +225,16 @@ const bomb = () => {
         explosionTop.classList.remove("breakable");
         explosionTop.classList.add("walkable");
       }
+      if (explosionTop.contains(bomberManWrapper)) {
+        bomberManWrapper.classList.remove("bomber-man");
+        bomberManWrapper.classList.add("death");
+        bomberManWrapper.addEventListener("animationend", () => {
+          bomberManWrapper.classList.remove("death");
+        });
+      }
       explosionTop.classList.add("explosion-top");
       explosionTop.addEventListener("animationend", () => {
         explosionTop.classList.remove("explosion-top");
-        setTimeout(() => {
-          if (explosionTop.classList.contains("bomber-man")) {
-            explosionTop.classList.remove("bomber-man");
-            explosionTop.classList.add("death");
-          }
-        }, 1);
       });
     }
 
@@ -237,6 +243,13 @@ const bomb = () => {
       if (explosionBottom.classList.contains("breakable")) {
         explosionBottom.classList.remove("breakable");
         explosionBottom.classList.add("walkable");
+      }
+      if (explosionBottom.contains(bomberManWrapper)) {
+        bomberManWrapper.classList.remove("bomber-man");
+        bomberManWrapper.classList.add("death");
+        bomberManWrapper.addEventListener("animationend", () => {
+          bomberManWrapper.classList.remove("death");
+        });
       }
       explosionBottom.classList.add("explosion-bottom");
       explosionBottom.addEventListener("animationend", () => {
@@ -250,6 +263,13 @@ const bomb = () => {
         explosionRight.classList.remove("breakable");
         explosionRight.classList.add("walkable");
       }
+      if (explosionRight.contains(bomberManWrapper)) {
+        bomberManWrapper.classList.remove("bomber-man");
+        bomberManWrapper.classList.add("death");
+        bomberManWrapper.addEventListener("animationend", () => {
+          bomberManWrapper.classList.remove("death");
+        });
+      }
       explosionRight.classList.add("explosion-right");
       explosionRight.addEventListener("animationend", () => {
         explosionRight.classList.remove("explosion-right");
@@ -261,6 +281,13 @@ const bomb = () => {
       if (explosionLeft.classList.contains("breakable")) {
         explosionLeft.classList.remove("breakable");
         explosionLeft.classList.add("walkable");
+      }
+      if (explosionLeft.contains(bomberManWrapper)) {
+        bomberManWrapper.classList.remove("bomber-man");
+        bomberManWrapper.classList.add("death");
+        bomberManWrapper.addEventListener("animationend", () => {
+          bomberManWrapper.classList.remove("death");
+        });
       }
       explosionLeft.classList.add("explosion-left");
       explosionLeft.addEventListener("animationend", () => {
