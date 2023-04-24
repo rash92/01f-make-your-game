@@ -8,6 +8,8 @@ let bomberManCurrenPosition = { y: 1, x: 1 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
 let enemyCount = 3;
+let enemyArr = [];
+let randomDirection = [0, 1, 2, 3]
 let bombPlaced = false;
 
 const buildGrid = () => {
@@ -37,6 +39,12 @@ const buildGrid = () => {
       } else {
         if (Math.random() < 0.25 && enemyCount > 0) {
           cell.classList.add("walkable");
+          const enemyObj = {
+            y: row,
+            x: col,
+            direction: randomDirection[Math.floor(Math.random() * randomDirection.length)],
+          };
+          enemyArr.push(enemyObj);
           const enemyWrapper = document.createElement("div");
           enemyWrapper.classList.add("enemyWrapper");
           enemyWrapper.classList.add("enemy");
@@ -60,24 +68,13 @@ const createCellsArr = () => {
   return twoDArr;
 };
 
-const createInternalBoard = () => {
-  const board = [];
-  for (let row = 0; row < gridRow; row++) {
-    board[row] = [];
-    for (let col = 0; col < gridCol; col++) {
-      board[row][col] = 0;
-    }
-  }
-  return board;
-};
-
 buildGrid();
 const cellsArr = createCellsArr();
-const internalBoard = createInternalBoard();
 setSprite(horizontalAnimation, 1);
 
 const isWalkable = (tilePosition) => {
-  return cellsArr[tilePosition[1]][tilePosition[0]].classList.contains(
+  console.log(tilePosition);
+  return cellsArr[tilePosition[0]][tilePosition[1]].classList.contains(
     "walkable"
   );
 };
@@ -94,7 +91,7 @@ const move = (direction) => {
   switch (direction) {
     case "ArrowUp":
       if (
-        isWalkable([bomberManCurrenPosition.x, bomberManCurrenPosition.y - 1])
+        isWalkable([bomberManCurrenPosition.y - 1, bomberManCurrenPosition.x])
       ) {
         bomberManWrapper.remove();
         bomberManCurrenPosition.y = bomberManCurrenPosition.y - 1;
@@ -118,7 +115,7 @@ const move = (direction) => {
       break;
     case "ArrowDown":
       if (
-        isWalkable([bomberManCurrenPosition.x, bomberManCurrenPosition.y + 1])
+        isWalkable([bomberManCurrenPosition.y + 1, bomberManCurrenPosition.x])
       ) {
         bomberManWrapper.remove();
         bomberManCurrenPosition.y = bomberManCurrenPosition.y + 1;
@@ -142,7 +139,7 @@ const move = (direction) => {
       break;
     case "ArrowRight":
       if (
-        isWalkable([bomberManCurrenPosition.x + 1, bomberManCurrenPosition.y])
+        isWalkable([bomberManCurrenPosition.y, bomberManCurrenPosition.x + 1])
       ) {
         bomberManWrapper.remove();
         bomberManCurrenPosition.x = bomberManCurrenPosition.x + 1;
@@ -166,7 +163,7 @@ const move = (direction) => {
       break;
     case "ArrowLeft":
       if (
-        isWalkable([bomberManCurrenPosition.x - 1, bomberManCurrenPosition.y])
+        isWalkable([bomberManCurrenPosition.y, bomberManCurrenPosition.x - 1])
       ) {
         bomberManWrapper.remove();
         bomberManCurrenPosition.x = bomberManCurrenPosition.x - 1;
@@ -189,6 +186,31 @@ const move = (direction) => {
       }
       break;
   }
+};
+
+const killBomberMan = () => {
+  bomberManWrapper.classList.remove("bomber-man");
+  bomberManWrapper.classList.add("death");
+  bomberManWrapper.addEventListener("animationend", () => {
+    bomberManWrapper.classList.remove("death");
+  });
+};
+
+const destroyBlocks = (cell) => {
+  cell.classList.remove("breakable");
+  cell.classList.add("breakable-block-destruction");
+  cell.addEventListener("animationend", () => {
+    cell.classList.remove("breakable-block-destruction");
+    cell.classList.add("walkable");
+  });
+};
+
+const killEnemy = (cell) => {
+  cell.firstChild.classList.remove("enemy");
+  cell.firstChild.classList.add("enemy-death");
+  cell.firstChild.addEventListener("animationend", () => {
+    cell.firstChild.remove("enemy-death");
+  });
 };
 
 const bomb = () => {
@@ -223,26 +245,13 @@ const bomb = () => {
     // Explosion Top
     if (!explosionTop.classList.contains("indestructible")) {
       if (explosionTop.classList.contains("breakable")) {
-        explosionTop.classList.remove("breakable");
-        explosionTop.classList.add("breakable-block-destruction");
-        explosionTop.addEventListener("animationend", () => {
-          explosionTop.classList.remove("breakable-block-destruction");
-          explosionTop.classList.add("walkable");
-        });
+        destroyBlocks(explosionTop);
       }
       if (explosionTop.hasChildNodes()) {
-        explosionTop.firstChild.classList.remove("enemy");
-        explosionTop.firstChild.classList.add("enemy-death");
-        explosionTop.firstChild.addEventListener("animationend", () => {
-          explosionTop.firstChild.remove("enemy-death");
-        });
+        killEnemy(explosionTop);
       }
       if (explosionTop.contains(bomberManWrapper)) {
-        bomberManWrapper.classList.remove("bomber-man");
-        bomberManWrapper.classList.add("death");
-        bomberManWrapper.addEventListener("animationend", () => {
-          bomberManWrapper.classList.remove("death");
-        });
+        killBomberMan();
       }
       explosionTop.classList.add("explosion-top");
       explosionTop.addEventListener("animationend", () => {
@@ -253,26 +262,13 @@ const bomb = () => {
     // Explosion Bottom
     if (!explosionBottom.classList.contains("indestructible")) {
       if (explosionBottom.classList.contains("breakable")) {
-        explosionBottom.classList.remove("breakable");
-        explosionBottom.classList.add("breakable-block-destruction");
-        explosionBottom.addEventListener("animationend", () => {
-          explosionBottom.classList.remove("breakable-block-destruction");
-          explosionBottom.classList.add("walkable");
-        });
+        destroyBlocks(explosionBottom);
       }
       if (explosionBottom.hasChildNodes()) {
-        explosionBottom.firstChild.classList.remove("enemy");
-        explosionBottom.firstChild.classList.add("enemy-death");
-        explosionBottom.firstChild.addEventListener("animationend", () => {
-          explosionBottom.firstChild.remove("enemy-death");
-        });
+        killEnemy(explosionBottom);
       }
       if (explosionBottom.contains(bomberManWrapper)) {
-        bomberManWrapper.classList.remove("bomber-man");
-        bomberManWrapper.classList.add("death");
-        bomberManWrapper.addEventListener("animationend", () => {
-          bomberManWrapper.classList.remove("death");
-        });
+        killBomberMan();
       }
       explosionBottom.classList.add("explosion-bottom");
       explosionBottom.addEventListener("animationend", () => {
@@ -283,26 +279,13 @@ const bomb = () => {
     // Explosion Right
     if (!explosionRight.classList.contains("indestructible")) {
       if (explosionRight.classList.contains("breakable")) {
-        explosionRight.classList.remove("breakable");
-        explosionRight.classList.add("breakable-block-destruction");
-        explosionRight.addEventListener("animationend", () => {
-          explosionRight.classList.remove("breakable-block-destruction");
-          explosionRight.classList.add("walkable");
-        });
+        destroyBlocks(explosionRight);
       }
       if (explosionRight.hasChildNodes()) {
-        explosionRight.firstChild.classList.remove("enemy");
-        explosionRight.firstChild.classList.add("enemy-death");
-        explosionRight.firstChild.addEventListener("animationend", () => {
-          explosionRight.firstChild.remove("enemy-death");
-        });
+        killEnemy(explosionRight);
       }
       if (explosionRight.contains(bomberManWrapper)) {
-        bomberManWrapper.classList.remove("bomber-man");
-        bomberManWrapper.classList.add("death");
-        bomberManWrapper.addEventListener("animationend", () => {
-          bomberManWrapper.classList.remove("death");
-        });
+        killBomberMan();
       }
       explosionRight.classList.add("explosion-right");
       explosionRight.addEventListener("animationend", () => {
@@ -313,26 +296,13 @@ const bomb = () => {
     // Explosion Left
     if (!explosionLeft.classList.contains("indestructible")) {
       if (explosionLeft.classList.contains("breakable")) {
-        explosionLeft.classList.remove("breakable");
-        explosionLeft.classList.add("breakable-block-destruction");
-        explosionLeft.addEventListener("animationend", () => {
-          explosionLeft.classList.remove("breakable-block-destruction");
-          explosionLeft.classList.add("walkable");
-        });
+        destroyBlocks(explosionLeft);
       }
       if (explosionLeft.hasChildNodes()) {
-        explosionLeft.firstChild.classList.remove("enemy");
-        explosionLeft.firstChild.classList.add("enemy-death");
-        explosionLeft.firstChild.addEventListener("animationend", () => {
-          explosionLeft.firstChild.remove("enemy-death");
-        });
+        killEnemy(explosionLeft);
       }
       if (explosionLeft.contains(bomberManWrapper)) {
-        bomberManWrapper.classList.remove("bomber-man");
-        bomberManWrapper.classList.add("death");
-        bomberManWrapper.addEventListener("animationend", () => {
-          bomberManWrapper.classList.remove("death");
-        });
+        killBomberMan();
       }
       explosionLeft.classList.add("explosion-left");
       explosionLeft.addEventListener("animationend", () => {
@@ -341,6 +311,66 @@ const bomb = () => {
     }
   });
 };
+
+const moveEnemy = (enemy, cell, movement = []) => {
+  enemy.y = movement[0]
+  enemy.x = movement[1]
+  cell.removeChild(cell.firstChild);
+  const enemyWrapper = document.createElement("div");
+  enemyWrapper.classList.add("enemyWrapper");
+  enemyWrapper.classList.add("enemy");
+  cellsArr[movement[0]][movement[1]].appendChild(enemyWrapper);
+};
+
+const enemyAI = () => {
+  enemyArr.forEach((enemy) => {
+    console.log(enemy);
+    switch (enemy.direction) {
+      case 0: // up
+        if(isWalkable([enemy.y - 1, enemy.x])) {
+          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y - 1, enemy.x])
+          if(cellsArr[enemy.y - 1][enemy.x].contains(bomberManWrapper)) {
+            killBomberMan()
+          }
+        } else {
+          enemy.direction = 1
+        }
+        break;
+      case 1: // right
+        if(isWalkable([enemy.y, enemy.x + 1])) {
+          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x + 1] )
+          if(cellsArr[enemy.y][enemy.x + 1].contains(bomberManWrapper)) {
+            killBomberMan()
+          }
+        } else {
+          enemy.direction = 2
+        }
+        break;
+      case 2: // down
+        if(isWalkable([enemy.y + 1, enemy.x])) {
+          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y + 1, enemy.x])
+          if(cellsArr[enemy.y + 1][enemy.x].contains(bomberManWrapper)) {
+            killBomberMan()
+          }
+        } else {
+          enemy.direction = 3
+        }
+        break;
+      case 3:
+        if(isWalkable([enemy.y, enemy.x -1 ])) {
+          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x - 1] )
+          if(cellsArr[enemy.y][enemy.x - 1].contains(bomberManWrapper)) {
+            killBomberMan()
+          }
+        } else {
+          enemy.direction = 0
+        }
+        break;
+    }
+  });
+};
+
+let enemyInterval;
 
 document.addEventListener("keydown", (e) => {
   switch (e.key) {
@@ -354,6 +384,15 @@ document.addEventListener("keydown", (e) => {
       if (!bombPlaced) bomb();
       break;
     case "p":
+      if (!enemyInterval) {
+        enemyInterval = setInterval(() => {
+          enemyAI();
+        }, 500);
+      } else {
+        clearInterval(enemyInterval);
+        enemyInterval = null;
+      }
+      break;
       break;
   }
 });
