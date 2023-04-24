@@ -40,6 +40,7 @@ const buildGrid = () => {
         if (Math.random() < 0.25 && enemyCount > 0) {
           cell.classList.add("walkable");
           const enemyObj = {
+            id: enemyCount,
             y: row,
             x: col,
             direction: randomDirection[Math.floor(Math.random() * randomDirection.length)],
@@ -206,6 +207,11 @@ const destroyBlocks = (cell) => {
 };
 
 const killEnemy = (cell) => {
+  enemyArr.forEach(enemy => {
+    if(cell === cellsArr[enemy.y][enemy.x]) {
+      const index = enemyArr.indexOf(enemy)
+      enemyArr.splice(index, 1)
+  }})
   cell.firstChild.classList.remove("enemy");
   cell.firstChild.classList.add("enemy-death");
   cell.firstChild.addEventListener("animationend", () => {
@@ -323,6 +329,7 @@ const moveEnemy = (enemy, cell, movement = []) => {
 };
 
 const enemyAI = () => {
+  console.log(enemyArr);
   enemyArr.forEach((enemy) => {
     console.log(enemy);
     switch (enemy.direction) {
@@ -356,7 +363,7 @@ const enemyAI = () => {
           enemy.direction = 3
         }
         break;
-      case 3:
+      case 3: // left
         if(isWalkable([enemy.y, enemy.x -1 ])) {
           moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x - 1] )
           if(cellsArr[enemy.y][enemy.x - 1].contains(bomberManWrapper)) {
