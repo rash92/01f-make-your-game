@@ -1,8 +1,9 @@
 const grid = document.getElementById("game-grid");
+const gameStatus = document.getElementById("game-status");
 const bomberManWrapper = document.createElement("div");
 bomberManWrapper.classList.add("bomberManWrapper");
-const score = document.querySelector(".score")
-const lives = document.querySelector(".lives")
+const score = document.querySelector(".score");
+const lives = document.querySelector(".lives");
 const gridRow = 13;
 const gridCol = 15;
 const cellSize = 64;
@@ -15,6 +16,7 @@ let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 let currentScore = 0;
 let currentLives = 3;
+let gamePaused = false;
 let gameOver = false;
 
 const buildGrid = () => {
@@ -82,17 +84,19 @@ const cellsArr = createCellsArr();
 setSprite(horizontalAnimation, 1);
 
 const isWalkable = (tilePosition, entity) => {
-  const isCellWalkable = cellsArr[tilePosition[0]][tilePosition[1]].classList.contains("walkable")
-  const isCellEnemy = cellsArr[tilePosition[0]][tilePosition[1]].firstChild &&
+  const isCellWalkable =
+    cellsArr[tilePosition[0]][tilePosition[1]].classList.contains("walkable");
+  const isCellEnemy =
+    cellsArr[tilePosition[0]][tilePosition[1]].firstChild &&
     cellsArr[tilePosition[0]][tilePosition[1]].firstChild.classList.contains(
       "enemy"
     );
-    if(entity === "bomberMan") {
-      return isCellWalkable
-    } else {
-      return isCellWalkable && !isCellEnemy
-    }
-}
+  if (entity === "bomberMan") {
+    return isCellWalkable;
+  } else {
+    return isCellWalkable && !isCellEnemy;
+  }
+};
 
 function setSprite(spriteX, spriteY) {
   const bomberMan = document.querySelector(".bomber-man");
@@ -129,7 +133,10 @@ const move = (direction) => {
   switch (direction) {
     case "ArrowUp":
       if (
-        isWalkable([bomberManCurrenPosition.y - 1, bomberManCurrenPosition.x], "bomberMan")
+        isWalkable(
+          [bomberManCurrenPosition.y - 1, bomberManCurrenPosition.x],
+          "bomberMan"
+        )
       ) {
         checkNotDead(
           cellsArr[bomberManCurrenPosition.y - 1][bomberManCurrenPosition.x],
@@ -157,7 +164,10 @@ const move = (direction) => {
       break;
     case "ArrowDown":
       if (
-        isWalkable([bomberManCurrenPosition.y + 1, bomberManCurrenPosition.x], "bomberMan")
+        isWalkable(
+          [bomberManCurrenPosition.y + 1, bomberManCurrenPosition.x],
+          "bomberMan"
+        )
       ) {
         checkNotDead(
           cellsArr[bomberManCurrenPosition.y + 1][bomberManCurrenPosition.x],
@@ -185,7 +195,10 @@ const move = (direction) => {
       break;
     case "ArrowRight":
       if (
-        isWalkable([bomberManCurrenPosition.y, bomberManCurrenPosition.x + 1], "bomberMan")
+        isWalkable(
+          [bomberManCurrenPosition.y, bomberManCurrenPosition.x + 1],
+          "bomberMan"
+        )
       ) {
         checkNotDead(
           cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x + 1],
@@ -213,7 +226,10 @@ const move = (direction) => {
       break;
     case "ArrowLeft":
       if (
-        isWalkable([bomberManCurrenPosition.y, bomberManCurrenPosition.x - 1], "bomberMan")
+        isWalkable(
+          [bomberManCurrenPosition.y, bomberManCurrenPosition.x - 1],
+          "bomberMan"
+        )
       ) {
         checkNotDead(
           cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x - 1],
@@ -244,7 +260,7 @@ const move = (direction) => {
 
 const killBomberMan = () => {
   document.removeEventListener("keydown", onKeyDown);
-  if(currentLives === 0 ){
+  if (currentLives === 0) {
     gameOver = true;
   }
   bomberManWrapper.classList.remove("bomber-man");
@@ -252,17 +268,16 @@ const killBomberMan = () => {
   bomberManWrapper.addEventListener("animationend", () => {
     bomberManWrapper.classList.remove("death");
     bomberManWrapper.classList.add("bomber-man");
-    bomberManCurrenPosition.y = 1
-    bomberManCurrenPosition.x = 1
-    cellsArr[bomberManCurrenPosition.y][
-      bomberManCurrenPosition.x
-    ].appendChild(bomberManWrapper);
-    setSprite(bomberManCurrenPosition.x, bomberManCurrenPosition.y)
+    bomberManCurrenPosition.y = 1;
+    bomberManCurrenPosition.x = 1;
+    cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].appendChild(
+      bomberManWrapper
+    );
+    setSprite(bomberManCurrenPosition.x, bomberManCurrenPosition.y);
     document.addEventListener("keydown", onKeyDown);
   });
-  currentLives -= 1
-  lives.textContent = `Lives ${currentLives}`
- 
+  currentLives -= 1;
+  lives.textContent = `Lives ${currentLives}`;
 };
 
 const destroyBlocks = (cell) => {
@@ -272,8 +287,8 @@ const destroyBlocks = (cell) => {
     cell.classList.remove("breakable-block-destruction");
     cell.classList.add("walkable");
   });
-  currentScore += 10
-  score.textContent = `Score ${currentScore}`
+  currentScore += 10;
+  score.textContent = `Score ${currentScore}`;
 };
 
 const killEnemy = (cell) => {
@@ -281,19 +296,21 @@ const killEnemy = (cell) => {
     if (cell === cellsArr[enemy.y][enemy.x]) {
       const index = enemyArr.indexOf(enemy);
       enemyArr.splice(index, 1);
-      currentScore += 100
-      score.textContent = `Score ${currentScore}`
+      currentScore += 100;
+      score.textContent = `Score ${currentScore}`;
     }
   });
   if (enemyArr.length === 0) {
     gameOver = true;
   }
-  cell.firstChild.classList.remove("enemy");
-  console.log("I've been called");
-  cell.firstChild.classList.add("enemy-death");
-  cell.firstChild.addEventListener("animationend", () => {
-    cell.firstChild.remove("enemy-death");
-  });
+  if (cell.firstChild) {
+    cell.firstChild.classList.remove("enemy");
+    console.log("I've been called");
+    cell.firstChild.classList.add("enemy-death");
+    cell.firstChild.addEventListener("animationend", () => {
+      cell.firstChild.remove("enemy-death");
+    });
+  }
 };
 
 const bomb = () => {
@@ -330,7 +347,10 @@ const bomb = () => {
       if (explosionTop.classList.contains("breakable")) {
         destroyBlocks(explosionTop);
       }
-      if (explosionTop.firstChild && explosionTop.firstChild.classList.contains("enemy")) {
+      if (
+        explosionTop.firstChild &&
+        explosionTop.firstChild.classList.contains("enemy")
+      ) {
         killEnemy(explosionTop);
       }
       if (explosionTop.contains(bomberManWrapper)) {
@@ -347,7 +367,10 @@ const bomb = () => {
       if (explosionBottom.classList.contains("breakable")) {
         destroyBlocks(explosionBottom);
       }
-      if (explosionBottom.firstChild && explosionBottom.firstChild.classList.contains("enemy")) {
+      if (
+        explosionBottom.firstChild &&
+        explosionBottom.firstChild.classList.contains("enemy")
+      ) {
         killEnemy(explosionBottom);
       }
       if (explosionBottom.contains(bomberManWrapper)) {
@@ -364,7 +387,10 @@ const bomb = () => {
       if (explosionRight.classList.contains("breakable")) {
         destroyBlocks(explosionRight);
       }
-      if (explosionRight.firstChild && explosionRight.firstChild.classList.contains("enemy")) {
+      if (
+        explosionRight.firstChild &&
+        explosionRight.firstChild.classList.contains("enemy")
+      ) {
         killEnemy(explosionRight);
       }
       if (explosionRight.contains(bomberManWrapper)) {
@@ -381,7 +407,10 @@ const bomb = () => {
       if (explosionLeft.classList.contains("breakable")) {
         destroyBlocks(explosionLeft);
       }
-      if (explosionLeft.firstChild && explosionLeft.firstChild.classList.contains("enemy")) {
+      if (
+        explosionLeft.firstChild &&
+        explosionLeft.firstChild.classList.contains("enemy")
+      ) {
         killEnemy(explosionLeft);
       }
       if (explosionLeft.contains(bomberManWrapper)) {
@@ -404,7 +433,6 @@ const moveEnemy = (enemy, cell, movement = []) => {
   enemyWrapper.classList.add("enemy");
   cellsArr[movement[0]][movement[1]].appendChild(enemyWrapper);
 };
-
 
 const enemyAI = () => {
   enemyArr.forEach((enemy) => {
@@ -469,7 +497,13 @@ const onKeyDown = (e) => {
       if (!bombPlaced) bomb();
       break;
     case "p":
-      break;
+      gamePaused = !gamePaused;
+      if (gamePaused) {
+        gameStatus.style.display = "flex";
+      } else {
+        gameStatus.style.display = "none";
+        requestAnimationFrame(gameLoop);
+      }
       break;
   }
 };
@@ -480,6 +514,10 @@ const enemyInterval = 500;
 let lastEnemyMove = 0;
 
 const gameLoop = (timestamp) => {
+  console.log(gamePaused);
+  if (gamePaused) {
+    return;
+  }
   if (gameOver) {
     return;
   }
