@@ -10,7 +10,7 @@ const cellSize = 64;
 let bomberManCurrenPosition = { y: 1, x: 1 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-let enemyCount = 3;
+let enemyCount = 8;
 let enemyArr = [];
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
@@ -18,6 +18,144 @@ let currentScore = 0;
 let currentLives = 3;
 let gamePaused = false;
 let gameOver = false;
+
+//enemies with various parameters for how the AI works. waitTime determines speed and is how long it waits before it moves.
+//view radius determines how far it looks to decide if it wants to chase or run, xrayVision determines if it can see through walls to decide this
+//chaseChance is chance of chasing player, runChance is chance of running from bomb, randomChance is chance of choosing a random direction, continueChance is chance of continuing in same direction, stillChance is chance of not moving.
+const enemyA = {
+  name: 'enemyA',
+  waitTime: 1200,
+  ghost: false,
+  hitPoints: 1,
+  viewRadius: 0,
+  xrayVision: false,
+  chaseChance: 0,
+  runChance: 0,
+  randomChance: 100,
+  continueChance: 0,
+  stillChance: 0,
+  score: 100
+}
+const enemyB = {
+  name: 'enemyB',
+  waitTime: 1000,
+  ghost: false,
+  hitPoints: 1,
+  viewRadius: 0,
+  xrayVision: false,
+  chaseChance: 0,
+  runChance: 0,
+  randomChance: 100,
+  continueChance: 0,
+  stillChance: 0,
+  score: 100
+}
+const enemyC = {
+  name: 'enemyC',
+  waitTime: 800,
+  ghost: false,
+  hitPoints: 1,
+  viewRadius: 0,
+  xrayVision: false,
+  chaseChance: 0,
+  runChance: 0,
+  randomChance: 100,
+  continueChance: 0,
+  stillChance: 0,
+  score: 100
+}
+const enemyD = {
+  name: 'enemyD',
+  waitTime: 600,
+  ghost: false,
+  hitPoints: 1,
+  viewRadius: 0,
+  xrayVision: false,
+  chaseChance: 0,
+  runChance: 0,
+  randomChance: 100,
+  continueChance: 0,
+  stillChance: 0,
+  score: 100
+}
+const enemyE = {
+  name: 'enemyE',
+  waitTime: 400,
+  ghost: false,
+  hitPoints: 1,
+  viewRadius: 0,
+  xrayVision: false,
+  chaseChance: 0,
+  runChance: 0,
+  randomChance: 100,
+  continueChance: 0,
+  stillChance: 0,
+  score: 100
+}
+const enemyF = {
+  name: 'enemyF',
+  waitTime: 300,
+  ghost: false,
+  hitPoints: 1,
+  viewRadius: 0,
+  xrayVision: false,
+  chaseChance: 0,
+  runChance: 0,
+  randomChance: 100,
+  continueChance: 0,
+  stillChance: 0,
+  score: 100
+}
+const enemyG = {
+  name: 'enemyG',
+  waitTime: 200,
+  ghost: false,
+  hitPoints: 1,
+  viewRadius: 0,
+  xrayVision: false,
+  chaseChance: 0,
+  runChance: 0,
+  randomChance: 100,
+  continueChance: 0,
+  stillChance: 0,
+  score: 100
+}
+const enemyH = {
+  name: 'enemyH',
+  waitTime: 100,
+  ghost: false,
+  hitPoints: 1,
+  viewRadius: 0,
+  xrayVision: false,
+  chaseChance: 0,
+  runChance: 0,
+  randomChance: 100,
+  continueChance: 0,
+  stillChance: 0,
+  score: 100
+}
+
+const allEnemyTypes = [enemyA, enemyB, enemyC, enemyD, enemyF, enemyG, enemyH]
+
+const addEnemy = (enemyType, row, col) => {
+  const enemyObj = {
+    id: enemyCount,
+    y: row,
+    x: col,
+    lastEnemyMove: 0,
+    direction:
+      randomDirection[
+      Math.floor(Math.random() * randomDirection.length)
+      ],
+    type: enemyType,
+  };
+  enemyArr.push(enemyObj);
+  const enemyWrapper = document.createElement("div");
+  enemyWrapper.classList.add("enemyWrapper");
+  enemyWrapper.classList.add("enemy");
+  enemyWrapper.classList.add(enemyObj.type.name);
+  return enemyWrapper
+}
 
 const buildGrid = () => {
   for (let row = 0; row < gridRow; row++) {
@@ -46,20 +184,8 @@ const buildGrid = () => {
       } else {
         if (Math.random() < 0.25 && enemyCount > 0) {
           cell.classList.add("walkable");
-          const enemyObj = {
-            id: enemyCount,
-            y: row,
-            x: col,
-            direction:
-              randomDirection[
-                Math.floor(Math.random() * randomDirection.length)
-              ],
-          };
-          enemyArr.push(enemyObj);
-          const enemyWrapper = document.createElement("div");
-          enemyWrapper.classList.add("enemyWrapper");
-          enemyWrapper.classList.add("enemy");
-          cell.appendChild(enemyWrapper);
+          const enemyTypeToAdd = Math.floor(Math.random()*allEnemyTypes.length)
+          cell.appendChild(addEnemy(allEnemyTypes[enemyTypeToAdd], row, col));
           enemyCount--;
         } else {
           cell.classList.add("breakable");
@@ -101,9 +227,8 @@ const isWalkable = (tilePosition, entity) => {
 function setSprite(spriteX, spriteY) {
   const bomberMan = document.querySelector(".bomber-man");
   const spriteSize = 64;
-  bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${
-    spriteY * spriteSize
-  }px`;
+  bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${spriteY * spriteSize
+    }px`;
 }
 
 const checkNotDead = (cell, entity) => {
@@ -431,11 +556,16 @@ const moveEnemy = (enemy, cell, movement = []) => {
   const enemyWrapper = document.createElement("div");
   enemyWrapper.classList.add("enemyWrapper");
   enemyWrapper.classList.add("enemy");
+  enemyWrapper.classList.add(enemy.type.name);
   cellsArr[movement[0]][movement[1]].appendChild(enemyWrapper);
 };
 
-const enemyAI = () => {
+const enemyAI = (timestamp) => {
   enemyArr.forEach((enemy) => {
+    if (enemy.type.waitTime > timestamp - enemy.lastEnemyMove) {
+      return
+    }
+    enemy.lastEnemyMove = timestamp
     switch (enemy.direction) {
       case 0: // up
         if (isWalkable([enemy.y - 1, enemy.x], "enemy")) {
@@ -511,21 +641,18 @@ const onKeyDown = (e) => {
 document.addEventListener("keydown", onKeyDown);
 
 const enemyInterval = 500;
-let lastEnemyMove = 0;
+
+
+// let lastEnemyMove = 0;
 
 const gameLoop = (timestamp) => {
-  console.log(gamePaused);
   if (gamePaused) {
     return;
   }
   if (gameOver) {
     return;
   }
-  const deltaTime = timestamp - lastEnemyMove;
-  if (deltaTime >= enemyInterval) {
-    enemyAI(deltaTime);
-    lastEnemyMove = timestamp;
-  }
+  enemyAI(timestamp);
   requestAnimationFrame(gameLoop);
 };
 

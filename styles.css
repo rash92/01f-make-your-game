@@ -150,11 +150,42 @@
   background-image: url("sprites.png");
   width: 64px;
   height: 64px;
-  background-position-y: -960px;
   background-size: 896px 1532px;
   position: absolute;
   z-index: 1;
   animation: enemy-animation 1s steps(1) infinite;
+}
+
+.enemyA {
+  background-position-y: -960px;
+}
+
+.enemyB {
+  background-position-y: -1024px;
+}
+
+.enemyC {
+  background-position-y: -1088px;
+}
+
+.enemyD {
+  background-position-y: -1152px;
+}
+
+.enemyE {
+  background-position-y: -1216px;
+}
+
+.enemyF {
+  background-position-y: -1280px;
+}
+
+.enemyG {
+  background-position-y: -1344px;
+}
+
+.enemyH {
+  background-position-y: -1408px;
 }
 
 .enemy-death {
@@ -202,27 +233,21 @@
 
 @keyframes enemy-death {
   0% {
-    background-position-y: -960px;
     background-position-x: -448px;
   }
   20% {
-    background-position-y: -960px;
     background-position-x: -512px;
   }
   40% {
-    background-position-y: -960px;
     background-position-x: -576px;
   }
   60% {
-    background-position-y: -960px;
     background-position-x: -640px;
   }
   80% {
-    background-position-y: -960px;
     background-position-x: -704px;
   }
   100% {
-    background-position-y: -960px;
     background-position-x: -768px;
   }
 }
