@@ -1,12 +1,9 @@
-const theme = document.getElementById("theme")
-
-theme.addEventListener("click", () => {
-	document.body.classList.toggle("darkmode")
-})
-
 const grid = document.getElementById("game-grid")
+const gameStatus = document.getElementById("game-status")
 const bomberManWrapper = document.createElement("div")
 bomberManWrapper.classList.add("bomberManWrapper")
+const score = document.querySelector(".score")
+const lives = document.querySelector(".lives")
 const gridRow = 13
 const gridCol = 15
 const cellSize = 64
@@ -14,7 +11,13 @@ let bomberManCurrenPosition = { y: 1, x: 1 }
 let horizontalAnimation = 0
 let verticalAnimation = 3
 let enemyCount = 3
+let enemyArr = []
+let randomDirection = [0, 1, 2, 3]
 let bombPlaced = false
+let currentScore = 0
+let currentLives = 3
+let gamePaused = false
+let gameOver = false
 
 const buildGrid = () => {
 	for (let row = 0; row < gridRow; row++) {
@@ -43,6 +46,16 @@ const buildGrid = () => {
 			} else {
 				if (Math.random() < 0.25 && enemyCount > 0) {
 					cell.classList.add("walkable")
+					const enemyObj = {
+						id: enemyCount,
+						y: row,
+						x: col,
+						direction:
+							randomDirection[
+								Math.floor(Math.random() * randomDirection.length)
+							],
+					}
+					enemyArr.push(enemyObj)
 					const enemyWrapper = document.createElement("div")
 					enemyWrapper.classList.add("enemyWrapper")
 					enemyWrapper.classList.add("enemy")
@@ -66,26 +79,23 @@ const createCellsArr = () => {
 	return twoDArr
 }
 
-const createInternalBoard = () => {
-	const board = []
-	for (let row = 0; row < gridRow; row++) {
-		board[row] = []
-		for (let col = 0; col < gridCol; col++) {
-			board[row][col] = 0
-		}
-	}
-	return board
-}
-
 buildGrid()
 const cellsArr = createCellsArr()
-const internalBoard = createInternalBoard()
 setSprite(horizontalAnimation, 1)
 
-const isWalkable = (tilePosition) => {
-	return cellsArr[tilePosition[1]][tilePosition[0]].classList.contains(
-		"walkable"
-	)
+const isWalkable = (tilePosition, entity) => {
+	const isCellWalkable =
+		cellsArr[tilePosition[0]][tilePosition[1]].classList.contains("walkable")
+	const isCellEnemy =
+		cellsArr[tilePosition[0]][tilePosition[1]].firstChild &&
+		cellsArr[tilePosition[0]][tilePosition[1]].firstChild.classList.contains(
+			"enemy"
+		)
+	if (entity === "bomberMan") {
+		return isCellWalkable
+	} else {
+		return isCellWalkable && !isCellEnemy
+	}
 }
 
 function setSprite(spriteX, spriteY) {
@@ -96,12 +106,42 @@ function setSprite(spriteX, spriteY) {
 	}px`
 }
 
+const checkNotDead = (cell, entity) => {
+	const classNames = [
+		"explosion-middle",
+		"explosion-top",
+		"explosion-right",
+		"explosion-left",
+		"explosion-bottom",
+	]
+
+	const hasExplosionClass = classNames.some((className) =>
+		cell.classList.contains(className)
+	)
+	if (entity === "bomberMan") {
+		if (cell.hasChildNodes() || hasExplosionClass) {
+			killBomberMan()
+		}
+	} else {
+		if (hasExplosionClass) {
+			killEnemy()
+		}
+	}
+}
+
 const move = (direction) => {
 	switch (direction) {
 		case "ArrowUp":
 			if (
-				isWalkable([bomberManCurrenPosition.x, bomberManCurrenPosition.y - 1])
+				isWalkable(
+					[bomberManCurrenPosition.y - 1, bomberManCurrenPosition.x],
+					"bomberMan"
+				)
 			) {
+				checkNotDead(
+					cellsArr[bomberManCurrenPosition.y - 1][bomberManCurrenPosition.x],
+					"bomberMan"
+				)
 				bomberManWrapper.remove()
 				bomberManCurrenPosition.y = bomberManCurrenPosition.y - 1
 				bomberManWrapper.classList.add("bomber-man")
@@ -124,8 +164,15 @@ const move = (direction) => {
 			break
 		case "ArrowDown":
 			if (
-				isWalkable([bomberManCurrenPosition.x, bomberManCurrenPosition.y + 1])
+				isWalkable(
+					[bomberManCurrenPosition.y + 1, bomberManCurrenPosition.x],
+					"bomberMan"
+				)
 			) {
+				checkNotDead(
+					cellsArr[bomberManCurrenPosition.y + 1][bomberManCurrenPosition.x],
+					"bomberMan"
+				)
 				bomberManWrapper.remove()
 				bomberManCurrenPosition.y = bomberManCurrenPosition.y + 1
 				bomberManWrapper.classList.add("bomber-man")
@@ -148,8 +195,15 @@ const move = (direction) => {
 			break
 		case "ArrowRight":
 			if (
-				isWalkable([bomberManCurrenPosition.x + 1, bomberManCurrenPosition.y])
+				isWalkable(
+					[bomberManCurrenPosition.y, bomberManCurrenPosition.x + 1],
+					"bomberMan"
+				)
 			) {
+				checkNotDead(
+					cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x + 1],
+					"bomberMan"
+				)
 				bomberManWrapper.remove()
 				bomberManCurrenPosition.x = bomberManCurrenPosition.x + 1
 				bomberManWrapper.classList.add("bomber-man")
@@ -172,8 +226,15 @@ const move = (direction) => {
 			break
 		case "ArrowLeft":
 			if (
-				isWalkable([bomberManCurrenPosition.x - 1, bomberManCurrenPosition.y])
+				isWalkable(
+					[bomberManCurrenPosition.y, bomberManCurrenPosition.x - 1],
+					"bomberMan"
+				)
 			) {
+				checkNotDead(
+					cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x - 1],
+					"bomberMan"
+				)
 				bomberManWrapper.remove()
 				bomberManCurrenPosition.x = bomberManCurrenPosition.x - 1
 				bomberManWrapper.classList.add("bomber-man")
@@ -194,6 +255,61 @@ const move = (direction) => {
 					break
 			}
 			break
+	}
+}
+
+const killBomberMan = () => {
+	document.removeEventListener("keydown", onKeyDown)
+	if (currentLives === 0) {
+		gameOver = true
+	}
+	bomberManWrapper.classList.remove("bomber-man")
+	bomberManWrapper.classList.add("death")
+	bomberManWrapper.addEventListener("animationend", () => {
+		bomberManWrapper.classList.remove("death")
+		bomberManWrapper.classList.add("bomber-man")
+		bomberManCurrenPosition.y = 1
+		bomberManCurrenPosition.x = 1
+		cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].appendChild(
+			bomberManWrapper
+		)
+		setSprite(bomberManCurrenPosition.x, bomberManCurrenPosition.y)
+		document.addEventListener("keydown", onKeyDown)
+	})
+	currentLives -= 1
+	lives.textContent = `Lives ${currentLives}`
+}
+
+const destroyBlocks = (cell) => {
+	cell.classList.remove("breakable")
+	cell.classList.add("breakable-block-destruction")
+	cell.addEventListener("animationend", () => {
+		cell.classList.remove("breakable-block-destruction")
+		cell.classList.add("walkable")
+	})
+	currentScore += 10
+	score.textContent = `Score ${currentScore}`
+}
+
+const killEnemy = (cell) => {
+	enemyArr.forEach((enemy) => {
+		if (cell === cellsArr[enemy.y][enemy.x]) {
+			const index = enemyArr.indexOf(enemy)
+			enemyArr.splice(index, 1)
+			currentScore += 100
+			score.textContent = `Score ${currentScore}`
+		}
+	})
+	if (enemyArr.length === 0) {
+		gameOver = true
+	}
+	if (cell.firstChild) {
+		cell.firstChild.classList.remove("enemy")
+		console.log("I've been called")
+		cell.firstChild.classList.add("enemy-death")
+		cell.firstChild.addEventListener("animationend", () => {
+			cell.firstChild.remove("enemy-death")
+		})
 	}
 }
 
@@ -229,26 +345,16 @@ const bomb = () => {
 		// Explosion Top
 		if (!explosionTop.classList.contains("indestructible")) {
 			if (explosionTop.classList.contains("breakable")) {
-				explosionTop.classList.remove("breakable")
-				explosionTop.classList.add("breakable-block-destruction")
-				explosionTop.addEventListener("animationend", () => {
-					explosionTop.classList.remove("breakable-block-destruction")
-					explosionTop.classList.add("walkable")
-				})
+				destroyBlocks(explosionTop)
 			}
-			if (explosionTop.hasChildNodes()) {
-				explosionTop.firstChild.classList.remove("enemy")
-				explosionTop.firstChild.classList.add("enemy-death")
-				explosionTop.firstChild.addEventListener("animationend", () => {
-					explosionTop.firstChild.remove("enemy-death")
-				})
+			if (
+				explosionTop.firstChild &&
+				explosionTop.firstChild.classList.contains("enemy")
+			) {
+				killEnemy(explosionTop)
 			}
 			if (explosionTop.contains(bomberManWrapper)) {
-				bomberManWrapper.classList.remove("bomber-man")
-				bomberManWrapper.classList.add("death")
-				bomberManWrapper.addEventListener("animationend", () => {
-					bomberManWrapper.classList.remove("death")
-				})
+				killBomberMan()
 			}
 			explosionTop.classList.add("explosion-top")
 			explosionTop.addEventListener("animationend", () => {
@@ -259,26 +365,16 @@ const bomb = () => {
 		// Explosion Bottom
 		if (!explosionBottom.classList.contains("indestructible")) {
 			if (explosionBottom.classList.contains("breakable")) {
-				explosionBottom.classList.remove("breakable")
-				explosionBottom.classList.add("breakable-block-destruction")
-				explosionBottom.addEventListener("animationend", () => {
-					explosionBottom.classList.remove("breakable-block-destruction")
-					explosionBottom.classList.add("walkable")
-				})
+				destroyBlocks(explosionBottom)
 			}
-			if (explosionBottom.hasChildNodes()) {
-				explosionBottom.firstChild.classList.remove("enemy")
-				explosionBottom.firstChild.classList.add("enemy-death")
-				explosionBottom.firstChild.addEventListener("animationend", () => {
-					explosionBottom.firstChild.remove("enemy-death")
-				})
+			if (
+				explosionBottom.firstChild &&
+				explosionBottom.firstChild.classList.contains("enemy")
+			) {
+				killEnemy(explosionBottom)
 			}
 			if (explosionBottom.contains(bomberManWrapper)) {
-				bomberManWrapper.classList.remove("bomber-man")
-				bomberManWrapper.classList.add("death")
-				bomberManWrapper.addEventListener("animationend", () => {
-					bomberManWrapper.classList.remove("death")
-				})
+				killBomberMan()
 			}
 			explosionBottom.classList.add("explosion-bottom")
 			explosionBottom.addEventListener("animationend", () => {
@@ -289,26 +385,16 @@ const bomb = () => {
 		// Explosion Right
 		if (!explosionRight.classList.contains("indestructible")) {
 			if (explosionRight.classList.contains("breakable")) {
-				explosionRight.classList.remove("breakable")
-				explosionRight.classList.add("breakable-block-destruction")
-				explosionRight.addEventListener("animationend", () => {
-					explosionRight.classList.remove("breakable-block-destruction")
-					explosionRight.classList.add("walkable")
-				})
+				destroyBlocks(explosionRight)
 			}
-			if (explosionRight.hasChildNodes()) {
-				explosionRight.firstChild.classList.remove("enemy")
-				explosionRight.firstChild.classList.add("enemy-death")
-				explosionRight.firstChild.addEventListener("animationend", () => {
-					explosionRight.firstChild.remove("enemy-death")
-				})
+			if (
+				explosionRight.firstChild &&
+				explosionRight.firstChild.classList.contains("enemy")
+			) {
+				killEnemy(explosionRight)
 			}
 			if (explosionRight.contains(bomberManWrapper)) {
-				bomberManWrapper.classList.remove("bomber-man")
-				bomberManWrapper.classList.add("death")
-				bomberManWrapper.addEventListener("animationend", () => {
-					bomberManWrapper.classList.remove("death")
-				})
+				killBomberMan()
 			}
 			explosionRight.classList.add("explosion-right")
 			explosionRight.addEventListener("animationend", () => {
@@ -319,26 +405,16 @@ const bomb = () => {
 		// Explosion Left
 		if (!explosionLeft.classList.contains("indestructible")) {
 			if (explosionLeft.classList.contains("breakable")) {
-				explosionLeft.classList.remove("breakable")
-				explosionLeft.classList.add("breakable-block-destruction")
-				explosionLeft.addEventListener("animationend", () => {
-					explosionLeft.classList.remove("breakable-block-destruction")
-					explosionLeft.classList.add("walkable")
-				})
+				destroyBlocks(explosionLeft)
 			}
-			if (explosionLeft.hasChildNodes()) {
-				explosionLeft.firstChild.classList.remove("enemy")
-				explosionLeft.firstChild.classList.add("enemy-death")
-				explosionLeft.firstChild.addEventListener("animationend", () => {
-					explosionLeft.firstChild.remove("enemy-death")
-				})
+			if (
+				explosionLeft.firstChild &&
+				explosionLeft.firstChild.classList.contains("enemy")
+			) {
+				killEnemy(explosionLeft)
 			}
 			if (explosionLeft.contains(bomberManWrapper)) {
-				bomberManWrapper.classList.remove("bomber-man")
-				bomberManWrapper.classList.add("death")
-				bomberManWrapper.addEventListener("animationend", () => {
-					bomberManWrapper.classList.remove("death")
-				})
+				killBomberMan()
 			}
 			explosionLeft.classList.add("explosion-left")
 			explosionLeft.addEventListener("animationend", () => {
@@ -348,7 +424,68 @@ const bomb = () => {
 	})
 }
 
-document.addEventListener("keydown", (e) => {
+const moveEnemy = (enemy, cell, movement = []) => {
+	enemy.y = movement[0]
+	enemy.x = movement[1]
+	cell.removeChild(cell.firstChild)
+	const enemyWrapper = document.createElement("div")
+	enemyWrapper.classList.add("enemyWrapper")
+	enemyWrapper.classList.add("enemy")
+	cellsArr[movement[0]][movement[1]].appendChild(enemyWrapper)
+}
+
+const enemyAI = () => {
+	enemyArr.forEach((enemy) => {
+		switch (enemy.direction) {
+			case 0: // up
+				if (isWalkable([enemy.y - 1, enemy.x], "enemy")) {
+					moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y - 1, enemy.x])
+					if (cellsArr[enemy.y - 1][enemy.x].contains(bomberManWrapper)) {
+						killBomberMan()
+					}
+					checkNotDead(cellsArr[enemy.y - 1][enemy.x], "enemy")
+				} else {
+					enemy.direction = 1
+				}
+				break
+			case 1: // right
+				if (isWalkable([enemy.y, enemy.x + 1], "enemy")) {
+					moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x + 1])
+					if (cellsArr[enemy.y][enemy.x + 1].contains(bomberManWrapper)) {
+						killBomberMan()
+					}
+					checkNotDead(cellsArr[enemy.y][enemy.x + 1], "enemy")
+				} else {
+					enemy.direction = 2
+				}
+				break
+			case 2: // down
+				if (isWalkable([enemy.y + 1, enemy.x], "enemy")) {
+					moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y + 1, enemy.x])
+					if (cellsArr[enemy.y + 1][enemy.x].contains(bomberManWrapper)) {
+						killBomberMan()
+					}
+					checkNotDead(cellsArr[enemy.y + 1][enemy.x], "enemy")
+				} else {
+					enemy.direction = 3
+				}
+				break
+			case 3: // left
+				if (isWalkable([enemy.y, enemy.x - 1], "enemy")) {
+					moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x - 1])
+					if (cellsArr[enemy.y][enemy.x - 1].contains(bomberManWrapper)) {
+						killBomberMan()
+					}
+					checkNotDead(cellsArr[enemy.y][enemy.x - 1], "enemy")
+				} else {
+					enemy.direction = 0
+				}
+				break
+		}
+	})
+}
+
+const onKeyDown = (e) => {
 	switch (e.key) {
 		case "ArrowUp":
 		case "ArrowDown":
@@ -360,6 +497,36 @@ document.addEventListener("keydown", (e) => {
 			if (!bombPlaced) bomb()
 			break
 		case "p":
+			gamePaused = !gamePaused
+			if (gamePaused) {
+				gameStatus.style.display = "flex"
+			} else {
+				gameStatus.style.display = "none"
+				requestAnimationFrame(gameLoop)
+			}
 			break
 	}
-})
+}
+
+document.addEventListener("keydown", onKeyDown)
+
+const enemyInterval = 500
+let lastEnemyMove = 0
+
+const gameLoop = (timestamp) => {
+	console.log(gamePaused)
+	if (gamePaused) {
+		return
+	}
+	if (gameOver) {
+		return
+	}
+	const deltaTime = timestamp - lastEnemyMove
+	if (deltaTime >= enemyInterval) {
+		enemyAI(deltaTime)
+		lastEnemyMove = timestamp
+	}
+	requestAnimationFrame(gameLoop)
+}
+
+requestAnimationFrame(gameLoop)

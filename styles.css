@@ -2,26 +2,47 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-}
-
-.darkmode {
-	background: black;
+	font-family: "Press Start 2P", cursive;
 }
 
 #grid-wrapper {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	height: 90vh;
-	width: 90vw;
+	height: 100vh;
+	width: 100vw;
 	position: relative;
+}
+
+#game-status {
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	height: 832px;
+	width: 960px;
+	background: rgba(0, 0, 0, 0.5);
+	color: white;
+	z-index: 10;
+}
+
+#info {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
+	top: 0;
+	height: 100px;
+	width: 100%;
+	position: absolute;
 }
 
 #game-grid {
 	position: absolute;
-	width: 750px;
-	height: 600px;
+	height: 832px;
+	width: 960px;
 }
 
 .cell {
