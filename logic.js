@@ -129,6 +129,54 @@ const checkNotDead = (cell, entity) => {
   }
 };
 
+// const move = (direction) => {
+//   const stepSize = 64; // You can adjust this value based on your needs
+//   const speed = 200; // Duration of the transition in milliseconds
+
+//   let newPosition = {
+//     x: bomberManCurrenPosition.x,
+//     y: bomberManCurrenPosition.y,
+//   };
+
+//   switch (direction) {
+//     case "ArrowUp":
+//       newPosition.y -= stepSize;
+//       break;
+//     case "ArrowDown":
+//       newPosition.y += stepSize;
+//       break;
+//     case "ArrowRight":
+//       newPosition.x += stepSize;
+//       break;
+//     case "ArrowLeft":
+//       newPosition.x -= stepSize;
+//       break;
+//   }
+
+//   // Check if the new position is walkable
+//   const newY = Math.floor(newPosition.y / stepSize);
+//   const newX = Math.floor(newPosition.x / stepSize);
+
+//   if (isWalkable([newY, newX], "bomberMan")) {
+//     checkNotDead(cellsArr[newY][newX], "bomberMan");
+
+//     // Animate the movement
+//     bomberManWrapper.style.transition = `transform ${speed}ms`;
+//     bomberManWrapper.style.transform = `translate(${newPosition.x}px, ${newPosition.y}px)`;
+
+//     bomberManCurrenPosition = newPosition;
+
+//     // Update sprite based on the direction
+//     if (direction === "ArrowUp" || direction === "ArrowDown") {
+//       setSprite(verticalAnimation, direction === "ArrowUp" ? 1 : 0);
+//       verticalAnimation = (verticalAnimation + 1) % 3 + 3;
+//     } else {
+//       setSprite(horizontalAnimation, direction === "ArrowLeft" ? 0 : 1);
+//       horizontalAnimation = (horizontalAnimation + 1) % 3;
+//     }
+//   }
+// };
+        
 const move = (direction) => {
   switch (direction) {
     case "ArrowUp":
@@ -259,29 +307,26 @@ const move = (direction) => {
 };
 
 const killBomberMan = () => {
-  return new Promise((resolve) => {
-    document.removeEventListener("keydown", onKeyDown);
-    if (currentLives === 0) {
-      gameOver = true;
-    }
-    bomberManWrapper.classList.remove("bomber-man");
-    bomberManWrapper.classList.add("death");
-    bomberManWrapper.addEventListener("animationend", () => {
-      bomberManWrapper.classList.remove("death");
-      bomberManWrapper.classList.add("bomber-man");
-      bomberManCurrenPosition.y = 1;
-      bomberManCurrenPosition.x = 1;
-      cellsArr[bomberManCurrenPosition.y][
-        bomberManCurrenPosition.x
-      ].appendChild(bomberManWrapper);
-      setSprite(bomberManCurrenPosition.x, bomberManCurrenPosition.y);
-      document.addEventListener("keydown", onKeyDown);
-      requestAnimationFrame(gameLoop);
-      resolve();
-    });
-    currentLives -= 1;
-    lives.textContent = `Lives ${currentLives}`;
+  document.removeEventListener("keydown", onKeyDown);
+  if (currentLives === 0) {
+    gameOver = true;
+  }
+  bomberManWrapper.classList.remove("bomber-man");
+  bomberManWrapper.classList.add("death");
+  bomberManWrapper.addEventListener("animationend", () => {
+    bomberManWrapper.classList.remove("death");
+    bomberManWrapper.classList.add("bomber-man");
+    bomberManCurrenPosition.y = 1;
+    bomberManCurrenPosition.x = 1;
+    cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].appendChild(
+      bomberManWrapper
+    );
+    setSprite(bomberManCurrenPosition.x, bomberManCurrenPosition.y);
+    document.addEventListener("keydown", onKeyDown);
+    window.requestAnimationFrame(gameLoop);
   });
+  currentLives -= 1;
+  lives.textContent = `Lives ${currentLives}`;
 };
 
 const destroyBlocks = (cell) => {
@@ -296,7 +341,6 @@ const destroyBlocks = (cell) => {
 };
 
 const killEnemy = (cell) => {
-  console.log(cell);
   enemyArr.forEach((enemy) => {
     if (cell === cellsArr[enemy.y][enemy.x]) {
       const index = enemyArr.indexOf(enemy);
@@ -308,7 +352,6 @@ const killEnemy = (cell) => {
   if (enemyArr.length === 0) {
     gameOver = true;
   }
-  console.log(cell);
   if (cell.firstChild) {
     cell.firstChild.classList.remove("enemy");
     cell.firstChild.classList.add("enemy-death");
@@ -432,104 +475,58 @@ const bomb = () => {
 const moveEnemy = (enemy, cell, movement = []) => {
   enemy.y = movement[0];
   enemy.x = movement[1];
-  cell.removeChild(cell.firstChild);
-  const enemyWrapper = document.createElement("div");
-  enemyWrapper.classList.add("enemyWrapper");
-  enemyWrapper.classList.add("enemy");
-  cellsArr[movement[0]][movement[1]].appendChild(enemyWrapper);
+  if (!cell.firstChild.classList.contains("bomberManWrapper")) {
+    cell.removeChild(cell.firstChild);
+    const enemyWrapper = document.createElement("div");
+    enemyWrapper.classList.add("enemyWrapper");
+    enemyWrapper.classList.add("enemy");
+    cellsArr[enemy.y][enemy.x].prepend(enemyWrapper);
+  }
 };
 
 const enemyAI = () => {
   enemyArr.forEach((enemy) => {
     switch (enemy.direction) {
       case 0: // up
-        if (isWalkable([enemy.y -1, enemy.x], "enemy")) {
-          if (cellsArr[enemy.y-1][enemy.x].contains(bomberManWrapper)) {
-            enemy.direction = 2;
-            (async () => {
-              await killBomberMan();
-              moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
-                enemy.y-1,
-                enemy.x,
-              ]);
-              checkNotDead(cellsArr[enemy.y-1][enemy.x], "enemy");
-            })();
-          } else {
-            moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
-              enemy.y-1,
-              enemy.x,
-            ]);
-            checkNotDead(cellsArr[enemy.y-1][enemy.x], "enemy");
+        if (isWalkable([enemy.y - 1, enemy.x], "enemy")) {
+          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y - 1, enemy.x]);
+          if (cellsArr[enemy.y][enemy.x].contains(bomberManWrapper)) {
+            killBomberMan();
           }
+          checkNotDead(cellsArr[enemy.y][enemy.x], "enemy");
         } else {
           enemy.direction = 1;
         }
         break;
       case 1: // right
         if (isWalkable([enemy.y, enemy.x + 1], "enemy")) {
-          if (cellsArr[enemy.y][enemy.x + 1].contains(bomberManWrapper)) {
-            enemy.direction = 3;
-            (async () => {
-              await killBomberMan();
-              moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
-                enemy.y,
-                enemy.x + 1,
-              ]);
-              checkNotDead(cellsArr[enemy.y][enemy.x + 1], "enemy");
-            })();
-          } else {
-            moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
-              enemy.y,
-              enemy.x + 1,
-            ]);
-            checkNotDead(cellsArr[enemy.y][enemy.x + 1], "enemy");
+          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x + 1]);
+          if (cellsArr[enemy.y][enemy.x].contains(bomberManWrapper)) {
+            killBomberMan();
           }
+          checkNotDead(cellsArr[enemy.y][enemy.x], "enemy");
         } else {
           enemy.direction = 2;
         }
         break;
       case 2: // down
-        if (isWalkable([enemy.y +1, enemy.x], "enemy")) {
-          if (cellsArr[enemy.y+1][enemy.x].contains(bomberManWrapper)) {
-            enemy.direction = 0;
-            (async () => {
-              await killBomberMan();
-              moveEnemy(enemy, cellsArr[enemy.y+1][enemy.x], [
-                enemy.y+1,
-                enemy.x,
-              ]);
-              checkNotDead(cellsArr[enemy.y+1][enemy.x], "enemy");
-            })();
-          } else {
-            moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
-              enemy.y+1,
-              enemy.x,
-            ]);
-            checkNotDead(cellsArr[enemy.y+1][enemy.x], "enemy");
+        if (isWalkable([enemy.y + 1, enemy.x], "enemy")) {
+          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y + 1, enemy.x]);
+          if (cellsArr[enemy.y][enemy.x].contains(bomberManWrapper)) {
+            killBomberMan();
           }
+          checkNotDead(cellsArr[enemy.y][enemy.x], "enemy");
         } else {
           enemy.direction = 3;
         }
         break;
       case 3: // left
         if (isWalkable([enemy.y, enemy.x - 1], "enemy")) {
-          if (cellsArr[enemy.y][enemy.x - 1].contains(bomberManWrapper)) {
-            enemy.direction = 1;
-            (async () => {
-              await killBomberMan();
-              moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
-                enemy.y,
-                enemy.x - 1,
-              ]);
-              checkNotDead(cellsArr[enemy.y][enemy.x - 1], "enemy");
-            })();
-          } else {
-            moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
-              enemy.y,
-              enemy.x - 1,
-            ]);
-            checkNotDead(cellsArr[enemy.y][enemy.x - 1], "enemy");
+          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x - 1]);
+          if (cellsArr[enemy.y][enemy.x].contains(bomberManWrapper)) {
+            killBomberMan();
           }
+          checkNotDead(cellsArr[enemy.y][enemy.x], "enemy");
         } else {
           enemy.direction = 0;
         }
@@ -555,7 +552,7 @@ const onKeyDown = (e) => {
         gameStatus.style.display = "flex";
       } else {
         gameStatus.style.display = "none";
-        requestAnimationFrame(gameLoop);
+        window.requestAnimationFrame(gameLoop);
       }
       break;
   }
@@ -578,7 +575,7 @@ const gameLoop = (timestamp) => {
     enemyAI(deltaTime);
     lastEnemyMove = timestamp;
   }
-  requestAnimationFrame(gameLoop);
+  window.requestAnimationFrame(gameLoop);
 };
 
-requestAnimationFrame(gameLoop);
+window.requestAnimationFrame(gameLoop);

@@ -81,6 +81,8 @@
 .bomber-man {
   width: 64px;
   height: 64px;
+  top: 0;
+  left: 0;
   background-image: url("sprites.png");
   background-size: 896px 1532px;
   position: absolute;
@@ -173,6 +175,8 @@
   height: 64px;
   background-size: 896px 1532px;
   animation: death-animation 1s steps(1) 1;
+  position: absolute;
+  z-index: 2;
 }
 
 .power-up {
