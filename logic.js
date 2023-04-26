@@ -307,11 +307,8 @@ const killBomberMan = () => {
   bomberManWrapper.addEventListener("animationend", () => {
     bomberManWrapper.classList.remove("death");
     bomberManWrapper.classList.add("bomber-man");
-    bomberManWrapper.style.top = bomberManCurrenPosition.y
-    bomberManWrapper.style.left = bomberManCurrenPosition.x
-    // cellsArr[bomberManCurrenPosition.y ][bomberManCurrenPosition.x].appendChild(
-    //   bomberManWrapper
-    // );
+    bomberManWrapper.style.transition = `transform 0ms`;
+    bomberManWrapper.style.transform = `translate(${bomberManCurrenPosition.x - cellSize}px, ${bomberManCurrenPosition.y -cellSize}px)`;
     setSprite(horizontalAnimation, 1);
     document.addEventListener("keydown", onKeyDown);
     window.requestAnimationFrame(gameLoop);
