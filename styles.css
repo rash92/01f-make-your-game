@@ -75,14 +75,15 @@
 
 .bomberManWrapper,
 .enemyWrapper {
-  position: relative;
+  position: absolute;
+  top: 64px;
+  left: 64px;
+  z-index: 2;
 }
 
 .bomber-man {
   width: 64px;
   height: 64px;
-  top: 0;
-  left: 0;
   background-image: url("sprites.png");
   background-size: 896px 1532px;
   position: absolute;
