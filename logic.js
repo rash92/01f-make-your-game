@@ -124,7 +124,7 @@ const checkNotDead = (cell, entity) => {
     }
   } else {
     if (hasExplosionClass) {
-      killEnemy();
+      killEnemy(cell);
     }
   }
 };
@@ -259,29 +259,29 @@ const move = (direction) => {
 };
 
 const killBomberMan = () => {
-  document.removeEventListener("keydown", onKeyDown);
-  if (currentLives === 0) {
-    gameOver = true;
-  }
-
-  bomberManWrapper.classList.remove("bomber-man");
-  bomberManWrapper.classList.add("death");
-  bomberManWrapper.addEventListener("animationend", () => {
-    console.log(cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x]);
-    bomberManWrapper.classList.remove("death");
-    bomberManWrapper.classList.add("bomber-man");
-    bomberManCurrenPosition.y = 1;
-    bomberManCurrenPosition.x = 1;
-    cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x].appendChild(
-      bomberManWrapper
-    );
-    setSprite(bomberManCurrenPosition.x, bomberManCurrenPosition.y);
-    document.addEventListener("keydown", onKeyDown);
-    requestAnimationFrame(gameLoop);
+  return new Promise((resolve) => {
+    document.removeEventListener("keydown", onKeyDown);
+    if (currentLives === 0) {
+      gameOver = true;
+    }
+    bomberManWrapper.classList.remove("bomber-man");
+    bomberManWrapper.classList.add("death");
+    bomberManWrapper.addEventListener("animationend", () => {
+      bomberManWrapper.classList.remove("death");
+      bomberManWrapper.classList.add("bomber-man");
+      bomberManCurrenPosition.y = 1;
+      bomberManCurrenPosition.x = 1;
+      cellsArr[bomberManCurrenPosition.y][
+        bomberManCurrenPosition.x
+      ].appendChild(bomberManWrapper);
+      setSprite(bomberManCurrenPosition.x, bomberManCurrenPosition.y);
+      document.addEventListener("keydown", onKeyDown);
+      requestAnimationFrame(gameLoop);
+      resolve();
+    });
+    currentLives -= 1;
+    lives.textContent = `Lives ${currentLives}`;
   });
-  currentLives -= 1;
-  lives.textContent = `Lives ${currentLives}`;
-  
 };
 
 const destroyBlocks = (cell) => {
@@ -296,6 +296,7 @@ const destroyBlocks = (cell) => {
 };
 
 const killEnemy = (cell) => {
+  console.log(cell);
   enemyArr.forEach((enemy) => {
     if (cell === cellsArr[enemy.y][enemy.x]) {
       const index = enemyArr.indexOf(enemy);
@@ -442,50 +443,93 @@ const enemyAI = () => {
   enemyArr.forEach((enemy) => {
     switch (enemy.direction) {
       case 0: // up
-        if (isWalkable([enemy.y - 1, enemy.x], "enemy")) {
-          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y - 1, enemy.x]);
-          if (cellsArr[enemy.y - 1][enemy.x].contains(bomberManWrapper)) {
+        if (isWalkable([enemy.y -1, enemy.x], "enemy")) {
+          if (cellsArr[enemy.y-1][enemy.x].contains(bomberManWrapper)) {
             enemy.direction = 2;
-            killBomberMan();
-            
+            (async () => {
+              await killBomberMan();
+              moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
+                enemy.y-1,
+                enemy.x,
+              ]);
+              checkNotDead(cellsArr[enemy.y-1][enemy.x], "enemy");
+            })();
+          } else {
+            moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
+              enemy.y-1,
+              enemy.x,
+            ]);
+            checkNotDead(cellsArr[enemy.y-1][enemy.x], "enemy");
           }
-          checkNotDead(cellsArr[enemy.y - 1][enemy.x], "enemy");
         } else {
           enemy.direction = 1;
         }
         break;
       case 1: // right
         if (isWalkable([enemy.y, enemy.x + 1], "enemy")) {
-          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x + 1]);
           if (cellsArr[enemy.y][enemy.x + 1].contains(bomberManWrapper)) {
             enemy.direction = 3;
-            killBomberMan();        
+            (async () => {
+              await killBomberMan();
+              moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
+                enemy.y,
+                enemy.x + 1,
+              ]);
+              checkNotDead(cellsArr[enemy.y][enemy.x + 1], "enemy");
+            })();
+          } else {
+            moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
+              enemy.y,
+              enemy.x + 1,
+            ]);
+            checkNotDead(cellsArr[enemy.y][enemy.x + 1], "enemy");
           }
-          checkNotDead(cellsArr[enemy.y][enemy.x + 1], "enemy");
         } else {
           enemy.direction = 2;
         }
         break;
       case 2: // down
-        if (isWalkable([enemy.y + 1, enemy.x], "enemy")) {
-          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y + 1, enemy.x]);
-          if (cellsArr[enemy.y + 1][enemy.x].contains(bomberManWrapper)) {
+        if (isWalkable([enemy.y +1, enemy.x], "enemy")) {
+          if (cellsArr[enemy.y+1][enemy.x].contains(bomberManWrapper)) {
             enemy.direction = 0;
-            killBomberMan(); 
+            (async () => {
+              await killBomberMan();
+              moveEnemy(enemy, cellsArr[enemy.y+1][enemy.x], [
+                enemy.y+1,
+                enemy.x,
+              ]);
+              checkNotDead(cellsArr[enemy.y+1][enemy.x], "enemy");
+            })();
+          } else {
+            moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
+              enemy.y+1,
+              enemy.x,
+            ]);
+            checkNotDead(cellsArr[enemy.y+1][enemy.x], "enemy");
           }
-          checkNotDead(cellsArr[enemy.y + 1][enemy.x], "enemy");
         } else {
           enemy.direction = 3;
         }
         break;
       case 3: // left
         if (isWalkable([enemy.y, enemy.x - 1], "enemy")) {
-          moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x - 1]);
           if (cellsArr[enemy.y][enemy.x - 1].contains(bomberManWrapper)) {
             enemy.direction = 1;
-            killBomberMan();
+            (async () => {
+              await killBomberMan();
+              moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
+                enemy.y,
+                enemy.x - 1,
+              ]);
+              checkNotDead(cellsArr[enemy.y][enemy.x - 1], "enemy");
+            })();
+          } else {
+            moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [
+              enemy.y,
+              enemy.x - 1,
+            ]);
+            checkNotDead(cellsArr[enemy.y][enemy.x - 1], "enemy");
           }
-          checkNotDead(cellsArr[enemy.y][enemy.x - 1], "enemy");
         } else {
           enemy.direction = 0;
         }
