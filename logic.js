@@ -78,19 +78,18 @@ const createEnemies = () => {
     ) {
       const enemyObj = {
         id: enemyCount,
-        y: randomWalkableCell.style.top,
-        x: randomWalkableCell.style.left,
+        y: parseInt(randomWalkableCell.style.top.split("px")[0]),
+        x: parseInt(randomWalkableCell.style.left.split("px")[0]),
         direction:
           randomDirection[Math.floor(Math.random() * randomDirection.length)],
       };
-      console.log(enemyObj);
       const enemyWrapper = document.createElement("div");
       enemyWrapper.classList.add("enemyWrapper");
       enemyWrapper.classList.add("enemy");
       enemyWrapper.style.top = randomWalkableCell.style.top;
       enemyWrapper.style.left = randomWalkableCell.style.left;
       enemyWrapper.dataset.enemy = JSON.stringify(enemyObj);
-      grid.append(enemyWrapper);
+      grid.appendChild(enemyWrapper);
       enemyCount--;
     } else {
       continue;
@@ -100,7 +99,6 @@ const createEnemies = () => {
 };
 
 const enemyArr = createEnemies();
-console.log(enemyArr);
 
 const isWalkable = (y, x) => {
   return walkableCells.includes(cellsArr[y][x])
@@ -376,8 +374,8 @@ const enemyAI = () => {
   enemyArr.forEach((enemy) => {
     const enemyData = JSON.parse(enemy.dataset.enemy);
     let newEnemyPosition = {
-      x: parseInt(enemyData.x.split("px")[0]) ,
-      y: parseInt(enemyData.y.split("px")[0]),
+      x: enemyData.x,
+      y: enemyData.y,
     };
     switch (enemyData.direction) {
       case 0: // up
@@ -395,71 +393,20 @@ const enemyAI = () => {
     }
     const newEnemyY = Math.floor(newEnemyPosition.y / cellSize);
     const newEnemyX = Math.floor(newEnemyPosition.x / cellSize);
-    console.log(newEnemyY, newEnemyX);
     if (isWalkable(newEnemyY, newEnemyX)) {
       // checkNotDead(cellsArr[newEnemyY][newEnemyX], "enemy");
       // Animate the movement
-      enemy.style.transition = `transform ${speed}ms`;
+      enemy.style.transition = `transform 1000ms`;
       enemy.style.transform = `translate(${
         newEnemyPosition.x - cellSize
       }px, ${newEnemyPosition.y - cellSize}px)`;
-      const newEnemyObj = {
-        id: enemyData.id,
-        y: newEnemyPosition.y,
-        x: newEnemyPosition.x,
-        direction: enemyData.direction,
-      }
-      enemy.dataset.enemy = JSON.stringify(newEnemyObj);
+      enemyData.y = newEnemyPosition.y
+      enemyData.x = newEnemyPosition.x
+      console.log(enemyData);
     } else {
-      
+      enemyData.direction = randomDirection[(enemyData.direction + 1) % randomDirection.length]
     }
-
-    // switch (enemy.direction) {
-    //   case 0: // up
-    //     if (isWalkable([enemy.y - 1, enemy.x], "enemy")) {
-    //       moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y - 1, enemy.x]);
-    //       if (cellsArr[enemy.y][enemy.x].contains(bomberManWrapper)) {
-    //         killBomberMan();
-    //       }
-    //       checkNotDead(cellsArr[enemy.y][enemy.x], "enemy");
-    //     } else {
-    //       enemy.direction = 1;
-    //     }
-    //     break;
-    //   case 1: // right
-    //     if (isWalkable([enemy.y, enemy.x + 1], "enemy")) {
-    //       moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x + 1]);
-    //       if (cellsArr[enemy.y][enemy.x].contains(bomberManWrapper)) {
-    //         killBomberMan();
-    //       }
-    //       checkNotDead(cellsArr[enemy.y][enemy.x], "enemy");
-    //     } else {
-    //       enemy.direction = 2;
-    //     }
-    //     break;
-    //   case 2: // down
-    //     if (isWalkable([enemy.y + 1, enemy.x], "enemy")) {
-    //       moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y + 1, enemy.x]);
-    //       if (cellsArr[enemy.y][enemy.x].contains(bomberManWrapper)) {
-    //         killBomberMan();
-    //       }
-    //       checkNotDead(cellsArr[enemy.y][enemy.x], "enemy");
-    //     } else {
-    //       enemy.direction = 3;
-    //     }
-    //     break;
-    //   case 3: // left
-    //     if (isWalkable([enemy.y, enemy.x - 1], "enemy")) {
-    //       moveEnemy(enemy, cellsArr[enemy.y][enemy.x], [enemy.y, enemy.x - 1]);
-    //       if (cellsArr[enemy.y][enemy.x].contains(bomberManWrapper)) {
-    //         killBomberMan();
-    //       }
-    //       checkNotDead(cellsArr[enemy.y][enemy.x], "enemy");
-    //     } else {
-    //       enemy.direction = 0;
-    //     }
-    //     break;
-    // }
+    enemy.dataset.enemy = JSON.stringify(enemyData);
   });
 };
 
