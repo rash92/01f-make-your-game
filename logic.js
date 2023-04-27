@@ -13,7 +13,7 @@ const speed = 200;
 let bomberManCurrenPosition = { y: 64, x: 64 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-let enemyCount = 0;
+let enemyCount = 3;
 let enemyArr = [];
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
@@ -43,23 +43,8 @@ const buildGrid = () => {
       ) {
         cell.classList.add("walkable");
       } else {
-        if (Math.random() < 0.25 && enemyCount > 0) {
+        if (Math.random() < 0.25) {
           cell.classList.add("walkable");
-          const enemyObj = {
-            id: enemyCount,
-            y: row,
-            x: col,
-            direction:
-              randomDirection[
-                Math.floor(Math.random() * randomDirection.length)
-              ],
-          };
-          enemyArr.push(enemyObj);
-          const enemyWrapper = document.createElement("div");
-          enemyWrapper.classList.add("enemyWrapper");
-          enemyWrapper.classList.add("enemy");
-          cell.appendChild(enemyWrapper);
-          enemyCount--;
         } else {
           cell.classList.add("breakable");
         }
@@ -81,6 +66,35 @@ const createCellsArr = () => {
 buildGrid();
 const cellsArr = createCellsArr();
 setSprite(horizontalAnimation, 1);
+
+
+const createEnemies = () => {
+  const walkableCells = Array.from(document.querySelectorAll(".walkable"))
+  while(enemyCount > 0) {
+    let randomWalkableCell = walkableCells[Math.floor(Math.random() * walkableCells.length)]
+    console.log(randomWalkableCell);
+    if (randomWalkableCell.style.top !== `${bomberManCurrenPosition.y}px` && randomWalkableCell.style.left !== `${bomberManCurrenPosition.x}px`) {
+      const enemyObj = {
+        id: enemyCount,
+        y: randomWalkableCell.style.top,
+        x: randomWalkableCell.style.left,
+        direction: randomDirection[Math.random() * randomDirection.length]
+      }
+      enemyArr.push(enemyObj)
+      const enemyWrapper = document.createElement("div")
+      enemyWrapper.classList.add("enemyWrapper")
+      enemyWrapper.classList.add("enemy")
+      enemyWrapper.style.top = randomWalkableCell.style.top
+      enemyWrapper.style.left = randomWalkableCell.style.left
+      grid.append(enemyWrapper)
+      enemyCount--
+    } else {
+      continue
+    }
+  }
+}
+
+createEnemies()
 
 const isWalkable = (tilePosition, entity) => {
   const isCellWalkable =
@@ -166,135 +180,6 @@ const move = (direction) => {
     }
   }
 };
-        
-// const move = (direction) => {
-//   switch (direction) {
-//     case "ArrowUp":
-//       if (
-//         isWalkable(
-//           [bomberManCurrenPosition.y - 1, bomberManCurrenPosition.x],
-//           "bomberMan"
-//         )
-//       ) {
-//         checkNotDead(
-//           cellsArr[bomberManCurrenPosition.y - 1][bomberManCurrenPosition.x],
-//           "bomberMan"
-//         );
-//         bomberManWrapper.remove();
-//         bomberManCurrenPosition.y = bomberManCurrenPosition.y - 1;
-//         bomberManWrapper.classList.add("bomber-man");
-//         cellsArr[bomberManCurrenPosition.y][
-//           bomberManCurrenPosition.x
-//         ].appendChild(bomberManWrapper);
-//         setSprite(verticalAnimation, 1);
-//       }
-//       switch (verticalAnimation) {
-//         case 3:
-//           verticalAnimation = 4;
-//           break;
-//         case 4:
-//           verticalAnimation = 5;
-//           break;
-//         case 5:
-//           verticalAnimation = 3;
-//           break;
-//       }
-//       break;
-//     case "ArrowDown":
-//       if (
-//         isWalkable(
-//           [bomberManCurrenPosition.y + 1, bomberManCurrenPosition.x],
-//           "bomberMan"
-//         )
-//       ) {
-//         checkNotDead(
-//           cellsArr[bomberManCurrenPosition.y + 1][bomberManCurrenPosition.x],
-//           "bomberMan"
-//         );
-//         bomberManWrapper.remove();
-//         bomberManCurrenPosition.y = bomberManCurrenPosition.y + 1;
-//         bomberManWrapper.classList.add("bomber-man");
-//         cellsArr[bomberManCurrenPosition.y][
-//           bomberManCurrenPosition.x
-//         ].appendChild(bomberManWrapper);
-//         setSprite(verticalAnimation, 0);
-//       }
-//       switch (verticalAnimation) {
-//         case 3:
-//           verticalAnimation = 4;
-//           break;
-//         case 4:
-//           verticalAnimation = 5;
-//           break;
-//         case 5:
-//           verticalAnimation = 3;
-//           break;
-//       }
-//       break;
-//     case "ArrowRight":
-//       if (
-//         isWalkable(
-//           [bomberManCurrenPosition.y, bomberManCurrenPosition.x + 1],
-//           "bomberMan"
-//         )
-//       ) {
-//         checkNotDead(
-//           cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x + 1],
-//           "bomberMan"
-//         );
-//         bomberManWrapper.remove();
-//         bomberManCurrenPosition.x = bomberManCurrenPosition.x + 1;
-//         bomberManWrapper.classList.add("bomber-man");
-//         cellsArr[bomberManCurrenPosition.y][
-//           bomberManCurrenPosition.x
-//         ].appendChild(bomberManWrapper);
-//         setSprite(horizontalAnimation, 1);
-//       }
-//       switch (horizontalAnimation) {
-//         case 0:
-//           horizontalAnimation = 1;
-//           break;
-//         case 1:
-//           horizontalAnimation = 2;
-//           break;
-//         case 2:
-//           horizontalAnimation = 0;
-//           break;
-//       }
-//       break;
-//     case "ArrowLeft":
-//       if (
-//         isWalkable(
-//           [bomberManCurrenPosition.y, bomberManCurrenPosition.x - 1],
-//           "bomberMan"
-//         )
-//       ) {
-//         checkNotDead(
-//           cellsArr[bomberManCurrenPosition.y][bomberManCurrenPosition.x - 1],
-//           "bomberMan"
-//         );
-//         bomberManWrapper.remove();
-//         bomberManCurrenPosition.x = bomberManCurrenPosition.x - 1;
-//         bomberManWrapper.classList.add("bomber-man");
-//         cellsArr[bomberManCurrenPosition.y][
-//           bomberManCurrenPosition.x
-//         ].appendChild(bomberManWrapper);
-//         setSprite(horizontalAnimation, 0);
-//       }
-//       switch (horizontalAnimation) {
-//         case 0:
-//           horizontalAnimation = 1;
-//           break;
-//         case 1:
-//           horizontalAnimation = 2;
-//           break;
-//         case 2:
-//           horizontalAnimation = 0;
-//           break;
-//       }
-//       break;
-//   }
-// };
 
 const killBomberMan = () => {
   document.removeEventListener("keydown", onKeyDown);
@@ -393,10 +278,10 @@ const bomb = () => {
       ) {
         killEnemy(explosionTop);
       }
-      console.log("explosiontop top", explosionTop.style.top)
-      console.log("explosiontop left", explosionTop.style.left)
-      console.log("bomberman wrapper top", bomberManCurrenPosition.y)
-      console.log("bomberman wrapper left", bomberManCurrenPosition.x)
+      // console.log("explosiontop top", explosionTop.style.top)
+      // console.log("explosiontop left", explosionTop.style.left)
+      // console.log("bomberman wrapper top", bomberManCurrenPosition.y)
+      // console.log("bomberman wrapper left", bomberManCurrenPosition.x)
       if (explosionTop.style.top === `${bomberManCurrenPosition.y}px` && explosionTop.style.left === `${bomberManCurrenPosition.x}px`) {
         killBomberMan();
       }
