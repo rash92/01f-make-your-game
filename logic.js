@@ -396,13 +396,11 @@ const enemyAI = () => {
     if (isWalkable(newEnemyY, newEnemyX)) {
       // checkNotDead(cellsArr[newEnemyY][newEnemyX], "enemy");
       // Animate the movement
+      console.log(newEnemyPosition.y, newEnemyPosition.x);
       enemy.style.transition = `transform 1000ms`;
-      enemy.style.transform = `translate(${
-        newEnemyPosition.x - cellSize
-      }px, ${newEnemyPosition.y - cellSize}px)`;
+      enemy.style.transform = `translate(${newEnemyPosition.x - cellSize}px, ${newEnemyPosition.y - cellSize}px)`;
       enemyData.y = newEnemyPosition.y
       enemyData.x = newEnemyPosition.x
-      console.log(enemyData);
     } else {
       enemyData.direction = randomDirection[(enemyData.direction + 1) % randomDirection.length]
     }
