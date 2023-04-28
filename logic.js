@@ -240,7 +240,7 @@ const createEnemies = () => {
   return Array.from(document.querySelectorAll(".enemyWrapper"));
 };
 
-const enemyArr = createEnemies();
+ enemyArr = createEnemies();
 
 const isWalkable = (y, x) => {
   return walkableCells.includes(cellsArr[y][x])
