@@ -40,7 +40,7 @@
 }
 
 #game-grid {
-  position: absolute;
+  position: relative;
   height: 832px;
   width: 960px;
 }
@@ -73,6 +73,7 @@
   background-size: 896px 1532px;
 }
 
+/* These two are unnecessary */
 .bomberManWrapper,
 .enemyWrapper {
   position: absolute;
@@ -153,7 +154,6 @@
   background-image: url("sprites.png");
   width: 64px;
   height: 64px;
-  background-position-y: -960px;
   background-size: 896px 1532px;
   position: absolute;
   z-index: 1;
@@ -186,21 +186,27 @@
 
 @keyframes enemy-animation {
   0% {
+    background-position-y: -960px;
     background-position-x: -64px;
   }
   20% {
+    background-position-y: -960px;
     background-position-x: -128px;
   }
   40% {
+    background-position-y: -960px;
     background-position-x: -192px;
   }
   60% {
+    background-position-y: -960px;
     background-position-x: -256px;
   }
   80% {
+    background-position-y: -960px;
     background-position-x: -320px;
   }
   100% {
+    background-position-y: -960px;
     background-position-x: -384px;
   }
 }

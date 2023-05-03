@@ -72,6 +72,7 @@ const createEnemies = () => {
   while (enemyCount > 0) {
     let randomWalkableCell =
       walkableCells[Math.floor(Math.random() * walkableCells.length)];
+      
     if (
       randomWalkableCell.style.top !== `${bomberManCurrenPosition.y}px` &&
       randomWalkableCell.style.left !== `${bomberManCurrenPosition.x}px`
@@ -358,24 +359,25 @@ const bomb = () => {
   });
 };
 
-const moveEnemy = (enemy, cell, movement = []) => {
-  enemy.y = movement[0];
-  enemy.x = movement[1];
-  if (!cell.firstChild.classList.contains("bomberManWrapper")) {
-    cell.removeChild(cell.firstChild);
-    const enemyWrapper = document.createElement("div");
-    enemyWrapper.classList.add("enemyWrapper");
-    enemyWrapper.classList.add("enemy");
-    cellsArr[enemy.y][enemy.x].prepend(enemyWrapper);
-  }
-};
+// const moveEnemy = (enemy, cell, movement = []) => {
+//   enemy.y = movement[0];
+//   enemy.x = movement[1];
+//   if (!cell.firstChild.classList.contains("bomberManWrapper")) {
+//     cell.removeChild(cell.firstChild);
+//     const enemyWrapper = document.createElement("div");
+//     enemyWrapper.classList.add("enemyWrapper");
+//     enemyWrapper.classList.add("enemy");
+//     cellsArr[enemy.y][enemy.x].prepend(enemyWrapper);
+//   }
+// };
 
 const enemyAI = () => {
   enemyArr.forEach((enemy) => {
     const enemyData = JSON.parse(enemy.dataset.enemy);
+    console.log("Current pos", enemyData);
     let newEnemyPosition = {
-      x: enemyData.x,
       y: enemyData.y,
+      x: enemyData.x, 
     };
     switch (enemyData.direction) {
       case 0: // up
@@ -396,13 +398,13 @@ const enemyAI = () => {
     if (isWalkable(newEnemyY, newEnemyX)) {
       // checkNotDead(cellsArr[newEnemyY][newEnemyX], "enemy");
       // Animate the movement
-      console.log(newEnemyPosition.y, newEnemyPosition.x);
+      console.log("new pos", newEnemyPosition);
       enemy.style.transition = `transform 1000ms`;
-      enemy.style.transform = `translate(${newEnemyPosition.x - cellSize}px, ${newEnemyPosition.y - cellSize}px)`;
+      enemy.style.transform = `translate(${newEnemyPosition.x}px, ${newEnemyPosition.y}px)`;
       enemyData.y = newEnemyPosition.y
       enemyData.x = newEnemyPosition.x
     } else {
-      enemyData.direction = randomDirection[(enemyData.direction + 1) % randomDirection.length]
+      enemyData.direction = randomDirection[(enemyData.direction + 1) % randomDirection.length] 
     }
     enemy.dataset.enemy = JSON.stringify(enemyData);
   });
