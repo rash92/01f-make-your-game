@@ -81,6 +81,8 @@ const createEnemies = () => {
         id: enemyCount,
         y: parseInt(randomWalkableCell.style.top.split("px")[0]),
         x: parseInt(randomWalkableCell.style.left.split("px")[0]),
+        rely: 0,
+        relx: 0,
         direction:
           randomDirection[Math.floor(Math.random() * randomDirection.length)],
       };
@@ -375,34 +377,38 @@ const enemyAI = () => {
   enemyArr.forEach((enemy) => {
     const enemyData = JSON.parse(enemy.dataset.enemy);
     console.log("Current pos", enemyData);
-    let newEnemyPosition = {
+    let originalEnemyPosition = {
       y: enemyData.y,
       x: enemyData.x, 
     };
+    let relativeEnemyPosition = {
+      x: enemyData.relx,
+      y: enemyData.rely
+    }
     switch (enemyData.direction) {
       case 0: // up
-        newEnemyPosition.y -= cellSize;
+      relativeEnemyPosition.y -= cellSize;
         break;
       case 2: // down
-        newEnemyPosition.y += cellSize;
+      relativeEnemyPosition.y += cellSize;
         break;
       case 1: // right
-        newEnemyPosition.x += cellSize;
+      relativeEnemyPosition.x += cellSize;
         break;
       case 3: // left
-        newEnemyPosition.x -= cellSize;
+      relativeEnemyPosition.x -= cellSize;
         break;
     }
-    const newEnemyY = Math.floor(newEnemyPosition.y / cellSize);
-    const newEnemyX = Math.floor(newEnemyPosition.x / cellSize);
+    const newEnemyY = Math.floor((originalEnemyPosition.y + relativeEnemyPosition.y )/ cellSize);
+    const newEnemyX = Math.floor((originalEnemyPosition.x + relativeEnemyPosition.x )/ cellSize);
     if (isWalkable(newEnemyY, newEnemyX)) {
       // checkNotDead(cellsArr[newEnemyY][newEnemyX], "enemy");
       // Animate the movement
-      console.log("new pos", newEnemyPosition);
+      // console.log("new pos", newEnemyPosition);
       enemy.style.transition = `transform 1000ms`;
-      enemy.style.transform = `translate(${newEnemyPosition.x -cellSize}px, ${newEnemyPosition.y -cellSize}px)`;
-      enemyData.y = newEnemyPosition.y
-      enemyData.x = newEnemyPosition.x
+      enemy.style.transform = `translate(${relativeEnemyPosition.x}px, ${relativeEnemyPosition.y}px)`;
+      enemyData.rely = relativeEnemyPosition.y
+      enemyData.relx = relativeEnemyPosition.x
     } else {
       enemyData.direction = randomDirection[(enemyData.direction + 1) % randomDirection.length] 
     }
