@@ -400,7 +400,7 @@ const enemyAI = () => {
       // Animate the movement
       console.log("new pos", newEnemyPosition);
       enemy.style.transition = `transform 1000ms`;
-      enemy.style.transform = `translate(${newEnemyPosition.x}px, ${newEnemyPosition.y}px)`;
+      enemy.style.transform = `translate(${newEnemyPosition.x -cellSize}px, ${newEnemyPosition.y -cellSize}px)`;
       enemyData.y = newEnemyPosition.y
       enemyData.x = newEnemyPosition.x
     } else {
