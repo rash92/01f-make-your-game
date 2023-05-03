@@ -10,10 +10,14 @@ const gridRow = 13;
 const gridCol = 15;
 const cellSize = 64;
 const speed = 200;
-let bomberManCurrenPosition = { y: 64, x: 64 };
+let bomberManCurrenPosition = { 
+  y: 64, 
+  x: 64,
+  direction: 2,
+ };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-let enemyCount = 1;
+let enemyCount = 4;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 let currentScore = 0;
@@ -422,7 +426,7 @@ const onKeyDown = (e) => {
     case "ArrowDown":
     case "ArrowRight":
     case "ArrowLeft":
-      move(e.key);
+      bomberManCurrenPosition.direction = e.key
       break;
     case "x":
       if (!bombPlaced) bomb();
@@ -454,6 +458,7 @@ const gameLoop = (timestamp) => {
   const deltaTime = timestamp - lastEnemyMove;
   if (deltaTime >= enemyInterval) {
     enemyAI(deltaTime);
+    move(bomberManCurrenPosition.direction);
     lastEnemyMove = timestamp;
   }
   window.requestAnimationFrame(gameLoop);
