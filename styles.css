@@ -40,9 +40,15 @@
 }
 
 #game-grid {
+<<<<<<< HEAD
 	position: absolute;
 	height: 832px;
 	width: 960px;
+=======
+  position: relative;
+  height: 832px;
+  width: 960px;
+>>>>>>> animation-rewrite
 }
 
 .cell {
@@ -73,8 +79,10 @@
 	background-size: 896px 1532px;
 }
 
+/* These two are unnecessary */
 .bomberManWrapper,
 .enemyWrapper {
+<<<<<<< HEAD
 	position: relative;
 }
 
@@ -85,6 +93,21 @@
 	background-size: 896px 1532px;
 	position: absolute;
 	z-index: 2;
+=======
+  position: absolute;
+  z-index: 2;
+}
+
+.bomber-man {
+  top: 64px;
+  left: 64px;
+  width: 64px;
+  height: 64px;
+  background-image: url("sprites.png");
+  background-size: 896px 1532px;
+  position: absolute;
+  z-index: 2;
+>>>>>>> animation-rewrite
 }
 
 .bomb {
@@ -147,6 +170,7 @@
 }
 
 .enemy {
+<<<<<<< HEAD
 	background-image: url("sprites.png");
 	width: 64px;
 	height: 64px;
@@ -155,6 +179,17 @@
 	position: absolute;
 	z-index: 1;
 	animation: enemy-animation 1s steps(1) infinite;
+=======
+  background-image: url("sprites.png");
+  top: 64px;
+  left: 64px;
+  width: 64px;
+  height: 64px;
+  background-size: 896px 1532px;
+  position: absolute;
+  z-index: 1;
+  animation: enemy-animation 1s steps(1) infinite;
+>>>>>>> animation-rewrite
 }
 
 .enemy-death {
@@ -168,11 +203,21 @@
 }
 
 .death {
+<<<<<<< HEAD
 	background-image: url("sprites.png");
 	width: 64px;
 	height: 64px;
 	background-size: 896px 1532px;
 	animation: death-animation 1s steps(1) 1;
+=======
+  background-image: url("sprites.png");
+  width: 64px;
+  height: 64px;
+  background-size: 896px 1532px;
+  animation: death-animation 1s steps(1) 1;
+  position: absolute;
+  z-index: 2;
+>>>>>>> animation-rewrite
 }
 
 .power-up {
@@ -180,6 +225,7 @@
 }
 
 @keyframes enemy-animation {
+<<<<<<< HEAD
 	0% {
 		background-position-x: -64px;
 	}
@@ -198,6 +244,32 @@
 	100% {
 		background-position-x: -384px;
 	}
+=======
+  0% {
+    background-position-y: -960px;
+    background-position-x: -64px;
+  }
+  20% {
+    background-position-y: -960px;
+    background-position-x: -128px;
+  }
+  40% {
+    background-position-y: -960px;
+    background-position-x: -192px;
+  }
+  60% {
+    background-position-y: -960px;
+    background-position-x: -256px;
+  }
+  80% {
+    background-position-y: -960px;
+    background-position-x: -320px;
+  }
+  100% {
+    background-position-y: -960px;
+    background-position-x: -384px;
+  }
+>>>>>>> animation-rewrite
 }
 
 @keyframes enemy-death {
