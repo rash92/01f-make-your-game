@@ -9,7 +9,7 @@ const lives = document.querySelector(".lives")
 const gridRow = 13
 const gridCol = 15
 const cellSize = 64
-const speed = 200
+const speed = 50
 let bomberManCurrenPosition = {
 	y: 64,
 	x: 64,
@@ -24,6 +24,13 @@ let currentScore = 0
 let currentLives = 3
 let gamePaused = false
 let gameOver = false
+
+// power ups
+let numOfPowerUps = 2
+const powerUpObj = [
+	{ name: "bomb-up", count: 2 },
+	{ name: "fire-up", count: 1 },
+]
 
 const buildGrid = () => {
 	for (let row = 0; row < gridRow; row++) {
@@ -46,10 +53,17 @@ const buildGrid = () => {
 			) {
 				cell.classList.add("walkable")
 			} else {
-				if (Math.random() < 0.25) {
-					cell.classList.add("walkable")
-				} else {
-					cell.classList.add("breakable")
+				cell.classList.add("breakable")
+				// assign power ups
+				if (Math.random() < 0.1 && numOfPowerUps > 0) {
+					let randomPowerUp =
+						powerUpObj[Math.floor(Math.random() * powerUpObj.length)]
+
+					if (randomPowerUp.count > 0) {
+						cell.classList.add(randomPowerUp.name)
+						randomPowerUp.count--
+						numOfPowerUps--
+					}
 				}
 			}
 			grid.append(cell)
@@ -91,7 +105,6 @@ const createEnemies = () => {
 					randomDirection[Math.floor(Math.random() * randomDirection.length)],
 			}
 			const enemyWrapper = document.createElement("div")
-			enemyWrapper.classList.add("enemyWrapper")
 			enemyWrapper.classList.add("enemy")
 			enemyWrapper.style.top = randomWalkableCell.style.top
 			enemyWrapper.style.left = randomWalkableCell.style.left

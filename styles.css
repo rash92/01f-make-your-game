@@ -64,6 +64,30 @@
 	background: #388700;
 }
 
+/* power ups */
+/* bomb up - Increase the number of bombs you can set at once */
+.bomb-up {
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-position-y: -896px;
+	background-position-x: 0px;
+	background-size: 896px 1532px;
+	position: absolute;
+	z-index: 1;
+}
+/* fire up - Increase the range of your bombs */
+.fire-up {
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-position-y: -896px;
+	background-position-x: -64px;
+	background-size: 896px 1532px;
+	position: absolute;
+	z-index: 1;
+}
+
 .breakable {
 	background-image: url("sprites.png");
 	width: 64px;
@@ -74,8 +98,7 @@
 }
 
 /* These two are unnecessary */
-.bomberManWrapper,
-.enemyWrapper {
+.bomberManWrapper {
 	position: absolute;
 	z-index: 2;
 }
@@ -152,8 +175,8 @@
 
 .enemy {
 	background-image: url("sprites.png");
-	top: 64px;
-	left: 64px;
+	/* top: 64px; */
+	/* left: 64px; */
 	width: 64px;
 	height: 64px;
 	background-size: 896px 1532px;
@@ -180,10 +203,6 @@
 	animation: death-animation 1s steps(1) 1;
 	position: absolute;
 	z-index: 2;
-}
-
-.power-up {
-	background: blue;
 }
 
 @keyframes enemy-animation {
