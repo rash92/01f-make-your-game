@@ -49,6 +49,8 @@
 	position: absolute;
 	height: 64px;
 	width: 64px;
+	width: 64px;
+	height: 64px;
 }
 
 .indestructible {
@@ -99,6 +101,7 @@
 
 /* These two are unnecessary */
 .bomberManWrapper {
+	transition: transform 0.2s ease-out;
 	position: absolute;
 	z-index: 2;
 }
@@ -112,6 +115,8 @@
 	background-size: 896px 1532px;
 	position: absolute;
 	z-index: 2;
+	/* transform: translateZ(0);
+	will-change: transform; */
 }
 
 .bomb {
