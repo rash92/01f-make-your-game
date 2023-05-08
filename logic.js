@@ -10,7 +10,7 @@ const gridRow = 13
 const gridCol = 15
 const cellSize = 64
 const speed = 100
-const distance = 0.25
+const distance = 1
 let bomberManCurrenPosition = {
 	y: 64,
 	x: 64,
@@ -127,7 +127,7 @@ const isWalkable = (y, x) => {
 
 function setSprite(spriteX, spriteY) {
 	const bomberMan = document.querySelector(".bomber-man")
-	const spriteSize = 64
+	const spriteSize = 64z
 	bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${
 		spriteY * spriteSize
 	}px`
