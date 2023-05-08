@@ -9,7 +9,8 @@ const lives = document.querySelector(".lives")
 const gridRow = 13
 const gridCol = 15
 const cellSize = 64
-const speed = 50
+const speed = 100
+const distance = 0.25
 let bomberManCurrenPosition = {
 	y: 64,
 	x: 64,
@@ -160,30 +161,42 @@ const move = (direction) => {
 		x: bomberManCurrenPosition.x,
 		y: bomberManCurrenPosition.y,
 	}
+
 	switch (direction) {
 		case "ArrowUp":
-			newPosition.y -= cellSize
+			newPosition.y -= cellSize * distance
+
 			break
 		case "ArrowDown":
-			newPosition.y += cellSize
+			newPosition.y += cellSize * distance
+
 			break
 		case "ArrowRight":
-			newPosition.x += cellSize
+			newPosition.x += cellSize * distance
 			break
 		case "ArrowLeft":
-			newPosition.x -= cellSize
+			newPosition.x -= cellSize * distance
 			break
 	}
-	// Check if the new position is walkable
+	// Check if the new position is within the boundaries of the grid
+
 	const newY = Math.floor(newPosition.y / cellSize)
 	const newX = Math.floor(newPosition.x / cellSize)
+
 	if (isWalkable(newY, newX)) {
 		checkNotDead(cellsArr[newY][newX], "bomberMan")
+
+		if (
+			newPosition.x === bomberManCurrenPosition.x &&
+			newPosition.y === bomberManCurrenPosition.y
+		) {
+			return // Don't move if the bomberman is already at the new position
+		}
 		// Animate the movement
 		bomberManWrapper.style.transition = `transform ${speed}ms`
-		bomberManWrapper.style.transform = `translate(${
+		bomberManWrapper.style.transform = `translate3d(${
 			newPosition.x - cellSize
-		}px, ${newPosition.y - cellSize}px)`
+		}px, ${newPosition.y - cellSize}px, 0)`
 		bomberManCurrenPosition = newPosition
 		// Update sprite based on the direction
 		if (direction === "ArrowUp" || direction === "ArrowDown") {
@@ -462,7 +475,7 @@ const onKeyDown = (e) => {
 
 document.addEventListener("keydown", onKeyDown)
 
-const enemyInterval = 500
+const enemyInterval = 75
 let lastEnemyMove = 0
 
 const gameLoop = (timestamp) => {
