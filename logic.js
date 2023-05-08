@@ -54,7 +54,7 @@ const buildGrid = () => {
 			) {
 				cell.classList.add("walkable")
 			} else {
-				cell.classList.add("breakable")
+				// cell.classList.add("breakable")
 				// assign power ups
 				cell.classList.add("walkable")
 				if (Math.random() < 0.1 && numOfPowerUps > 0) {
@@ -244,26 +244,26 @@ const destroyBlocks = (cell) => {
 	score.textContent = `Score ${currentScore}`
 }
 
-const killEnemy = (cell) => {
-	enemyArr.forEach((enemy) => {
-		if (cell === cellsArr[enemy.y][enemy.x]) {
-			const index = enemyArr.indexOf(enemy)
-			enemyArr.splice(index, 1)
-			currentScore += 100
-			score.textContent = `Score ${currentScore}`
-		}
-	})
-	if (enemyArr.length === 0) {
-		gameOver = true
-	}
-	if (cell.firstChild) {
-		cell.firstChild.classList.remove("enemy")
-		cell.firstChild.classList.add("enemy-death")
-		cell.firstChild.addEventListener("animationend", () => {
-			cell.firstChild.remove("enemy-death")
-		})
-	}
-}
+// const killEnemy = (cell) => {
+// 	enemyArr.forEach((enemy) => {
+// 		if (cell === cellsArr[enemy.y][enemy.x]) {
+// 			const index = enemyArr.indexOf(enemy)
+// 			enemyArr.splice(index, 1)
+// 			currentScore += 100
+// 			score.textContent = `Score ${currentScore}`
+// 		}
+// 	})
+// 	if (enemyArr.length === 0) {
+// 		gameOver = true
+// 	}
+// 	if (cell.firstChild) {
+// 		cell.firstChild.classList.remove("enemy")
+// 		cell.firstChild.classList.add("enemy-death")
+// 		cell.firstChild.addEventListener("animationend", () => {
+// 			cell.firstChild.remove("enemy-death")
+// 		})
+// 	}
+// }
 
 const bomb = () => {
 	const bomberManPosition = {
@@ -279,116 +279,116 @@ const bomb = () => {
 	bombElement.classList.add("bomb")
 	bombPlaced = true
 	bomberManCell.appendChild(bombElement)
-	bomberManCell.classList.remove("walkable")
-	bombElement.addEventListener("animationend", () => {
-		bombElement.remove()
+	// bomberManCell.classList.remove("walkable")
+	// bombElement.addEventListener("animationend", () => {
+	// 	bombElement.remove()
 
-		// Explosion Middle
-		setTimeout(() => {
-			bomberManCell.classList.add("explosion-middle")
-		}, 0)
-		bomberManCell.addEventListener("animationend", () => {
-			bomberManCell.classList.remove("explosion-middle")
-			bomberManCell.classList.add("walkable")
-			bombPlaced = false
-		})
+	// 	// Explosion Middle
+	// 	setTimeout(() => {
+	// 		bomberManCell.classList.add("explosion-middle")
+	// 	}, 0)
+	// 	bomberManCell.addEventListener("animationend", () => {
+	// 		bomberManCell.classList.remove("explosion-middle")
+	// 		bomberManCell.classList.add("walkable")
+	// 		bombPlaced = false
+	// 	})
 
-		// Explosion Top
-		if (!explosionTop.classList.contains("indestructible")) {
-			if (explosionTop.classList.contains("breakable")) {
-				destroyBlocks(explosionTop)
-			}
-			if (
-				explosionTop.firstChild &&
-				explosionTop.firstChild.classList.contains("enemy")
-			) {
-				killEnemy(explosionTop)
-			}
-			// console.log("explosiontop top", explosionTop.style.top)
-			// console.log("explosiontop left", explosionTop.style.left)
-			// console.log("bomberman wrapper top", bomberManCurrenPosition.y)
-			// console.log("bomberman wrapper left", bomberManCurrenPosition.x)
-			if (
-				explosionTop.style.top === `${bomberManCurrenPosition.y}px` &&
-				explosionTop.style.left === `${bomberManCurrenPosition.x}px`
-			) {
-				killBomberMan()
-			}
-			explosionTop.classList.add("explosion-top")
-			explosionTop.addEventListener("animationend", () => {
-				explosionTop.classList.remove("explosion-top")
-			})
-		}
+	// 	// Explosion Top
+	// 	// if (!explosionTop.classList.contains("indestructible")) {
+	// 	// 	if (explosionTop.classList.contains("breakable")) {
+	// 	// 		destroyBlocks(explosionTop)
+	// 	// 	}
+	// 	// 	if (
+	// 	// 		explosionTop.firstChild &&
+	// 	// 		explosionTop.firstChild.classList.contains("enemy")
+	// 	// 	) {
+	// 	// 		killEnemy(explosionTop)
+	// 	// 	}
+	// 	// 	// console.log("explosiontop top", explosionTop.style.top)
+	// 	// 	// console.log("explosiontop left", explosionTop.style.left)
+	// 	// 	// console.log("bomberman wrapper top", bomberManCurrenPosition.y)
+	// 	// 	// console.log("bomberman wrapper left", bomberManCurrenPosition.x)
+	// 	// 	if (
+	// 	// 		explosionTop.style.top === `${bomberManCurrenPosition.y}px` &&
+	// 	// 		explosionTop.style.left === `${bomberManCurrenPosition.x}px`
+	// 	// 	) {
+	// 	// 		killBomberMan()
+	// 	// 	}
+	// 	// 	explosionTop.classList.add("explosion-top")
+	// 	// 	explosionTop.addEventListener("animationend", () => {
+	// 	// 		explosionTop.classList.remove("explosion-top")
+	// 	// 	})
+	// 	// }
 
-		// Explosion Bottom
-		if (!explosionBottom.classList.contains("indestructible")) {
-			if (explosionBottom.classList.contains("breakable")) {
-				destroyBlocks(explosionBottom)
-			}
-			if (
-				explosionBottom.firstChild &&
-				explosionBottom.firstChild.classList.contains("enemy")
-			) {
-				killEnemy(explosionBottom)
-			}
-			if (
-				explosionBottom.style.top === `${bomberManCurrenPosition.y}px` &&
-				explosionBottom.style.left === `${bomberManCurrenPosition.x}px`
-			) {
-				killBomberMan()
-			}
-			explosionBottom.classList.add("explosion-bottom")
-			explosionBottom.addEventListener("animationend", () => {
-				explosionBottom.classList.remove("explosion-bottom")
-			})
-		}
+	// 	// Explosion Bottom
+	// 	// if (!explosionBottom.classList.contains("indestructible")) {
+	// 	// 	if (explosionBottom.classList.contains("breakable")) {
+	// 	// 		destroyBlocks(explosionBottom)
+	// 	// 	}
+	// 	// 	if (
+	// 	// 		explosionBottom.firstChild &&
+	// 	// 		explosionBottom.firstChild.classList.contains("enemy")
+	// 	// 	) {
+	// 	// 		killEnemy(explosionBottom)
+	// 	// 	}
+	// 	// 	if (
+	// 	// 		explosionBottom.style.top === `${bomberManCurrenPosition.y}px` &&
+	// 	// 		explosionBottom.style.left === `${bomberManCurrenPosition.x}px`
+	// 	// 	) {
+	// 	// 		killBomberMan()
+	// 	// 	}
+	// 	// 	explosionBottom.classList.add("explosion-bottom")
+	// 	// 	explosionBottom.addEventListener("animationend", () => {
+	// 	// 		explosionBottom.classList.remove("explosion-bottom")
+	// 	// 	})
+	// 	// }
 
-		// Explosion Right
-		if (!explosionRight.classList.contains("indestructible")) {
-			if (explosionRight.classList.contains("breakable")) {
-				destroyBlocks(explosionRight)
-			}
-			if (
-				explosionRight.firstChild &&
-				explosionRight.firstChild.classList.contains("enemy")
-			) {
-				killEnemy(explosionRight)
-			}
-			if (
-				explosionRight.style.top === `${bomberManCurrenPosition.y}px` &&
-				explosionRight.style.left === `${bomberManCurrenPosition.x}px`
-			) {
-				killBomberMan()
-			}
-			explosionRight.classList.add("explosion-right")
-			explosionRight.addEventListener("animationend", () => {
-				explosionRight.classList.remove("explosion-right")
-			})
-		}
+	// 	// Explosion Right
+	// 	// if (!explosionRight.classList.contains("indestructible")) {
+	// 	// 	if (explosionRight.classList.contains("breakable")) {
+	// 	// 		destroyBlocks(explosionRight)
+	// 	// 	}
+	// 	// 	if (
+	// 	// 		explosionRight.firstChild &&
+	// 	// 		explosionRight.firstChild.classList.contains("enemy")
+	// 	// 	) {
+	// 	// 		killEnemy(explosionRight)
+	// 	// 	}
+	// 	// 	if (
+	// 	// 		explosionRight.style.top === `${bomberManCurrenPosition.y}px` &&
+	// 	// 		explosionRight.style.left === `${bomberManCurrenPosition.x}px`
+	// 	// 	) {
+	// 	// 		killBomberMan()
+	// 	// 	}
+	// 	// 	explosionRight.classList.add("explosion-right")
+	// 	// 	explosionRight.addEventListener("animationend", () => {
+	// 	// 		explosionRight.classList.remove("explosion-right")
+	// 	// 	})
+	// 	// }
 
-		// Explosion Left
-		if (!explosionLeft.classList.contains("indestructible")) {
-			if (explosionLeft.classList.contains("breakable")) {
-				destroyBlocks(explosionLeft)
-			}
-			if (
-				explosionLeft.firstChild &&
-				explosionLeft.firstChild.classList.contains("enemy")
-			) {
-				killEnemy(explosionLeft)
-			}
-			if (
-				explosionLeft.style.top === `${bomberManCurrenPosition.y}px` &&
-				explosionLeft.style.left === `${bomberManCurrenPosition.x}px`
-			) {
-				killBomberMan()
-			}
-			explosionLeft.classList.add("explosion-left")
-			explosionLeft.addEventListener("animationend", () => {
-				explosionLeft.classList.remove("explosion-left")
-			})
-		}
-	})
+	// 	// Explosion Left
+	// 	// if (!explosionLeft.classList.contains("indestructible")) {
+	// 	// 	if (explosionLeft.classList.contains("breakable")) {
+	// 	// 		destroyBlocks(explosionLeft)
+	// 	// 	}
+	// 	// 	if (
+	// 	// 		explosionLeft.firstChild &&
+	// 	// 		explosionLeft.firstChild.classList.contains("enemy")
+	// 	// 	) {
+	// 	// 		killEnemy(explosionLeft)
+	// 	// 	}
+	// 	// 	if (
+	// 	// 		explosionLeft.style.top === `${bomberManCurrenPosition.y}px` &&
+	// 	// 		explosionLeft.style.left === `${bomberManCurrenPosition.x}px`
+	// 	// 	) {
+	// 	// 		killBomberMan()
+	// 	// 	}
+	// 	// 	explosionLeft.classList.add("explosion-left")
+	// 	// 	explosionLeft.addEventListener("animationend", () => {
+	// 	// 		explosionLeft.classList.remove("explosion-left")
+	// 	// 	})
+	// 	// }
+	// })
 }
 
 // const moveEnemy = (enemy, cell, movement = []) => {
