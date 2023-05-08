@@ -21,10 +21,9 @@ const buildGrid = () => {
 	for (let row = 0; row < gridRow; row++) {
 		for (let col = 0; col < gridCol; col++) {
 			const cell = document.createElement("div")
+			cell.classList.add("cell")
 			cell.style.top = `${row * cellSize}px`
 			cell.style.left = `${col * cellSize}px`
-			cell.classList.add("cell")
-			cell.classList.add("wall")
 			if (
 				row === 0 ||
 				col === 0 ||
@@ -58,7 +57,15 @@ const createCellsArr = () => {
 buildGrid()
 const cellsArr = createCellsArr()
 
+const walls = Array.from(document.querySelectorAll(".cell"))
 const walkableCells = Array.from(document.querySelectorAll(".walkable"))
+
+walls.forEach((wall) => {
+	wall.style.left =
+		Math.floor(wall.offsetLeft / cellSize) * cellSize + WALLS_OFFSET + "px"
+	wall.style.top =
+		Math.floor(wall.offsetTop / cellSize) * cellSize + WALLS_OFFSET + "px"
+})
 
 const isWalkable = (y, x) => {
 	console.log(walkableCells.includes(cellsArr[y][x]))
@@ -91,9 +98,10 @@ const move = (direction) => {
 			newPosition.x -= cellSize * distance
 			break
 	}
+
 	const newY = Math.floor(newPosition.y / cellSize)
 	const newX = Math.floor(newPosition.x / cellSize)
-	console.log(newY, newX)
+
 	if (isWalkable(newY, newX)) {
 		if (
 			newPosition.x === bomberManCurrenPosition.x &&
