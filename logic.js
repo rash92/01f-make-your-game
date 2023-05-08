@@ -56,11 +56,12 @@ const buildGrid = () => {
 			} else {
 				cell.classList.add("breakable")
 				// assign power ups
+				cell.classList.add("walkable")
 				if (Math.random() < 0.1 && numOfPowerUps > 0) {
 					let randomPowerUp =
 						powerUpObj[Math.floor(Math.random() * powerUpObj.length)]
-
 					if (randomPowerUp.count > 0) {
+						cell.classList.add("powerUp")
 						cell.classList.add(randomPowerUp.name)
 						randomPowerUp.count--
 						numOfPowerUps--
@@ -127,7 +128,7 @@ const isWalkable = (y, x) => {
 
 function setSprite(spriteX, spriteY) {
 	const bomberMan = document.querySelector(".bomber-man")
-	const spriteSize = 64z
+	const spriteSize = 64
 	bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${
 		spriteY * spriteSize
 	}px`
@@ -491,7 +492,7 @@ const gameLoop = (timestamp) => {
 		move(bomberManCurrenPosition.direction)
 		lastEnemyMove = timestamp
 	}
-	window.requestAnimationFrame(gameLoop)
+	requestAnimationFrame(gameLoop)
 }
 
 window.requestAnimationFrame(gameLoop)

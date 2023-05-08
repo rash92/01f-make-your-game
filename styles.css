@@ -65,27 +65,26 @@
 }
 
 /* power ups */
+.powerUp {
+	border: 5px solid red;
+	background-image: url("sprites.png");
+}
+
 /* bomb up - Increase the number of bombs you can set at once */
 .bomb-up {
-	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
 	background-position-y: -896px;
 	background-position-x: 0px;
 	background-size: 896px 1532px;
 	position: absolute;
-	z-index: 1;
+	/* z-index: 1; */
 }
 /* fire up - Increase the range of your bombs */
 .fire-up {
-	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
 	background-position-y: -896px;
 	background-position-x: -64px;
 	background-size: 896px 1532px;
 	position: absolute;
-	z-index: 1;
+	/* z-index: 1; */
 }
 
 .breakable {
