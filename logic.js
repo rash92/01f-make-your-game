@@ -57,15 +57,7 @@ const createCellsArr = () => {
 buildGrid()
 const cellsArr = createCellsArr()
 
-const walls = Array.from(document.querySelectorAll(".cell"))
 const walkableCells = Array.from(document.querySelectorAll(".walkable"))
-
-walls.forEach((wall) => {
-	wall.style.left =
-		Math.floor(wall.offsetLeft / cellSize) * cellSize + WALLS_OFFSET + "px"
-	wall.style.top =
-		Math.floor(wall.offsetTop / cellSize) * cellSize + WALLS_OFFSET + "px"
-})
 
 const isWalkable = (y, x) => {
 	console.log(walkableCells.includes(cellsArr[y][x]))
@@ -79,17 +71,21 @@ function setSprite(spriteX, spriteY) {
 		spriteY * spriteSize
 	}px`
 }
+
 const move = (direction) => {
 	let newPosition = {
 		x: bomberManCurrenPosition.x,
 		y: bomberManCurrenPosition.y,
 	}
+
 	switch (direction) {
 		case "ArrowUp":
 			newPosition.y -= cellSize * distance
+
 			break
 		case "ArrowDown":
 			newPosition.y += cellSize * distance
+
 			break
 		case "ArrowRight":
 			newPosition.x += cellSize * distance
@@ -98,6 +94,7 @@ const move = (direction) => {
 			newPosition.x -= cellSize * distance
 			break
 	}
+	// Check if the new position is within the boundaries of the grid
 
 	const newY = Math.floor(newPosition.y / cellSize)
 	const newX = Math.floor(newPosition.x / cellSize)
