@@ -68,13 +68,14 @@
 .powerUp {
 	border: 5px solid red;
 	background-image: url("sprites.png");
+	background-size: 896px 1532px;
 }
 
 /* bomb up - Increase the number of bombs you can set at once */
 .bomb-up {
 	background-position-y: -896px;
 	background-position-x: 0px;
-	background-size: 896px 1532px;
+
 	/* position: absolute; */
 	/* z-index: 1; */
 }

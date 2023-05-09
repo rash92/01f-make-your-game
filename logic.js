@@ -21,6 +21,7 @@ let verticalAnimation = 3
 let enemyCount = 4
 let randomDirection = [0, 1, 2, 3]
 let bombPlaced = false
+let numBombs = 1
 let currentScore = 0
 let currentLives = 3
 let gamePaused = false
@@ -29,8 +30,14 @@ let gameOver = false
 // power ups
 let numOfPowerUps = 2
 const powerUpObj = [
-	{ name: "bomb-up", count: 2 },
-	{ name: "fire-up", count: 1 },
+	{
+		name: "bomb-up",
+		count: 2,
+	},
+	{
+		name: "fire-up",
+		count: 1,
+	},
 ]
 
 const powerUpLists = powerUpObj.map((v) => v.name)
@@ -133,18 +140,47 @@ const createEnemies = () => {
 
 const enemyArr = createEnemies()
 
-const isWalkable = (y, x) => {
-	return walkableCells.includes(cellsArr[y][x])
+const isWalkable = (cell) => {
+	return walkableCells.includes(cell)
 }
 
 const isPowerUp = (cell) => {
 	return powerUps.includes(cell)
 }
 
+// const throttle = (callback, delay) => {
+// 	let shouldWait = false
+// 	let waitingArgs
+// 	const timeoutFunc = () => {
+// 		if (waitingArgs == null) {
+// 			shouldWait = false
+// 		} else {
+// 			callback(...waitingArgs)
+// 			waitingArgs = null
+// 			setTimeout(timeoutFunc, delay)
+// 		}
+// 	}
+
+// 	return (...args) => {
+// 		if (shouldWait) {
+// 			waitingArgs = args
+// 			return
+// 		}
+
+// 		callback(...args)
+// 		shouldWait = true
+
+// 		setTimeout(timeoutFunc, delay)
+// 	}
+// }
+
 const checkPowerUp = (cell) => {
-	const classes = cell.className.split(" ")
-	return powerUpLists.filter((v) => v === classes[classes.length - 1])
+	const classes = cell.classList
+	const powerup = powerUpLists.filter((v) => v === classes[classes.length - 1])
+	return powerup[0]
 }
+
+// const throttledCheckPowerUp = throttle(checkPowerUp, 1000)
 
 const checkNotDead = (cell, entity) => {
 	const classNames = [
@@ -197,28 +233,38 @@ const move = (direction) => {
 	const cell = cellsArr[newY][newX]
 
 	if (isPowerUp(cell)) {
-		// cell.classList.add("walkable")
-		const powerup = checkPowerUp(cell)
-		console.log("powerup is:", powerup[0])
-		// console.log("cell is:", cell)
-		cell.classList.remove("powerup")
-		cell.classList.remove(powerup)
-		cell.classList.add("walkable")
-		// apply powerup
-		switch (powerup) {
-			case "bomb-up":
-				// increase number of bomb
-				console.log(cell)
-				break
-			case "fire-up":
-				// change explosion and range
+		if (!cell.classList.contains("powerUp")) {
+			return
+		}
+		const powerupValue = checkPowerUp(cell)
 
-				console.log(cell)
-				break
+		if (
+			!cell.classList.contains("breakable") &&
+			cell.classList.contains("powerUp") &&
+			cell.classList.contains(powerupValue)
+		) {
+			cell.classList.remove("powerUp")
+			cell.classList.remove(powerupValue)
+			cell.classList.add("walkable")
+
+			// apply powerup
+			switch (powerupValue) {
+				case "bomb-up":
+					// increase number of bomb
+					numBombs += 1
+					break
+				case "fire-up":
+					// change explosion and range
+					console.log("cell is now:", cell)
+					break
+			}
 		}
 	}
 
-	if (isWalkable(newY, newX)) {
+	if (
+		isWalkable(cell) ||
+		(isPowerUp(cell) && !cell.classList.contains("breakable"))
+	) {
 		checkNotDead(cell, "bomberMan")
 		if (
 			newPosition.x === bomberManCurrenPosition.x &&
@@ -268,7 +314,6 @@ const killBomberMan = () => {
 
 const destroyBlocks = (cell) => {
 	if (!isPowerUp(cell)) {
-		console.log("not powerup cell")
 		cell.classList.remove("breakable")
 		cell.classList.add("breakable-block-destruction")
 		cell.addEventListener("animationend", () => {
@@ -287,26 +332,26 @@ const destroyBlocks = (cell) => {
 	score.textContent = `Score ${currentScore}`
 }
 
-// const killEnemy = (cell) => {
-// 	enemyArr.forEach((enemy) => {
-// 		if (cell === cellsArr[enemy.y][enemy.x]) {
-// 			const index = enemyArr.indexOf(enemy)
-// 			enemyArr.splice(index, 1)
-// 			currentScore += 100
-// 			score.textContent = `Score ${currentScore}`
-// 		}
-// 	})
-// 	if (enemyArr.length === 0) {
-// 		gameOver = true
-// 	}
-// 	if (cell.firstChild) {
-// 		cell.firstChild.classList.remove("enemy")
-// 		cell.firstChild.classList.add("enemy-death")
-// 		cell.firstChild.addEventListener("animationend", () => {
-// 			cell.firstChild.remove("enemy-death")
-// 		})
-// 	}
-// }
+const killEnemy = (cell) => {
+	enemyArr.forEach((enemy) => {
+		if (cell === cellsArr[enemy.y][enemy.x]) {
+			const index = enemyArr.indexOf(enemy)
+			enemyArr.splice(index, 1)
+			currentScore += 100
+			score.textContent = `Score ${currentScore}`
+		}
+	})
+	if (enemyArr.length === 0) {
+		gameOver = true
+	}
+	if (cell.firstChild) {
+		cell.firstChild.classList.remove("enemy")
+		cell.firstChild.classList.add("enemy-death")
+		cell.firstChild.addEventListener("animationend", () => {
+			cell.firstChild.remove("enemy-death")
+		})
+	}
+}
 
 const bomb = () => {
 	const bomberManPosition = {
