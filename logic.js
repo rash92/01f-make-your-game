@@ -35,8 +35,6 @@ const powerUpObj = [
 
 const powerUpLists = powerUpObj.map((v) => v.name)
 
-console.log(powerUpLists)
-
 const buildGrid = () => {
 	for (let row = 0; row < gridRow; row++) {
 		for (let col = 0; col < gridCol; col++) {
