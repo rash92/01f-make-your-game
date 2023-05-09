@@ -75,7 +75,7 @@
 	background-position-y: -896px;
 	background-position-x: 0px;
 	background-size: 896px 1532px;
-	position: absolute;
+	/* position: absolute; */
 	/* z-index: 1; */
 }
 /* fire up - Increase the range of your bombs */
@@ -83,7 +83,7 @@
 	background-position-y: -896px;
 	background-position-x: -64px;
 	background-size: 896px 1532px;
-	position: absolute;
+	/* position: absolute; */
 	/* z-index: 1; */
 }
 
