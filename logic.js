@@ -125,10 +125,8 @@ buildGrid()
 const cellsArr = createCellsArr()
 setSprite(horizontalAnimation, 1)
 
-const walkableCells = Array.from(document.querySelectorAll(".walkable"))
+let walkableCells = Array.from(document.querySelectorAll(".walkable"))
 const powerUps = Array.from(document.querySelectorAll(".powerUp"))
-
-// console.log(powerUps)
 
 const createEnemies = () => {
 	while (enemyCount > 0) {
@@ -164,11 +162,11 @@ const createEnemies = () => {
 
 const enemyArr = createEnemies()
 
-const isWalkable = (cell) => {
+function isWalkable(cell) {
 	return walkableCells.includes(cell)
 }
 
-const isPowerUp = (cell) => {
+function isPowerUp(cell) {
 	return powerUps.includes(cell)
 }
 
@@ -237,11 +235,9 @@ const move = (direction) => {
 	switch (direction) {
 		case "ArrowUp":
 			newPosition.y -= cellSize * distance
-
 			break
 		case "ArrowDown":
 			newPosition.y += cellSize * distance
-
 			break
 		case "ArrowRight":
 			newPosition.x += cellSize * distance
@@ -267,24 +263,39 @@ const move = (direction) => {
 			cell.classList.contains("powerUp") &&
 			cell.classList.contains(powerupValue)
 		) {
+			currentPower = powerupValue
 			cell.classList.remove("powerUp")
 			cell.classList.remove(powerupValue)
 			cell.classList.add("walkable")
 
+			// reset number of bombs to one when a different power up is chosen
+			if (powerupValue !== "bomb-up") {
+				numBombs = 1
+			}
+
 			// apply powerup
 			switch (powerupValue) {
-				case "bomb-up":
-					// increase number of bomb
+				case "bomb-up": // increase number of bomb
 					numBombs += 1
 					break
-				case "fire-up":
-					numBombs = 1
-					// change explosion and range
+				case "fire-up": // change explosion and range
 					break
-				case "skate":
-					numBombs = 1
+				case "skate": // skate - Increase Bomberman's speed
 					speed += 100
-					// change explosion and range
+					break
+				case "soft-block-pass": // soft block pass - Pass through Soft Blocks
+					// include breakable cells as walkable
+					walkableCells = Array.from(
+						document.querySelectorAll(".walkable,.breakable")
+					)
+					break
+				case "remote-control": // remote control - Manually detonate a Bombs with certain button
+					break
+				case "bomb-pass": // bomb pass - Pass through Bombs
+					break
+				case "full-fire": // full fire - Increase your firepower to the max
+					break
+				case "vest": // vest - Immune to both Bombs blast and enemies
 					break
 			}
 		}

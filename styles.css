@@ -86,27 +86,27 @@
 	background-position-y: -896px;
 	background-position-x: -128px;
 }
-/*soft block pass - Pass through Soft Blocks */
+/* soft block pass - Pass through Soft Blocks */
 .soft-block-pass {
 	background-position-y: -896px;
 	background-position-x: -192px;
 }
-/* - remote control - Manually detonate a Bombs with certain button */
+/* remote control - Manually detonate a Bombs with certain button */
 .remote-control {
 	background-position-y: -896px;
 	background-position-x: -256px;
 }
-/* - bomb pass - Pass through Bombs */
+/* bomb pass - Pass through Bombs */
 .bomb-pass {
 	background-position-y: -896px;
 	background-position-x: -320px;
 }
-/* - full fire - Increase your firepower to the max */
+/* full fire - Increase your firepower to the max */
 .full-fire {
 	background-position-y: -896px;
 	background-position-x: -384px;
 }
-/* - vest - Immune to both Bombs blast and enemies */
+/* vest - Immune to both Bombs blast and enemies */
 .vest {
 	background-position-y: -896px;
 	background-position-x: -448px;
