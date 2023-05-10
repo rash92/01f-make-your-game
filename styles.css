@@ -75,17 +75,41 @@
 .bomb-up {
 	background-position-y: -896px;
 	background-position-x: 0px;
-
-	/* position: absolute; */
-	/* z-index: 1; */
 }
 /* fire up - Increase the range of your bombs */
 .fire-up {
 	background-position-y: -896px;
 	background-position-x: -64px;
-	background-size: 896px 1532px;
-	/* position: absolute; */
-	/* z-index: 1; */
+}
+/* skate - Increase Bomberman's speed */
+.skate {
+	background-position-y: -896px;
+	background-position-x: -128px;
+}
+/*soft block pass - Pass through Soft Blocks */
+.soft-block-pass {
+	background-position-y: -896px;
+	background-position-x: -192px;
+}
+/* - remote control - Manually detonate a Bombs with certain button */
+.remote-control {
+	background-position-y: -896px;
+	background-position-x: -256px;
+}
+/* - bomb pass - Pass through Bombs */
+.bomb-pass {
+	background-position-y: -896px;
+	background-position-x: -320px;
+}
+/* - full fire - Increase your firepower to the max */
+.full-fire {
+	background-position-y: -896px;
+	background-position-x: -384px;
+}
+/* - vest - Immune to both Bombs blast and enemies */
+.vest {
+	background-position-y: -896px;
+	background-position-x: -448px;
 }
 
 .breakable {

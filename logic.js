@@ -38,6 +38,30 @@ const powerUpObj = [
 		name: "fire-up",
 		count: 1,
 	},
+	{
+		name: "skate",
+		count: 1,
+	},
+	{
+		name: "soft-block-pass",
+		count: 1,
+	},
+	{
+		name: "remote-control",
+		count: 1,
+	},
+	{
+		name: "bomb-pass",
+		count: 1,
+	},
+	{
+		name: "full-fire",
+		count: 1,
+	},
+	{
+		name: "vest",
+		count: 1,
+	},
 ]
 
 const powerUpLists = powerUpObj.map((v) => v.name)
@@ -254,6 +278,7 @@ const move = (direction) => {
 					numBombs += 1
 					break
 				case "fire-up":
+					numBombs = 1
 					// change explosion and range
 					console.log("cell is now:", cell)
 					break
