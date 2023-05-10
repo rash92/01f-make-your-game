@@ -9,7 +9,7 @@ const lives = document.querySelector(".lives")
 const gridRow = 13
 const gridCol = 15
 const cellSize = 64
-const speed = 100
+let speed = 50
 const distance = 1
 let bomberManCurrenPosition = {
 	y: 64,
@@ -280,7 +280,11 @@ const move = (direction) => {
 				case "fire-up":
 					numBombs = 1
 					// change explosion and range
-					console.log("cell is now:", cell)
+					break
+				case "skate":
+					numBombs = 1
+					speed += 100
+					// change explosion and range
 					break
 			}
 		}
