@@ -28,18 +28,19 @@ let gameOver = false
 
 // power ups
 let numOfPowerUps = 2
+let fireRange = 1
 let numBombs = 1
-let vest = false
 let remoteControl = false
+let vest = false
 const powerUpObj = [
 	// {
 	// 	name: "bomb-up",
 	// 	count: 2,
 	// },
-	// {
-	// 	name: "fire-up",
-	// 	count: 1,
-	// },
+	{
+		name: "fire-up",
+		count: 1,
+	},
 	// {
 	// 	name: "skate",
 	// 	count: 1,
@@ -48,10 +49,10 @@ const powerUpObj = [
 	// 	name: "soft-block-pass",
 	// 	count: 1,
 	// },
-	{
-		name: "remote-control",
-		count: 1,
-	},
+	// {
+	// 	name: "remote-control",
+	// 	count: 1,
+	// },
 	// {
 	// 	name: "bomb-pass",
 	// 	count: 1,
@@ -280,7 +281,8 @@ const move = (direction) => {
 				case "bomb-up": // increase number of bomb
 					numBombs += 1
 					break
-				case "fire-up": // change explosion and range
+				case "fire-up": // change explosion and range by 1 tile
+					fireRange = 2
 					break
 				case "skate": // skate - Increase Bomberman's speed
 					speed += 100
@@ -440,10 +442,30 @@ document.addEventListener("keydown", (e) => {
 })
 
 function detonate(bombElement, bomberManPosition, bomberManCell) {
-	const explosionTop = cellsArr[bomberManPosition.y - 1][bomberManPosition.x]
-	const explosionBottom = cellsArr[bomberManPosition.y + 1][bomberManPosition.x]
-	const explosionRight = cellsArr[bomberManPosition.y][bomberManPosition.x + 1]
-	const explosionLeft = cellsArr[bomberManPosition.y][bomberManPosition.x - 1]
+	let explosionRangeMinusY = bomberManPosition.y - fireRange
+	if (explosionRangeMinusY < 0) {
+		explosionRangeMinusY = 1
+	}
+
+	let explosionRangePlusY = bomberManPosition.y + fireRange
+	if (explosionRangePlusY > 12) {
+		explosionRangePlusY = 12
+	}
+
+	let explosionRangeMinusX = bomberManPosition.x - fireRange
+	if (explosionRangeMinusX < 0) {
+		explosionRangeMinusX = 1
+	}
+
+	let explosionRangePlusX = bomberManPosition.x + fireRange
+	if (explosionRangePlusX > 13) {
+		explosionRangePlusX = 13
+	}
+
+	let explosionTop = cellsArr[explosionRangeMinusY][bomberManPosition.x]
+	let explosionBottom = cellsArr[explosionRangePlusY][bomberManPosition.x]
+	let explosionRight = cellsArr[bomberManPosition.y][explosionRangePlusX]
+	let explosionLeft = cellsArr[bomberManPosition.y][explosionRangeMinusX]
 
 	bombElement.addEventListener("animationend", () => {
 		bombElement.remove()
