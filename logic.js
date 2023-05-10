@@ -21,7 +21,6 @@ let verticalAnimation = 3
 let enemyCount = 4
 let randomDirection = [0, 1, 2, 3]
 let bombPlaced = false
-let numBombs = 1
 let currentScore = 0
 let currentLives = 3
 let gamePaused = false
@@ -29,6 +28,8 @@ let gameOver = false
 
 // power ups
 let numOfPowerUps = 2
+let numBombs = 1
+let vest = false
 const powerUpObj = [
 	{
 		name: "bomb-up",
@@ -296,6 +297,7 @@ const move = (direction) => {
 				case "full-fire": // full fire - Increase your firepower to the max
 					break
 				case "vest": // vest - Immune to both Bombs blast and enemies
+					vest = true
 					break
 			}
 		}
@@ -441,7 +443,8 @@ const bomb = () => {
 				// console.log("bomberman wrapper left", bomberManCurrenPosition.x)
 				if (
 					explosionTop.style.top === `${bomberManCurrenPosition.y}px` &&
-					explosionTop.style.left === `${bomberManCurrenPosition.x}px`
+					explosionTop.style.left === `${bomberManCurrenPosition.x}px` &&
+					!vest
 				) {
 					killBomberMan()
 				}
@@ -458,13 +461,15 @@ const bomb = () => {
 				}
 				if (
 					explosionBottom.firstChild &&
-					explosionBottom.firstChild.classList.contains("enemy")
+					explosionBottom.firstChild.classList.contains("enemy") &&
+					!vest
 				) {
 					killEnemy(explosionBottom)
 				}
 				if (
 					explosionBottom.style.top === `${bomberManCurrenPosition.y}px` &&
-					explosionBottom.style.left === `${bomberManCurrenPosition.x}px`
+					explosionBottom.style.left === `${bomberManCurrenPosition.x}px` &&
+					!vest
 				) {
 					killBomberMan()
 				}
@@ -487,7 +492,8 @@ const bomb = () => {
 				}
 				if (
 					explosionRight.style.top === `${bomberManCurrenPosition.y}px` &&
-					explosionRight.style.left === `${bomberManCurrenPosition.x}px`
+					explosionRight.style.left === `${bomberManCurrenPosition.x}px` &&
+					!vest
 				) {
 					killBomberMan()
 				}
@@ -510,7 +516,8 @@ const bomb = () => {
 				}
 				if (
 					explosionLeft.style.top === `${bomberManCurrenPosition.y}px` &&
-					explosionLeft.style.left === `${bomberManCurrenPosition.x}px`
+					explosionLeft.style.left === `${bomberManCurrenPosition.x}px` &&
+					!vest
 				) {
 					killBomberMan()
 				}
