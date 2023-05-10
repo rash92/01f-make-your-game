@@ -30,39 +30,40 @@ let gameOver = false
 let numOfPowerUps = 2
 let numBombs = 1
 let vest = false
+let remoteControl = false
 const powerUpObj = [
-	{
-		name: "bomb-up",
-		count: 2,
-	},
-	{
-		name: "fire-up",
-		count: 1,
-	},
-	{
-		name: "skate",
-		count: 1,
-	},
-	{
-		name: "soft-block-pass",
-		count: 1,
-	},
+	// {
+	// 	name: "bomb-up",
+	// 	count: 2,
+	// },
+	// {
+	// 	name: "fire-up",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "skate",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "soft-block-pass",
+	// 	count: 1,
+	// },
 	{
 		name: "remote-control",
 		count: 1,
 	},
-	{
-		name: "bomb-pass",
-		count: 1,
-	},
-	{
-		name: "full-fire",
-		count: 1,
-	},
-	{
-		name: "vest",
-		count: 1,
-	},
+	// {
+	// 	name: "bomb-pass",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "full-fire",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "vest",
+	// 	count: 1,
+	// },
 ]
 
 const powerUpLists = powerUpObj.map((v) => v.name)
@@ -291,6 +292,7 @@ const move = (direction) => {
 					)
 					break
 				case "remote-control": // remote control - Manually detonate a Bombs with certain button
+					remoteControl = true
 					break
 				case "bomb-pass": // bomb pass - Pass through Bombs
 					vest = true
@@ -397,16 +399,14 @@ const killEnemy = (cell) => {
 	}
 }
 
+let remoteControlBombElements = []
 const bomb = () => {
 	const bomberManPosition = {
 		y: bomberManCurrenPosition.y / cellSize,
 		x: bomberManCurrenPosition.x / cellSize,
 	}
+
 	const bomberManCell = cellsArr[bomberManPosition.y][bomberManPosition.x]
-	const explosionTop = cellsArr[bomberManPosition.y - 1][bomberManPosition.x]
-	const explosionBottom = cellsArr[bomberManPosition.y + 1][bomberManPosition.x]
-	const explosionRight = cellsArr[bomberManPosition.y][bomberManPosition.x + 1]
-	const explosionLeft = cellsArr[bomberManPosition.y][bomberManPosition.x - 1]
 
 	for (let i = 1; i <= numBombs; i++) {
 		const bombElement = document.createElement("div")
@@ -415,121 +415,153 @@ const bomb = () => {
 		bomberManCell.appendChild(bombElement)
 		bomberManCell.classList.remove("walkable")
 
-		bombElement.addEventListener("animationend", () => {
-			bombElement.remove()
-
-			// Explosion Middle
-			setTimeout(() => {
-				bomberManCell.classList.add("explosion-middle")
-			}, 0)
-			bomberManCell.addEventListener("animationend", () => {
-				bomberManCell.classList.remove("explosion-middle")
-				bomberManCell.classList.add("walkable")
-				bombPlaced = false
+		if (remoteControl) {
+			remoteControlBombElements.push({
+				bombElement,
+				bomberManPosition,
+				bomberManCell,
 			})
-
-			// Explosion Top
-			if (!explosionTop.classList.contains("indestructible")) {
-				if (explosionTop.classList.contains("breakable")) {
-					destroyBlocks(explosionTop)
-				}
-				if (
-					explosionTop.firstChild &&
-					explosionTop.firstChild.classList.contains("enemy")
-				) {
-					killEnemy(explosionTop)
-				}
-				// console.log("explosiontop top", explosionTop.style.top)
-				// console.log("explosiontop left", explosionTop.style.left)
-				// console.log("bomberman wrapper top", bomberManCurrenPosition.y)
-				// console.log("bomberman wrapper left", bomberManCurrenPosition.x)
-				if (
-					explosionTop.style.top === `${bomberManCurrenPosition.y}px` &&
-					explosionTop.style.left === `${bomberManCurrenPosition.x}px` &&
-					!vest
-				) {
-					killBomberMan()
-				}
-				explosionTop.classList.add("explosion-top")
-				explosionTop.addEventListener("animationend", () => {
-					explosionTop.classList.remove("explosion-top")
-				})
-			}
-
-			// Explosion Bottom
-			if (!explosionBottom.classList.contains("indestructible")) {
-				if (explosionBottom.classList.contains("breakable")) {
-					destroyBlocks(explosionBottom)
-				}
-				if (
-					explosionBottom.firstChild &&
-					explosionBottom.firstChild.classList.contains("enemy") &&
-					!vest
-				) {
-					killEnemy(explosionBottom)
-				}
-				if (
-					explosionBottom.style.top === `${bomberManCurrenPosition.y}px` &&
-					explosionBottom.style.left === `${bomberManCurrenPosition.x}px` &&
-					!vest
-				) {
-					killBomberMan()
-				}
-				explosionBottom.classList.add("explosion-bottom")
-				explosionBottom.addEventListener("animationend", () => {
-					explosionBottom.classList.remove("explosion-bottom")
-				})
-			}
-
-			// Explosion Right
-			if (!explosionRight.classList.contains("indestructible")) {
-				if (explosionRight.classList.contains("breakable")) {
-					destroyBlocks(explosionRight)
-				}
-				if (
-					explosionRight.firstChild &&
-					explosionRight.firstChild.classList.contains("enemy")
-				) {
-					killEnemy(explosionRight)
-				}
-				if (
-					explosionRight.style.top === `${bomberManCurrenPosition.y}px` &&
-					explosionRight.style.left === `${bomberManCurrenPosition.x}px` &&
-					!vest
-				) {
-					killBomberMan()
-				}
-				explosionRight.classList.add("explosion-right")
-				explosionRight.addEventListener("animationend", () => {
-					explosionRight.classList.remove("explosion-right")
-				})
-			}
-
-			// Explosion Left
-			if (!explosionLeft.classList.contains("indestructible")) {
-				if (explosionLeft.classList.contains("breakable")) {
-					destroyBlocks(explosionLeft)
-				}
-				if (
-					explosionLeft.firstChild &&
-					explosionLeft.firstChild.classList.contains("enemy")
-				) {
-					killEnemy(explosionLeft)
-				}
-				if (
-					explosionLeft.style.top === `${bomberManCurrenPosition.y}px` &&
-					explosionLeft.style.left === `${bomberManCurrenPosition.x}px` &&
-					!vest
-				) {
-					killBomberMan()
-				}
-				explosionLeft.classList.add("explosion-left")
-				explosionLeft.addEventListener("animationend", () => {
-					explosionLeft.classList.remove("explosion-left")
-				})
-			}
-		})
+		} else {
+			bombElement.style.animation = "bomb-animation 1s steps(1) 2"
+			detonate(bombElement, bomberManPosition, bomberManCell)
+		}
 	}
+}
+
+// // Add event listener for space bar key press
+document.addEventListener("keydown", (e) => {
+	if (e.key === " " && remoteControl && remoteControlBombElements.length > 0) {
+		remoteControlBombElements.forEach((v) => {
+			v.bombElement.style.animation = "bomb-animation 1s steps(1) 2"
+			detonate(v.bombElement, v.bomberManPosition, v.bomberManCell)
+		})
+		remoteControlBombElements.length = 0
+	}
+})
+
+function detonate(bombElement, bomberManPosition, bomberManCell) {
+	const explosionTop = cellsArr[bomberManPosition.y - 1][bomberManPosition.x]
+	const explosionBottom = cellsArr[bomberManPosition.y + 1][bomberManPosition.x]
+	const explosionRight = cellsArr[bomberManPosition.y][bomberManPosition.x + 1]
+	const explosionLeft = cellsArr[bomberManPosition.y][bomberManPosition.x - 1]
+
+	bombElement.addEventListener("animationend", () => {
+		bombElement.remove()
+
+		// Explosion Middle
+		setTimeout(() => {
+			bomberManCell.classList.add("explosion-middle")
+		}, 0)
+
+		bomberManCell.addEventListener("animationend", () => {
+			bomberManCell.classList.remove("explosion-middle")
+			bomberManCell.classList.add("walkable")
+			bombPlaced = false
+		})
+
+		// Explosion Top
+		if (!explosionTop.classList.contains("indestructible")) {
+			if (explosionTop.classList.contains("breakable")) {
+				destroyBlocks(explosionTop)
+			}
+			if (
+				explosionTop.firstChild &&
+				explosionTop.firstChild.classList.contains("enemy")
+			) {
+				killEnemy(explosionTop)
+			}
+
+			if (
+				explosionTop.style.top === `${bomberManCurrenPosition.y}px` &&
+				explosionTop.style.left === `${bomberManCurrenPosition.x}px` &&
+				!vest
+			) {
+				killBomberMan()
+			}
+
+			// explosionTop.classList.add("explosion-top")
+			// explosionTop.addEventListener("animationend", () => {
+			// 	explosionTop.classList.remove("explosion-top")
+			// })
+			explosionTop.classList.add("explosion-top")
+			explosionTop.addEventListener("animationend", () => {
+				explosionTop.classList.remove("explosion-top")
+			})
+		}
+
+		// Explosion Bottom
+		if (!explosionBottom.classList.contains("indestructible")) {
+			if (explosionBottom.classList.contains("breakable")) {
+				destroyBlocks(explosionBottom)
+			}
+			if (
+				explosionBottom.firstChild &&
+				explosionBottom.firstChild.classList.contains("enemy") &&
+				!vest
+			) {
+				killEnemy(explosionBottom)
+			}
+			if (
+				explosionBottom.style.top === `${bomberManCurrenPosition.y}px` &&
+				explosionBottom.style.left === `${bomberManCurrenPosition.x}px` &&
+				!vest
+			) {
+				killBomberMan()
+			}
+			explosionBottom.classList.add("explosion-bottom")
+			explosionBottom.addEventListener("animationend", () => {
+				explosionBottom.classList.remove("explosion-bottom")
+			})
+		}
+
+		// Explosion Right
+		if (!explosionRight.classList.contains("indestructible")) {
+			if (explosionRight.classList.contains("breakable")) {
+				destroyBlocks(explosionRight)
+			}
+			if (
+				explosionRight.firstChild &&
+				explosionRight.firstChild.classList.contains("enemy")
+			) {
+				killEnemy(explosionRight)
+			}
+			if (
+				explosionRight.style.top === `${bomberManCurrenPosition.y}px` &&
+				explosionRight.style.left === `${bomberManCurrenPosition.x}px` &&
+				!vest
+			) {
+				killBomberMan()
+			}
+			explosionRight.classList.add("explosion-right")
+			explosionRight.addEventListener("animationend", () => {
+				explosionRight.classList.remove("explosion-right")
+			})
+		}
+
+		// Explosion Left
+		if (!explosionLeft.classList.contains("indestructible")) {
+			if (explosionLeft.classList.contains("breakable")) {
+				destroyBlocks(explosionLeft)
+			}
+			if (
+				explosionLeft.firstChild &&
+				explosionLeft.firstChild.classList.contains("enemy")
+			) {
+				killEnemy(explosionLeft)
+			}
+			if (
+				explosionLeft.style.top === `${bomberManCurrenPosition.y}px` &&
+				explosionLeft.style.left === `${bomberManCurrenPosition.x}px` &&
+				!vest
+			) {
+				killBomberMan()
+			}
+			explosionLeft.classList.add("explosion-left")
+			explosionLeft.addEventListener("animationend", () => {
+				explosionLeft.classList.remove("explosion-left")
+			})
+		}
+	})
 }
 
 // const moveEnemy = (enemy, cell, movement = []) => {

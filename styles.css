@@ -145,7 +145,6 @@
 	height: 64px;
 	background-position-y: -192px;
 	background-size: 896px 1532px;
-	animation: bomb-animation 1s steps(1) 2;
 }
 
 .explosion-top {
