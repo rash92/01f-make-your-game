@@ -293,11 +293,13 @@ const move = (direction) => {
 				case "remote-control": // remote control - Manually detonate a Bombs with certain button
 					break
 				case "bomb-pass": // bomb pass - Pass through Bombs
+					vest = true
 					break
 				case "full-fire": // full fire - Increase your firepower to the max
 					break
 				case "vest": // vest - Immune to both Bombs blast and enemies
 					vest = true
+					// enemy blast WIP
 					break
 			}
 		}
