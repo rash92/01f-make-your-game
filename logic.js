@@ -10,7 +10,7 @@ const gridRow = 13
 const gridCol = 15
 const cellSize = 64
 let speed = 50
-const distance = 0.25
+const distance = 0.2
 let bomberManCurrenPosition = {
 	y: 64,
 	x: 64,
@@ -231,34 +231,54 @@ const checkNotDead = (cell, entity) => {
 	}
 }
 
+const isbetweenCells = (position) => position % cellSize !== 0
+
 const move = (direction) => {
 	let newPosition = {
 		x: bomberManCurrenPosition.x,
 		y: bomberManCurrenPosition.y,
 	}
-  let modifier = 0
+  let newY = Math.floor(newPosition.y / cellSize)
+	let newX = Math.floor(newPosition.x / cellSize)
 	switch (direction) {
 		case "ArrowUp":
 			newPosition.y -= cellSize * distance
-      modifier = 0
+      newY = Math.floor(newPosition.y / cellSize)
+      if (isbetweenCells(newPosition.x)){
+        newX= Math.round(newPosition.x/cellSize)
+        newPosition.x = newX * cellSize
+      }
 			break
       case "ArrowDown":
         newPosition.y += cellSize * distance
-        modifier = 0.999
+        newY = Math.ceil(newPosition.y / cellSize)
+        if (isbetweenCells(newPosition.x)){
+          newX = Math.round(newPosition.x/cellSize)
+          newPosition.x = newX * cellSize
+        }
 			break
 		case "ArrowRight":
 			newPosition.x += cellSize * distance
-      modifier =  0.999
+      newX = Math.ceil(newPosition.x / cellSize)
+      if (isbetweenCells(newPosition.y)){
+        newY = Math.round(newPosition.y/cellSize)
+        newPosition.y = newY * cellSize
+      }
 			break
       case "ArrowLeft":
         newPosition.x -= cellSize * distance
-        modifier = 0
+        newX = Math.floor(newPosition.x / cellSize)
+        if (isbetweenCells(newPosition.y)){
+          newY = Math.round(newPosition.y/cellSize)
+          newPosition.y = newY * cellSize
+        }
 			break
+    default:
+      return
 	}
 	// Check if the new position is within the boundaries of the grid
 	
-  let newY = Math.floor(newPosition.y / cellSize + modifier)
-	let newX = Math.floor(newPosition.x / cellSize + modifier)
+  console.log(newY, newX);
 
 	const cell = cellsArr[newY][newX]
 
@@ -627,7 +647,6 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 const enemyAI = () => {
 	enemyArr.forEach((enemy) => {
 		const enemyData = JSON.parse(enemy.dataset.enemy)
-		console.log("Current pos", enemyData)
 		let originalEnemyPosition = {
 			y: enemyData.y,
 			x: enemyData.x,
