@@ -34,10 +34,10 @@ let numBombs = 1
 let remoteControl = false
 let vest = false
 const powerUpObj = [
-	// {
-	// 	name: "bomb-up",
-	// 	count: 2,
-	// },
+	{
+		name: "bomb-up",
+		count: 2,
+	},
 	{
 		name: "fire-up",
 		count: 1,
@@ -46,26 +46,26 @@ const powerUpObj = [
 		name: "skate",
 		count: 1,
 	},
-	// {
-	// 	name: "soft-block-pass",
-	// 	count: 1,
-	// },
-	// {
-	// 	name: "remote-control",
-	// 	count: 1,
-	// },
-	// {
-	// 	name: "bomb-pass",
-	// 	count: 1,
-	// },
-	// {
-	// 	name: "full-fire",
-	// 	count: 1,
-	// },
-	// {
-	// 	name: "vest",
-	// 	count: 1,
-	// },
+	{
+		name: "soft-block-pass",
+		count: 1,
+	},
+	{
+		name: "remote-control",
+		count: 1,
+	},
+	{
+		name: "bomb-pass",
+		count: 1,
+	},
+	{
+		name: "full-fire",
+		count: 1,
+	},
+	{
+		name: "vest",
+		count: 1,
+	},
 ]
 
 const powerUpLists = powerUpObj.map((v) => v.name)
