@@ -17,7 +17,7 @@ let bomberManCurrenPosition = {
  };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-let enemyCount = 4;
+let enemyCount = 1;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 let currentScore = 0;
@@ -70,8 +70,8 @@ buildGrid();
 const cellsArr = createCellsArr();
 setSprite(horizontalAnimation, 1);
 
-const walkableCells = Array.from(document.querySelectorAll(".walkable"));
-
+let walkableCells = Array.from(document.querySelectorAll(".walkable"));
+console.log("before", walkableCells);
 const createEnemies = () => {
   while (enemyCount > 0) {
     let randomWalkableCell =
@@ -212,9 +212,12 @@ const destroyBlocks = (cell) => {
   cell.addEventListener("animationend", () => {
     cell.classList.remove("breakable-block-destruction");
     cell.classList.add("walkable");
+    walkableCells = Array.from(document.querySelectorAll(".walkable"));
   });
   currentScore += 10;
   score.textContent = `Score ${currentScore}`;
+  
+  console.log("after", walkableCells);
 };
 
 const killEnemy = (cell) => {
@@ -266,7 +269,6 @@ const bomb = () => {
       bomberManCell.classList.add("walkable");
       bombPlaced = false;
     });
-
     // Explosion Top
     if (!explosionTop.classList.contains("indestructible")) {
       if (explosionTop.classList.contains("breakable")) {
@@ -445,8 +447,10 @@ const onKeyDown = (e) => {
 
 document.addEventListener("keydown", onKeyDown);
 
-const enemyInterval = 500;
+const enemyInterval = 500
+const moveInterval = 250
 let lastEnemyMove = 0;
+let lastMove = 0;
 
 const gameLoop = (timestamp) => {
   if (gamePaused) {
@@ -455,12 +459,20 @@ const gameLoop = (timestamp) => {
   if (gameOver) {
     return;
   }
-  const deltaTime = timestamp - lastEnemyMove;
-  if (deltaTime >= enemyInterval) {
-    enemyAI(deltaTime);
-    move(bomberManCurrenPosition.direction);
+  
+  const enemyDeltaTime = timestamp - lastEnemyMove;
+  const moveDeltaTime = timestamp - lastMove;
+  
+  if (enemyDeltaTime >= enemyInterval) {
+    enemyAI(enemyDeltaTime);
     lastEnemyMove = timestamp;
   }
+  
+  if (moveDeltaTime >= moveInterval) {
+    move(bomberManCurrenPosition.direction);
+    lastMove = timestamp;
+  }
+  
   window.requestAnimationFrame(gameLoop);
 };
 
