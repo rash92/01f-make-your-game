@@ -128,8 +128,8 @@
 }
 
 .bomber-man {
-	top: 64px;
-	left: 64px;
+	/* top: 64px;
+	left: 64px; */
 	width: 64px;
 	height: 64px;
 	background-image: url("sprites.png");
