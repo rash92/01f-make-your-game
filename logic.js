@@ -411,22 +411,13 @@ const killBomberMan = () => {
 }
 
 const destroyBlocks = (cell) => {
-	if (!isPowerUp(cell)) {
-		cell.classList.remove("breakable")
-		cell.classList.add("breakable-block-destruction")
-		cell.addEventListener("animationend", () => {
-			cell.classList.remove("breakable-block-destruction")
-			cell.classList.add("walkable")
-      walkableCells = Array.from(document.querySelectorAll(".walkable"));
-		})
-	}
-
 	cell.classList.remove("breakable")
 	cell.classList.add("breakable-block-destruction")
 	cell.addEventListener("animationend", () => {
 		cell.classList.remove("breakable-block-destruction")
     cell.classList.add("walkable")
     walkableCells = Array.from(document.querySelectorAll(".walkable"));
+
 	})
 
 	currentScore += 10
