@@ -11,10 +11,9 @@ const gridCol = 15
 const cellSize = 64
 let speed = 50
 const distance = 0.25
-let bomberManCurrenPosition = {
+let bomberManCurrentPosition = {
 	y: 64,
 	x: 64,
-	direction: 2,
 }
 let horizontalAnimation = 0
 let verticalAnimation = 3
@@ -25,7 +24,7 @@ let currentScore = 0
 let currentLives = 3
 let gamePaused = false
 let gameOver = false
-// let isMoving = {up: false, down: false, left: false, right: false}
+let isMoving = {ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false}
 
 // power ups
 let currentPower
@@ -139,8 +138,8 @@ const createEnemies = () => {
 			walkableCells[Math.floor(Math.random() * walkableCells.length)]
 
 		if (
-			randomWalkableCell.style.top !== `${bomberManCurrenPosition.y}px` &&
-			randomWalkableCell.style.left !== `${bomberManCurrenPosition.x}px`
+			randomWalkableCell.style.top !== `${bomberManCurrentPosition.y}px` &&
+			randomWalkableCell.style.left !== `${bomberManCurrentPosition.x}px`
 		) {
 			const enemyObj = {
 				id: enemyCount,
@@ -235,9 +234,10 @@ const checkNotDead = (cell, entity) => {
 const isbetweenCells = (position) => position % cellSize !== 0
 
 const move = (direction) => {
+  console.log(direction)
 	let newPosition = {
-		x: bomberManCurrenPosition.x,
-		y: bomberManCurrenPosition.y,
+		x: bomberManCurrentPosition.x,
+		y: bomberManCurrentPosition.y,
 	}
   let newY = Math.floor(newPosition.y / cellSize)
 	let newX = Math.floor(newPosition.x / cellSize)
@@ -279,7 +279,7 @@ const move = (direction) => {
 	}
 	// Check if the new position is within the boundaries of the grid
 	
-  console.log(newY, newX);
+  // console.log(newY, newX);
 
 	const cell = cellsArr[newY][newX]
 
@@ -366,8 +366,8 @@ const move = (direction) => {
 	) {
 		checkNotDead(cell, "bomberMan")
 		if (
-			newPosition.x === bomberManCurrenPosition.x &&
-			newPosition.y === bomberManCurrenPosition.y
+			newPosition.x === bomberManCurrentPosition.x &&
+			newPosition.y === bomberManCurrentPosition.y
 		) {
 			return // Don't move if the bomberman is already at the new position
 		}
@@ -376,7 +376,7 @@ const move = (direction) => {
 		bomberManWrapper.style.transform = `translate3d(${
 			newPosition.x - cellSize
 		}px, ${newPosition.y - cellSize}px, 0)`
-		bomberManCurrenPosition = newPosition
+		bomberManCurrentPosition = newPosition
 		// Update sprite based on the direction
 		if (direction === "ArrowUp" || direction === "ArrowDown") {
 			setSprite(verticalAnimation, direction === "ArrowUp" ? 1 : 0)
@@ -393,7 +393,7 @@ const killBomberMan = () => {
 	if (currentLives === 0) {
 		gameOver = true
 	}
-	bomberManCurrenPosition = { y: 64, x: 64 }
+	bomberManCurrentPosition = { y: 64, x: 64 }
 	bomberManWrapper.classList.remove("bomber-man")
 	bomberManWrapper.classList.add("death")
 	bomberManWrapper.addEventListener("animationend", () => {
@@ -401,8 +401,8 @@ const killBomberMan = () => {
 		bomberManWrapper.classList.add("bomber-man")
 		bomberManWrapper.style.transition = `transform 0ms`
 		bomberManWrapper.style.transform = `translate(${
-			bomberManCurrenPosition.x - cellSize
-		}px, ${bomberManCurrenPosition.y - cellSize}px)`
+			bomberManCurrentPosition.x - cellSize
+		}px, ${bomberManCurrentPosition.y - cellSize}px)`
 		setSprite(horizontalAnimation, 1)
 		document.addEventListener("keydown", onKeyDown)
 		window.requestAnimationFrame(gameLoop)
@@ -449,8 +449,8 @@ const killEnemy = (cell) => {
 let remoteControlBombElements = []
 const bomb = () => {
 	const bomberManPosition = {
-		y: Math.round(bomberManCurrenPosition.y / cellSize),
-		x: Math.round(bomberManCurrenPosition.x / cellSize),
+		y: Math.round(bomberManCurrentPosition.y / cellSize),
+		x: Math.round(bomberManCurrentPosition.x / cellSize),
 	}
 
 	const bomberManCell = cellsArr[bomberManPosition.y][bomberManPosition.x]
@@ -695,7 +695,12 @@ const onKeyDown = (e) => {
 		case "ArrowDown":
 		case "ArrowRight":
 		case "ArrowLeft":
-			bomberManCurrenPosition.direction = e.key
+      if (isMoving[e.key]) {
+        return
+      }
+      isMoving = {ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false}
+      isMoving[e.key] = true
+			bomberManCurrentPosition.direction = e.key
 			break
 		case "x":
 			if (!bombPlaced) bomb()
@@ -711,11 +716,33 @@ const onKeyDown = (e) => {
 			break
 	}
 }
+const onKeyUp = (e) => {
+  switch(e.key) {
+  case "ArrowUp":
+  case "ArrowDown":
+  case "ArrowRight":
+  case "ArrowLeft":
+    isMoving[e.key] = false
+    break
+  }
+}
+
+
 
 document.addEventListener("keydown", onKeyDown)
+document.addEventListener("keyup", onKeyUp)
+
+const getBombermanDirection = () => {
+  for (let key in isMoving ){
+    if (isMoving[key]){
+      return key
+    }
+  }
+  return undefined
+}
 
 const enemyInterval = 500
-const moveInterval = 5
+const moveInterval = 50
 let lastEnemyMove = 0;
 let lastMove = 0;
 const gameLoop = (timestamp) => {
@@ -735,10 +762,11 @@ const gameLoop = (timestamp) => {
   }
   
   if (moveDeltaTime >= moveInterval) {
-    move(bomberManCurrenPosition.direction);
-    lastMove = timestamp;
+    if (getBombermanDirection()){
+      move(getBombermanDirection());
+      lastMove = timestamp;
+    }
   }
-  
   window.requestAnimationFrame(gameLoop);
 };
 window.requestAnimationFrame(gameLoop);
