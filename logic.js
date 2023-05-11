@@ -19,7 +19,7 @@ let bomberManCurrentPosition = {
 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-let enemyCount = 1;
+let enemyCount = 2;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 let currentScore = 0;
@@ -174,6 +174,7 @@ const createEnemies = () => {
 let enemyArr = createEnemies();
 
 function isWalkable(cell) {
+  walkableCells = Array.from(document.querySelectorAll(".walkable"));
   return walkableCells.includes(cell);
 }
 
@@ -215,28 +216,29 @@ const checkPowerUp = (cell) => {
 
 // const throttledCheckPowerUp = throttle(checkPowerUp, 1000)
 
-const checkNotDead = (cell, entity) => {
-  const classNames = [
-    "explosion-middle",
-    "explosion-top",
-    "explosion-right",
-    "explosion-left",
-    "explosion-bottom",
-  ];
+// CHECKNOTDEAD NOW BROKEN
+// const checkNotDead = (cell, entity) => {
+//   const classNames = [
+//     "explosion-middle",
+//     "explosion-top",
+//     "explosion-right",
+//     "explosion-left",
+//     "explosion-bottom",
+//   ];
 
-  const hasExplosionClass = classNames.some((className) =>
-    cell.classList.contains(className)
-  );
-  if (entity === "bomberMan") {
-    if (cell.hasChildNodes() || hasExplosionClass) {
-      // killBomberMan()
-    }
-  } else {
-    if (hasExplosionClass) {
-      killEnemy(cell);
-    }
-  }
-};
+//   const hasExplosionClass = classNames.some((className) =>
+//     cell.classList.contains(className)
+//   );
+//   if (entity === "bomberMan") {
+//     if (cell.hasChildNodes() || hasExplosionClass) {
+//       // killBomberMan()
+//     }
+//   } else {
+//     if (hasExplosionClass) {
+//       killEnemy(cell);
+//     }
+//   }
+// };
 
 const isbetweenCells = (position) => position % cellSize !== 0;
 
@@ -368,7 +370,7 @@ const move = (direction) => {
     isWalkable(cell) ||
     (isPowerUp(cell) && !cell.classList.contains("breakable"))
   ) {
-    checkNotDead(cell, "bomberMan");
+    // checkNotDead(cell, "bomberMan");
     if (
       newPosition.x === bomberManCurrentPosition.x &&
       newPosition.y === bomberManCurrentPosition.y
@@ -402,11 +404,11 @@ const killBomberMan = () => {
   bomberManWrapper.addEventListener("animationend", () => {
     bomberManWrapper.classList.remove("death");
     bomberManWrapper.classList.add("bomber-man");
-	bomberManCurrentPosition = { y: 64, x: 64 };
+    bomberManCurrentPosition = { y: 64, x: 64 };
     bomberManWrapper.style.transition = `transform 0ms`;
     bomberManWrapper.style.transform = `translate(${
       bomberManCurrentPosition.x - cellSize
-    }px, ${bomberManCurrentPosition.y- cellSize}px)`;
+    }px, ${bomberManCurrentPosition.y - cellSize}px)`;
     setSprite(horizontalAnimation, 1);
     document.addEventListener("keydown", onKeyDown);
     window.requestAnimationFrame(gameLoop);
@@ -430,22 +432,29 @@ const destroyBlocks = (cell) => {
 
 const killEnemy = (cell) => {
   enemyArr.forEach((enemy) => {
-    if (cell === cellsArr[enemy.y][enemy.x]) {
-      const index = enemyArr.indexOf(enemy);
-      enemyArr.splice(index, 1);
-      currentScore += 100;
-      score.textContent = `Score ${currentScore}`;
+    const enemyData = JSON.parse(enemy.dataset.enemy);
+	// console.log("enemy y x", enemyData.y, enemyData.x)
+	// console.log("cell y x", parseInt(cell.style.top), parseInt(cell.style.left));
+    let originalEnemyPosition = {
+      y: enemyData.y + enemyData.rely,
+      x: enemyData.x + enemyData.relx,
+    };
+    if (
+      parseInt(cell.style.top) === (originalEnemyPosition.y) &&
+      parseInt(cell.style.left) === (originalEnemyPosition.x)
+    ) {
+      enemy.classList.remove("enemy");
+      enemy.classList.add("enemy-death");
+      enemy.addEventListener("animationend", () => {
+        enemy.remove("enemy-death");
+        enemyArr.splice(enemyData.id - enemyArr.length, 1);
+        currentScore += 100;
+        score.textContent = `Score ${currentScore}`;
+      });
     }
   });
   if (enemyArr.length === 0) {
     gameOver = true;
-  }
-  if (cell.firstChild) {
-    cell.firstChild.classList.remove("enemy");
-    cell.firstChild.classList.add("enemy-death");
-    cell.firstChild.addEventListener("animationend", () => {
-      cell.firstChild.remove("enemy-death");
-    });
   }
 };
 
@@ -534,13 +543,7 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
       if (explosionTop.classList.contains("breakable")) {
         destroyBlocks(explosionTop);
       }
-      if (
-        explosionTop.firstChild &&
-        explosionTop.firstChild.classList.contains("enemy")
-      ) {
-        killEnemy(explosionTop);
-      }
-
+	  killEnemy(explosionTop);
       if (
         Math.abs(
           parseInt(explosionTop.style.top) - bomberManCurrentPosition.y
@@ -564,13 +567,7 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
       if (explosionBottom.classList.contains("breakable")) {
         destroyBlocks(explosionBottom);
       }
-      if (
-        explosionBottom.firstChild &&
-        explosionBottom.firstChild.classList.contains("enemy") &&
-        !vest
-      ) {
-        killEnemy(explosionBottom);
-      }
+	  killEnemy(explosionBottom);
       if (
         Math.abs(
           parseInt(explosionBottom.style.top) - bomberManCurrentPosition.y
@@ -593,12 +590,7 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
       if (explosionRight.classList.contains("breakable")) {
         destroyBlocks(explosionRight);
       }
-      if (
-        explosionRight.firstChild &&
-        explosionRight.firstChild.classList.contains("enemy")
-      ) {
-        killEnemy(explosionRight);
-      }
+      killEnemy(explosionRight);
       if (
         Math.abs(
           parseInt(explosionRight.style.top) - bomberManCurrentPosition.y
@@ -621,12 +613,7 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
       if (explosionLeft.classList.contains("breakable")) {
         destroyBlocks(explosionLeft);
       }
-      if (
-        explosionLeft.firstChild &&
-        explosionLeft.firstChild.classList.contains("enemy")
-      ) {
-        killEnemy(explosionLeft);
-      }
+      killEnemy(explosionLeft);
       if (
         Math.abs(
           parseInt(explosionLeft.style.top) - bomberManCurrentPosition.y
