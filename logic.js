@@ -27,6 +27,7 @@ let gamePaused = false
 let gameOver = false
 
 // power ups
+let currentPower
 let numOfPowerUps = 2
 let fireRange = 1
 let numBombs = 1
@@ -41,10 +42,10 @@ const powerUpObj = [
 		name: "fire-up",
 		count: 1,
 	},
-	// {
-	// 	name: "skate",
-	// 	count: 1,
-	// },
+	{
+		name: "skate",
+		count: 1,
+	},
 	// {
 	// 	name: "soft-block-pass",
 	// 	count: 1,
@@ -271,10 +272,32 @@ const move = (direction) => {
 			cell.classList.remove(powerupValue)
 			cell.classList.add("walkable")
 
-			// reset number of bombs to one when a different power up is chosen
+			// reset power ups
 			if (powerupValue !== "bomb-up") {
 				numBombs = 1
 			}
+
+			if (powerupValue !== "fire-up" || "full-fire") {
+				fireRange = 1
+			}
+
+			if (powerupValue !== "skate") {
+				speed = 50
+			}
+
+			if (powerupValue !== "soft-block-pass") {
+				walkableCells = Array.from(document.querySelectorAll(".walkable"))
+			}
+
+			if (powerupValue !== "remote-control") {
+				remoteControl = false
+			}
+
+			if (powerupValue !== "bomb-pass" || "vest") {
+				vest = false
+			}
+
+			console.log(currentPower)
 
 			// apply powerup
 			switch (powerupValue) {
@@ -300,6 +323,7 @@ const move = (direction) => {
 					vest = true
 					break
 				case "full-fire": // full fire - Increase your firepower to the max
+					fireRange = 5
 					break
 				case "vest": // vest - Immune to both Bombs blast and enemies
 					vest = true
@@ -494,17 +518,13 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 			}
 
 			if (
-				explosionTop.style.top === `${bomberManCurrenPosition.y}px` &&
-				explosionTop.style.left === `${bomberManCurrenPosition.x}px` &&
+				explosionTop.style.top === `${bomberManPosition.y}px` &&
+				explosionTop.style.left === `${bomberManPosition.x}px` &&
 				!vest
 			) {
 				killBomberMan()
 			}
 
-			// explosionTop.classList.add("explosion-top")
-			// explosionTop.addEventListener("animationend", () => {
-			// 	explosionTop.classList.remove("explosion-top")
-			// })
 			explosionTop.classList.add("explosion-top")
 			explosionTop.addEventListener("animationend", () => {
 				explosionTop.classList.remove("explosion-top")
@@ -524,8 +544,8 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 				killEnemy(explosionBottom)
 			}
 			if (
-				explosionBottom.style.top === `${bomberManCurrenPosition.y}px` &&
-				explosionBottom.style.left === `${bomberManCurrenPosition.x}px` &&
+				explosionBottom.style.top === `${bomberManPosition.y}px` &&
+				explosionBottom.style.left === `${bomberManPosition.x}px` &&
 				!vest
 			) {
 				killBomberMan()
@@ -548,8 +568,8 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 				killEnemy(explosionRight)
 			}
 			if (
-				explosionRight.style.top === `${bomberManCurrenPosition.y}px` &&
-				explosionRight.style.left === `${bomberManCurrenPosition.x}px` &&
+				explosionRight.style.top === `${bomberManPosition.y}px` &&
+				explosionRight.style.left === `${bomberManPosition.x}px` &&
 				!vest
 			) {
 				killBomberMan()
@@ -572,8 +592,8 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 				killEnemy(explosionLeft)
 			}
 			if (
-				explosionLeft.style.top === `${bomberManCurrenPosition.y}px` &&
-				explosionLeft.style.left === `${bomberManCurrenPosition.x}px` &&
+				explosionLeft.style.top === `${bomberManPosition.y}px` &&
+				explosionLeft.style.left === `${bomberManPosition.x}px` &&
 				!vest
 			) {
 				killBomberMan()
