@@ -1,430 +1,472 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Press Start 2P', cursive;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Press Start 2P", cursive;
 }
 
 #grid-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	width: 100vw;
+	position: relative;
 }
 
 #game-status {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  height: 832px;
-  width: 960px;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  z-index: 10;
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	height: 832px;
+	width: 960px;
+	background: rgba(0, 0, 0, 0.5);
+	color: white;
+	z-index: 10;
 }
 
 #info {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  top: 0;
-  height: 100px;
-  width: 100%;
-  position: absolute;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
+	top: 0;
+	height: 100px;
+	width: 100%;
+	position: absolute;
 }
 
 #game-grid {
-  position: relative;
-  height: 832px;
-  width: 960px;
+	position: relative;
+	height: 832px;
+	width: 960px;
 }
 
 .cell {
-  position: absolute;
-  height: 64px;
-  width: 64px;
+	position: absolute;
+	height: 64px;
+	width: 64px;
 }
 
 .indestructible {
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-position-x: -192px;
-  background-position-y: -192px;
-  background-size: 896px 1532px;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-position-x: -192px;
+	background-position-y: -192px;
+	background-size: 896px 1532px;
 }
 
 .walkable {
-  background: #388700;
+	background: #388700;
+}
+
+/* power ups */
+.powerUp {
+	border: 5px solid red;
+	background-image: url("sprites.png");
+	background-size: 896px 1532px;
+}
+
+/* bomb up - Increase the number of bombs you can set at once */
+.bomb-up {
+	background-position-y: -896px;
+	background-position-x: 0px;
+}
+/* fire up - Increase the range of your bombs */
+.fire-up {
+	background-position-y: -896px;
+	background-position-x: -64px;
+}
+/* skate - Increase Bomberman's speed */
+.skate {
+	background-position-y: -896px;
+	background-position-x: -128px;
+}
+/* soft block pass - Pass through Soft Blocks */
+.soft-block-pass {
+	background-position-y: -896px;
+	background-position-x: -192px;
+}
+/* remote control - Manually detonate a Bombs with certain button */
+.remote-control {
+	background-position-y: -896px;
+	background-position-x: -256px;
+}
+/* bomb pass - Pass through Bombs */
+.bomb-pass {
+	background-position-y: -896px;
+	background-position-x: -320px;
+}
+/* full fire - Increase your firepower to the max */
+.full-fire {
+	background-position-y: -896px;
+	background-position-x: -384px;
+}
+/* vest - Immune to both Bombs blast and enemies */
+.vest {
+	background-position-y: -896px;
+	background-position-x: -448px;
 }
 
 .breakable {
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-position-x: -256px;
-  background-position-y: -192px;
-  background-size: 896px 1532px;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-position-x: -256px;
+	background-position-y: -192px;
+	background-size: 896px 1532px;
 }
 
 /* These two are unnecessary */
-.bomberManWrapper,
-.enemyWrapper {
-  position: absolute;
-  z-index: 2;
+.bomberManWrapper {
+	position: absolute;
+	z-index: 2;
 }
 
 .bomber-man {
-  top: 64px;
-  left: 64px;
-  width: 64px;
-  height: 64px;
-  background-image: url("sprites.png");
-  background-size: 896px 1532px;
-  position: absolute;
-  z-index: 2;
+	top: 64px;
+	left: 64px;
+	width: 64px;
+	height: 64px;
+	background-image: url("sprites.png");
+	background-size: 896px 1532px;
+	position: absolute;
+	z-index: 2;
 }
 
 .bomb {
-  background: #388700;
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-position-y: -192px;
-  background-size: 896px 1532px;
-  animation: bomb-animation 1s steps(1) 2;
+	background: #388700;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-position-y: -192px;
+	background-size: 896px 1532px;
 }
 
 .explosion-top {
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-size: 896px 1532px;
-  animation: explosion-top 1s steps(1) 1;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: explosion-top 1s steps(1) 1;
 }
 
 .explosion-right {
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-size: 896px 1532px;
-  animation: explosion-right 1s steps(1) 1;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: explosion-right 1s steps(1) 1;
 }
 
 .explosion-left {
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-size: 896px 1532px;
-  animation: explosion-left 1s steps(1) 1;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: explosion-left 1s steps(1) 1;
 }
 
 .explosion-middle {
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-size: 896px 1532px;
-  animation: explosion-middle 1s steps(1) 1;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: explosion-middle 1s steps(1) 1;
 }
 
 .explosion-bottom {
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-size: 896px 1532px;
-  animation: explosion-bottom 1s steps(1) 1;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: explosion-bottom 1s steps(1) 1;
 }
 
 .breakable-block-destruction {
-  background: #388700;
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-size: 896px 1532px;
-  animation: block-destruction 1s steps(1) 1;
+	background: #388700;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: block-destruction 1s steps(1) 1;
 }
 
 .enemy {
-  background-image: url("sprites.png");
-  top: 64px;
-  left: 64px;
-  width: 64px;
-  height: 64px;
-  background-size: 896px 1532px;
-  position: absolute;
-  z-index: 1;
-  animation: enemy-animation 1s steps(1) infinite;
+	background-image: url("sprites.png");
+	/* top: 64px; */
+	/* left: 64px; */
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	position: absolute;
+	z-index: 1;
+	animation: enemy-animation 1s steps(1) infinite;
 }
 
 .enemy-death {
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-size: 896px 1532px;
-  position: absolute;
-  z-index: 1;
-  animation: enemy-death 1s steps(1) 1;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	position: absolute;
+	z-index: 1;
+	animation: enemy-death 1s steps(1) 1;
 }
 
 .death {
-  background-image: url("sprites.png");
-  width: 64px;
-  height: 64px;
-  background-size: 896px 1532px;
-  animation: death-animation 1s steps(1) 1;
-  position: absolute;
-  z-index: 2;
-}
-
-.power-up {
-  background: blue;
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: death-animation 1s steps(1) 1;
+	position: absolute;
+	z-index: 2;
 }
 
 @keyframes enemy-animation {
-  0% {
-    background-position-y: -960px;
-    background-position-x: -64px;
-  }
-  20% {
-    background-position-y: -960px;
-    background-position-x: -128px;
-  }
-  40% {
-    background-position-y: -960px;
-    background-position-x: -192px;
-  }
-  60% {
-    background-position-y: -960px;
-    background-position-x: -256px;
-  }
-  80% {
-    background-position-y: -960px;
-    background-position-x: -320px;
-  }
-  100% {
-    background-position-y: -960px;
-    background-position-x: -384px;
-  }
+	0% {
+		background-position-y: -960px;
+		background-position-x: -64px;
+	}
+	20% {
+		background-position-y: -960px;
+		background-position-x: -128px;
+	}
+	40% {
+		background-position-y: -960px;
+		background-position-x: -192px;
+	}
+	60% {
+		background-position-y: -960px;
+		background-position-x: -256px;
+	}
+	80% {
+		background-position-y: -960px;
+		background-position-x: -320px;
+	}
+	100% {
+		background-position-y: -960px;
+		background-position-x: -384px;
+	}
 }
 
 @keyframes enemy-death {
-  0% {
-    background-position-y: -960px;
-    background-position-x: -448px;
-  }
-  20% {
-    background-position-y: -960px;
-    background-position-x: -512px;
-  }
-  40% {
-    background-position-y: -960px;
-    background-position-x: -576px;
-  }
-  60% {
-    background-position-y: -960px;
-    background-position-x: -640px;
-  }
-  80% {
-    background-position-y: -960px;
-    background-position-x: -704px;
-  }
-  100% {
-    background-position-y: -960px;
-    background-position-x: -768px;
-  }
+	0% {
+		background-position-y: -960px;
+		background-position-x: -448px;
+	}
+	20% {
+		background-position-y: -960px;
+		background-position-x: -512px;
+	}
+	40% {
+		background-position-y: -960px;
+		background-position-x: -576px;
+	}
+	60% {
+		background-position-y: -960px;
+		background-position-x: -640px;
+	}
+	80% {
+		background-position-y: -960px;
+		background-position-x: -704px;
+	}
+	100% {
+		background-position-y: -960px;
+		background-position-x: -768px;
+	}
 }
 
 @keyframes bomb-animation {
-  0% {
-    background-position-x: -64px;
-  }
-  50% {
-    background-position-x: -128px;
-  }
-  100% {
-    background-position-x: -192px;
-  }
+	0% {
+		background-position-x: -64px;
+	}
+	50% {
+		background-position-x: -128px;
+	}
+	100% {
+		background-position-x: -192px;
+	}
 }
 
 @keyframes explosion-middle {
-  0% {
-    background-position-y: -384px;
-    background-position-x: -128px;
-  }
-  25% {
-    background-position-y: -384px;
-    background-position-x: -448px;
-  }
-  50% {
-    background-position-y: -704px;
-    background-position-x: -128px;
-  }
-  75% {
-    background-position-y: -704px;
-    background-position-x: -448px;
-  }
-  100% {
-    background-position-y: -384px;
-    background-position-x: -128px;
-  }
+	0% {
+		background-position-y: -384px;
+		background-position-x: -128px;
+	}
+	25% {
+		background-position-y: -384px;
+		background-position-x: -448px;
+	}
+	50% {
+		background-position-y: -704px;
+		background-position-x: -128px;
+	}
+	75% {
+		background-position-y: -704px;
+		background-position-x: -448px;
+	}
+	100% {
+		background-position-y: -384px;
+		background-position-x: -128px;
+	}
 }
 
 @keyframes explosion-top {
-  0% {
-    background-position-y: -256px;
-    background-position-x: -128px;
-  }
-  25% {
-    background-position-y: -256px;
-    background-position-x: -448px;
-  }
-  50% {
-    background-position-y: -576px;
-    background-position-x: -128px;
-  }
-  75% {
-    background-position-y: -576px;
-    background-position-x: -448px;
-  }
-  100% {
-    background-position-y: -256px;
-    background-position-x: -128px;
-  }
+	0% {
+		background-position-y: -256px;
+		background-position-x: -128px;
+	}
+	25% {
+		background-position-y: -256px;
+		background-position-x: -448px;
+	}
+	50% {
+		background-position-y: -576px;
+		background-position-x: -128px;
+	}
+	75% {
+		background-position-y: -576px;
+		background-position-x: -448px;
+	}
+	100% {
+		background-position-y: -256px;
+		background-position-x: -128px;
+	}
 }
 
 @keyframes explosion-right {
-  0% {
-    background-position-y: -384px;
-    background-position-x: -256px;
-  }
-  25% {
-    background-position-y: -384px;
-    background-position-x: -576px;
-  }
-  50% {
-    background-position-y: -704px;
-    background-position-x: -256px;
-  }
-  75% {
-    background-position-y: -704px;
-    background-position-x: -576px;
-  }
-  100% {
-    background-position-y: -384px;
-    background-position-x: -256px;
-  }
+	0% {
+		background-position-y: -384px;
+		background-position-x: -256px;
+	}
+	25% {
+		background-position-y: -384px;
+		background-position-x: -576px;
+	}
+	50% {
+		background-position-y: -704px;
+		background-position-x: -256px;
+	}
+	75% {
+		background-position-y: -704px;
+		background-position-x: -576px;
+	}
+	100% {
+		background-position-y: -384px;
+		background-position-x: -256px;
+	}
 }
 
 @keyframes explosion-left {
-  0% {
-    background-position-y: -384px;
-    background-position-x: -64px;
-  }
-  25% {
-    background-position-y: -384px;
-    background-position-x: -320px;
-  }
-  50% {
-    background-position-y: -704px;
-    background-position-x: -64px;
-  }
-  75% {
-    background-position-y: -704px;
-    background-position-x: -320px;
-  }
-  100% {
-    background-position-y: -384px;
-    background-position-x: -64px;
-  }
+	0% {
+		background-position-y: -384px;
+		background-position-x: -64px;
+	}
+	25% {
+		background-position-y: -384px;
+		background-position-x: -320px;
+	}
+	50% {
+		background-position-y: -704px;
+		background-position-x: -64px;
+	}
+	75% {
+		background-position-y: -704px;
+		background-position-x: -320px;
+	}
+	100% {
+		background-position-y: -384px;
+		background-position-x: -64px;
+	}
 }
 
 @keyframes explosion-bottom {
-  0% {
-    background-position-y: -512px;
-    background-position-x: -128px;
-  }
-  25% {
-    background-position-y: -512px;
-    background-position-x: -448px;
-  }
-  50% {
-    background-position-y: -832px;
-    background-position-x: -128px;
-  }
-  75% {
-    background-position-y: -832px;
-    background-position-x: -448px;
-  }
-  100% {
-    background-position-y: -512px;
-    background-position-x: -128px;
-  }
+	0% {
+		background-position-y: -512px;
+		background-position-x: -128px;
+	}
+	25% {
+		background-position-y: -512px;
+		background-position-x: -448px;
+	}
+	50% {
+		background-position-y: -832px;
+		background-position-x: -128px;
+	}
+	75% {
+		background-position-y: -832px;
+		background-position-x: -448px;
+	}
+	100% {
+		background-position-y: -512px;
+		background-position-x: -128px;
+	}
 }
 
 @keyframes block-destruction {
-  0% {
-    background-position-y: -192px;
-    background-position-x: -256px;
-  }
-  17% {
-    background-position-y: -192px;
-    background-position-x: -320px;
-  }
-  34% {
-    background-position-y: -192px;
-    background-position-x: -384px;
-  }
-  51% {
-    background-position-y: -192px;
-    background-position-x: -448px;
-  }
-  68% {
-    background-position-y: -192px;
-    background-position-x: -512px;
-  }
-  85% {
-    background-position-y: -192px;
-    background-position-x: -576px;
-  }
-  100% {
-    background-position-y: -192px;
-    background-position-x: -640px;
-  }
+	0% {
+		background-position-y: -192px;
+		background-position-x: -256px;
+	}
+	17% {
+		background-position-y: -192px;
+		background-position-x: -320px;
+	}
+	34% {
+		background-position-y: -192px;
+		background-position-x: -384px;
+	}
+	51% {
+		background-position-y: -192px;
+		background-position-x: -448px;
+	}
+	68% {
+		background-position-y: -192px;
+		background-position-x: -512px;
+	}
+	85% {
+		background-position-y: -192px;
+		background-position-x: -576px;
+	}
+	100% {
+		background-position-y: -192px;
+		background-position-x: -640px;
+	}
 }
 
 @keyframes death-animation {
-  0% {
-    background-position-y: -128px;
-    background-position-x: -64px;
-  }
-  17% {
-    background-position-y: -128px;
-    background-position-x: -128px;
-  }
-  34% {
-    background-position-y: -128px;
-    background-position-x: -192px;
-  }
-  51% {
-    background-position-y: -128px;
-    background-position-x: -256px;
-  }
-  68% {
-    background-position-y: -128px;
-    background-position-x: -320px;
-  }
-  85% {
-    background-position-y: -128px;
-    background-position-x: -384px;
-  }
-  100% {
-    background-position-y: -128px;
-    background-position-x: -448px;
-  }
+	0% {
+		background-position-y: -128px;
+		background-position-x: -64px;
+	}
+	17% {
+		background-position-y: -128px;
+		background-position-x: -128px;
+	}
+	34% {
+		background-position-y: -128px;
+		background-position-x: -192px;
+	}
+	51% {
+		background-position-y: -128px;
+		background-position-x: -256px;
+	}
+	68% {
+		background-position-y: -128px;
+		background-position-x: -320px;
+	}
+	85% {
+		background-position-y: -128px;
+		background-position-x: -384px;
+	}
+	100% {
+		background-position-y: -128px;
+		background-position-x: -448px;
+	}
 }
