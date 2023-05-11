@@ -292,6 +292,9 @@ const move = (direction) => {
 	const cell = cellsArr[newY][newX]
 
 	if (isPowerUp(cell)) {
+		// console.log("cells:", cell)
+		// console.log("newY:", newY, "newX:", newX)
+
 		const powerupValue = checkPowerUp(cell)
 
 		if (
@@ -302,7 +305,6 @@ const move = (direction) => {
 			currentPower = powerupValue
 			cell.classList.remove("powerUp")
 			cell.classList.remove(powerupValue)
-			cell.classList.add("walkable")
 
 			// reset power ups
 			if (powerupValue !== "bomb-up") {
