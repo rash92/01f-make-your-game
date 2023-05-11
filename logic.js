@@ -10,7 +10,7 @@ const gridRow = 13
 const gridCol = 15
 const cellSize = 64
 let speed = 50
-const distance = 1
+const distance = 0.25
 let bomberManCurrenPosition = {
 	y: 64,
 	x: 64,
@@ -236,23 +236,29 @@ const move = (direction) => {
 		x: bomberManCurrenPosition.x,
 		y: bomberManCurrenPosition.y,
 	}
+  let modifier = 0
 	switch (direction) {
 		case "ArrowUp":
 			newPosition.y -= cellSize * distance
+      modifier = 0
 			break
-		case "ArrowDown":
-			newPosition.y += cellSize * distance
+      case "ArrowDown":
+        newPosition.y += cellSize * distance
+        modifier = 0.999
 			break
 		case "ArrowRight":
 			newPosition.x += cellSize * distance
+      modifier =  0.999
 			break
-		case "ArrowLeft":
-			newPosition.x -= cellSize * distance
+      case "ArrowLeft":
+        newPosition.x -= cellSize * distance
+        modifier = 0
 			break
 	}
 	// Check if the new position is within the boundaries of the grid
-	const newY = Math.floor(newPosition.y / cellSize)
-	const newX = Math.floor(newPosition.x / cellSize)
+	
+  let newY = Math.floor(newPosition.y / cellSize + modifier)
+	let newX = Math.floor(newPosition.x / cellSize + modifier)
 
 	const cell = cellsArr[newY][newX]
 
