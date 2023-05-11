@@ -417,6 +417,7 @@ const destroyBlocks = (cell) => {
 		cell.addEventListener("animationend", () => {
 			cell.classList.remove("breakable-block-destruction")
 			cell.classList.add("walkable")
+      walkableCells = Array.from(document.querySelectorAll(".walkable"));
 		})
 	}
 
@@ -424,6 +425,8 @@ const destroyBlocks = (cell) => {
 	cell.classList.add("breakable-block-destruction")
 	cell.addEventListener("animationend", () => {
 		cell.classList.remove("breakable-block-destruction")
+    cell.classList.add("walkable")
+    walkableCells = Array.from(document.querySelectorAll(".walkable"));
 	})
 
 	currentScore += 10
@@ -454,8 +457,8 @@ const killEnemy = (cell) => {
 let remoteControlBombElements = []
 const bomb = () => {
 	const bomberManPosition = {
-		y: bomberManCurrenPosition.y / cellSize,
-		x: bomberManCurrenPosition.x / cellSize,
+		y: Math.round(bomberManCurrenPosition.y / cellSize),
+		x: Math.round(bomberManCurrenPosition.x / cellSize),
 	}
 
 	const bomberManCell = cellsArr[bomberManPosition.y][bomberManPosition.x]
