@@ -23,7 +23,7 @@ let enemyCount = 3;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 let currentScore = 0;
-let currentLives = 3;
+let currentLives = 100;
 let gamePaused = false;
 let gameOver = false;
 let isMoving = {
@@ -225,6 +225,8 @@ const checkNotDead = (cell, entity) => {
   } else {
     if (hasExplosionClass) {
       killEnemy(cell);
+    } else if (bomberManEnemyCollision()) {
+      killBomberMan()
     }
   }
 };
@@ -420,10 +422,9 @@ const destroyBlocks = (cell) => {
 };
 
 const killEnemy = (cell) => {
+  console.log("enemy arr before death: ", enemyArr)
   enemyArr.forEach((enemy) => {
     const enemyData = JSON.parse(enemy.dataset.enemy);
-    // console.log("enemy y x", enemyData.y, enemyData.x)
-    // console.log("cell y x", parseInt(cell.style.top), parseInt(cell.style.left));
     let originalEnemyPosition = {
       y: enemyData.y + enemyData.rely,
       x: enemyData.x + enemyData.relx,
@@ -437,6 +438,7 @@ const killEnemy = (cell) => {
       enemy.addEventListener("animationend", () => {
         enemy.remove("enemy-death");
         enemyArr.splice(enemyData.id - enemyArr.length, 1);
+        console.log("enemy arr after death: ", enemyArr)
         currentScore += 100;
         score.textContent = `Score ${currentScore}`;
       });
@@ -657,7 +659,7 @@ const enemyAI = () => {
       enemy.style.transform = `translate(${relativeEnemyPosition.x}px, ${relativeEnemyPosition.y}px)`;
       enemyData.rely = relativeEnemyPosition.y;
       enemyData.relx = relativeEnemyPosition.x;
-      checkNotDead(cell, "bomberMan")
+      checkNotDead(cell, "enemy")
     } else {
       enemyData.direction =
         randomDirection[(enemyData.direction + 1) % randomDirection.length];
