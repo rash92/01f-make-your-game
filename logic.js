@@ -422,29 +422,31 @@ const destroyBlocks = (cell) => {
 };
 
 const killEnemy = (cell) => {
-  console.log("enemy arr before death: ", enemyArr)
-  enemyArr.forEach((enemy) => {
+  const enemyToKill = enemyArr.find((enemy) => {
     const enemyData = JSON.parse(enemy.dataset.enemy);
     let originalEnemyPosition = {
       y: enemyData.y + enemyData.rely,
       x: enemyData.x + enemyData.relx,
     };
-    if (
+    return (
       parseInt(cell.style.top) === originalEnemyPosition.y &&
       parseInt(cell.style.left) === originalEnemyPosition.x
-    ) {
-      enemy.classList.remove("enemy");
-      enemy.classList.add("enemy-death");
-      enemy.addEventListener("animationend", () => {
-        enemy.remove("enemy-death");
-        enemyArr.splice(enemyData.id - enemyArr.length, 1);
-        console.log("enemy arr after death: ", enemyArr)
-        currentScore += 100;
-        score.textContent = `Score ${currentScore}`;
-      });
-    }
+    );
   });
+
+  if (enemyToKill) {
+    enemyToKill.classList.remove("enemy");
+    enemyToKill.classList.add("enemy-death");
+    enemyToKill.addEventListener("animationend", () => {
+      enemyToKill.classList.remove("enemy-death");
+      const enemyData = JSON.parse(enemyToKill.dataset.enemy);
+      enemyArr.splice(enemyData.id - enemyArr.length, 1);
+      currentScore += 100;
+      score.textContent = `Score ${currentScore}`;
+    });
+  }
 };
+
 
 let remoteControlBombElements = [];
 const bomb = () => {
