@@ -12,7 +12,7 @@ const gridRow = 13
 const gridCol = 15
 const cellSize = 64
 let speed = 50
-const distance = 0.25
+let step = 0.25
 let bomberManCurrentPosition = {
 	y: 64,
 	x: 64,
@@ -39,40 +39,41 @@ let numOfPowerUps = 2
 let fireRange = 1
 let numBombs = 1
 let remoteControl = false
+let passBombs = false
 let vest = false
 const powerUpObj = [
-	// {
-	// 	name: "bomb-up",
-	// 	count: 2,
-	// },
 	{
-		name: "fire-up",
-		count: 1,
+		name: "bomb-up",
+		count: 2,
 	},
 	// {
-	// 	name: "skate",
+	// 	name: "fire-up",
 	// 	count: 1,
 	// },
-	// {
-	// 	name: "soft-block-pass",
-	// 	count: 1,
-	// },
-	// {
-	// 	name: "remote-control",
-	// 	count: 1,
-	// },
-	// {
-	// 	name: "bomb-pass",
-	// 	count: 1,
-	// },
+	{
+		name: "skate",
+		count: 1,
+	},
+	{
+		name: "soft-block-pass",
+		count: 1,
+	},
+	{
+		name: "remote-control",
+		count: 1,
+	},
+	{
+		name: "bomb-pass",
+		count: 1,
+	},
 	// {
 	// 	name: "full-fire",
 	// 	count: 1,
 	// },
-	// {
-	// 	name: "vest",
-	// 	count: 1,
-	// },
+	{
+		name: "vest",
+		count: 1,
+	},
 ]
 
 const powerUpLists = powerUpObj.map((v) => v.name)
@@ -241,7 +242,7 @@ const move = (direction) => {
 	let newX = Math.floor(newPosition.x / cellSize)
 	switch (direction) {
 		case "ArrowUp":
-			newPosition.y -= cellSize * distance
+			newPosition.y -= cellSize * step
 			newY = Math.floor(newPosition.y / cellSize)
 			if (isbetweenCells(newPosition.x)) {
 				newX = Math.round(newPosition.x / cellSize)
@@ -249,7 +250,7 @@ const move = (direction) => {
 			}
 			break
 		case "ArrowDown":
-			newPosition.y += cellSize * distance
+			newPosition.y += cellSize * step
 			newY = Math.ceil(newPosition.y / cellSize)
 			if (isbetweenCells(newPosition.x)) {
 				newX = Math.round(newPosition.x / cellSize)
@@ -257,7 +258,7 @@ const move = (direction) => {
 			}
 			break
 		case "ArrowRight":
-			newPosition.x += cellSize * distance
+			newPosition.x += cellSize * step
 			newX = Math.ceil(newPosition.x / cellSize)
 			if (isbetweenCells(newPosition.y)) {
 				newY = Math.round(newPosition.y / cellSize)
@@ -265,7 +266,7 @@ const move = (direction) => {
 			}
 			break
 		case "ArrowLeft":
-			newPosition.x -= cellSize * distance
+			newPosition.x -= cellSize * step
 			newX = Math.floor(newPosition.x / cellSize)
 			if (isbetweenCells(newPosition.y)) {
 				newY = Math.round(newPosition.y / cellSize)
@@ -276,15 +277,9 @@ const move = (direction) => {
 			return
 	}
 	// Check if the new position is within the boundaries of the grid
-
-	// console.log(newY, newX);
-
 	const cell = cellsArr[newY][newX]
 
 	if (isPowerUp(cell)) {
-		// console.log("cells:", cell)
-		// console.log("newY:", newY, "newX:", newX)
-
 		const powerupValue = checkPowerUp(cell)
 
 		if (
@@ -301,12 +296,12 @@ const move = (direction) => {
 				numBombs = 1
 			}
 
-			if (powerupValue !== "fire-up" || "full-fire") {
+			if (powerupValue !== "fire-up" || powerupValue !== "full-fire") {
 				fireRange = 1
 			}
 
 			if (powerupValue !== "skate") {
-				speed = 50
+				step = 0.25
 			}
 
 			if (powerupValue !== "soft-block-pass") {
@@ -317,20 +312,26 @@ const move = (direction) => {
 				remoteControl = false
 			}
 
-			if (powerupValue !== "bomb-pass" || "vest") {
+			if (powerupValue !== "bomb-pass") {
+				passBombs = false
+			}
+
+			if (powerupValue !== "vest") {
 				vest = false
 			}
+
+			console.log(powerupValue)
 
 			// apply powerup
 			switch (powerupValue) {
 				case "bomb-up": // increase number of bomb
 					numBombs += 1
 					break
-				case "fire-up": // change explosion and range by 1 tile
-					fireRange = 2
-					break
+				// case "fire-up": // change explosion and range by 1 tile
+				// 	fireRange = 2
+				// 	break
 				case "skate": // skate - Increase Bomberman's speed
-					speed += 100
+					step = 0.5
 					break
 				case "soft-block-pass": // soft block pass - Pass through Soft Blocks
 					// include breakable cells as walkable
@@ -342,11 +343,11 @@ const move = (direction) => {
 					remoteControl = true
 					break
 				case "bomb-pass": // bomb pass - Pass through Bombs
-					vest = true
+					passBombs = true
 					break
-				case "full-fire": // full fire - Increase your firepower to the max
-					fireRange = 5
-					break
+				// case "full-fire": // full fire - Increase your firepower to the max
+				// 	fireRange = 3
+				// break
 				case "vest": // vest - Immune to both Bombs blast and enemies
 					vest = true
 					// enemy blast WIP
@@ -461,7 +462,9 @@ const bomb = () => {
 		bombElement.classList.add("bomb")
 		bombPlaced = true
 		bomberManCell.appendChild(bombElement)
-		bomberManCell.classList.remove("walkable")
+		if (!passBombs) {
+			bomberManCell.classList.remove("walkable")
+		}
 
 		if (remoteControl) {
 			remoteControlBombElements.push({
@@ -487,11 +490,6 @@ document.addEventListener("keydown", (e) => {
 })
 
 function detonate(bombElement, bomberManPosition, bomberManCell) {
-	// let explosionTop
-	// let explosionBottom
-	// let explosionRight
-	// let explosionLeft
-
 	let explosionRangeMinusY = bomberManPosition.y - fireRange
 	if (explosionRangeMinusY < 0) {
 		explosionRangeMinusY = 1
@@ -516,10 +514,6 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 	let explosionBottom = cellsArr[explosionRangePlusY][bomberManPosition.x]
 	let explosionRight = cellsArr[bomberManPosition.y][explosionRangePlusX]
 	let explosionLeft = cellsArr[bomberManPosition.y][explosionRangeMinusX]
-	// explosionTop = cellsArr[explosionRangeMinusY][bomberManPosition.x]
-	// explosionBottom = cellsArr[explosionRangePlusY][bomberManPosition.x]
-	// explosionRight = cellsArr[bomberManPosition.y][explosionRangePlusX]
-	// explosionLeft = cellsArr[bomberManPosition.y][explosionRangeMinusX]
 
 	bombElement.addEventListener("animationend", () => {
 		bombElement.remove()
@@ -536,59 +530,57 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 		})
 
 		// Explosion Top
-		for (let i = 1; i <= fireRange; i++) {
-			explosionTop = cellsArr[bomberManPosition.y - i][bomberManPosition.x]
-			if (!explosionTop.classList.contains("indestructible")) {
-				if (explosionTop.classList.contains("breakable")) {
-					destroyBlocks(explosionTop)
-				}
-				killEnemy(explosionTop)
-				if (
-					Math.abs(
-						parseInt(explosionTop.style.top) - bomberManCurrentPosition.y
-					) < cellSize &&
-					Math.abs(
-						parseInt(explosionTop.style.left) - bomberManCurrentPosition.x
-					) < cellSize &&
-					!vest
-				) {
-					// killBomberMan()
-				}
-
-				explosionTop.classList.add("explosion-top")
-				explosionTop.addEventListener("animationend", () => {
-					explosionTop.classList.remove("explosion-top")
-				})
+		// for (let i = 1; i <= fireRange; i++) {
+		// 	explosionTop = cellsArr[bomberManPosition.y - i][bomberManPosition.x]
+		if (!explosionTop.classList.contains("indestructible")) {
+			if (explosionTop.classList.contains("breakable")) {
+				destroyBlocks(explosionTop)
 			}
+			killEnemy(explosionTop)
+			if (
+				Math.abs(
+					parseInt(explosionTop.style.top) - bomberManCurrentPosition.y
+				) < cellSize &&
+				Math.abs(
+					parseInt(explosionTop.style.left) - bomberManCurrentPosition.x
+				) < cellSize &&
+				!vest
+			) {
+				killBomberMan()
+			}
+
+			explosionTop.classList.add("explosion-top")
+			explosionTop.addEventListener("animationend", () => {
+				explosionTop.classList.remove("explosion-top")
+			})
 		}
+		// }
 		// Explosion Bottom
-		for (let i = 1; i <= fireRange; i++) {
-			explosionBottom = cellsArr[bomberManPosition.y + i][bomberManPosition.x]
-			if (!explosionBottom.classList.contains("indestructible")) {
-				if (explosionBottom.classList.contains("breakable")) {
-					destroyBlocks(explosionBottom)
-				}
-				killEnemy(explosionBottom)
-				if (
-					Math.abs(
-						parseInt(explosionBottom.style.top) - bomberManCurrentPosition.y
-					) < cellSize &&
-					Math.abs(
-						parseInt(explosionBottom.style.left) - bomberManCurrentPosition.x
-					) < cellSize &&
-					!vest
-				) {
-					// killBomberMan()
-				}
-
-				explosionBottom.classList.add("explosion-bottom")
-				explosionBottom.style.border = "2px solid orange"
-				explosionBottom.addEventListener("animationend", () => {
-					explosionBottom.classList.remove("explosion-bottom")
-				})
+		// for (let i = 1; i <= fireRange; i++) {
+		// explosionBottom = cellsArr[bomberManPosition.y + i][bomberManPosition.x]
+		if (!explosionBottom.classList.contains("indestructible")) {
+			if (explosionBottom.classList.contains("breakable")) {
+				destroyBlocks(explosionBottom)
 			}
-			explosionBottom.classList.remove("explosion-bottom")
+			killEnemy(explosionBottom)
+			if (
+				Math.abs(
+					parseInt(explosionBottom.style.top) - bomberManCurrentPosition.y
+				) < cellSize &&
+				Math.abs(
+					parseInt(explosionBottom.style.left) - bomberManCurrentPosition.x
+				) < cellSize &&
+				!vest
+			) {
+				killBomberMan()
+			}
+
+			explosionBottom.classList.add("explosion-bottom")
+			explosionBottom.addEventListener("animationend", () => {
+				explosionBottom.classList.remove("explosion-bottom")
+			})
 		}
+		// }
 
 		// Explosion Right
 		if (!explosionRight.classList.contains("indestructible")) {
@@ -605,7 +597,7 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 				) < cellSize &&
 				!vest
 			) {
-				// killBomberMan()
+				killBomberMan()
 			}
 			explosionRight.classList.add("explosion-right")
 			explosionRight.addEventListener("animationend", () => {
@@ -628,7 +620,7 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 				) < cellSize &&
 				!vest
 			) {
-				// killBomberMan()
+				killBomberMan()
 			}
 			explosionLeft.classList.add("explosion-left")
 			explosionLeft.addEventListener("animationend", () => {
