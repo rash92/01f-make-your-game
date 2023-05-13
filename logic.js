@@ -587,6 +587,7 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 					explosionBottom.classList.remove("explosion-bottom")
 				})
 			}
+			explosionBottom.classList.remove("explosion-bottom")
 		}
 
 		// Explosion Right
