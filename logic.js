@@ -440,7 +440,8 @@ const killEnemy = (cell) => {
     enemyToKill.addEventListener("animationend", () => {
       enemyToKill.classList.remove("enemy-death");
       const enemyData = JSON.parse(enemyToKill.dataset.enemy);
-      enemyArr.splice(enemyData.id - enemyArr.length, 1);
+      enemyToKill.remove()
+      enemyArr = Array.from(document.querySelectorAll(".enemy"));
       currentScore += 100;
       score.textContent = `Score ${currentScore}`;
     });
