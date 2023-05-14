@@ -161,13 +161,9 @@ const createCellsArr = () => {
 	return twoDArr
 }
 
-const setSprite = (spriteX, spriteY) => {
-	const bomberMan = document.querySelector(".bomber-man")
-	const spriteSize = 64
-	bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${
-		spriteY * spriteSize
-	}px`
-}
+buildGrid()
+const cellsArr = createCellsArr()
+setSprite(horizontalAnimation, 1)
 
 const createEnemies = () => {
 	while (enemyCount > 0) {
@@ -200,6 +196,17 @@ const createEnemies = () => {
 	}
 	return Array.from(document.querySelectorAll(".enemy"))
 }
+
+const setSprite = (spriteX, spriteY) => {
+	const bomberMan = document.querySelector(".bomber-man")
+	const spriteSize = 64
+	bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${
+		spriteY * spriteSize
+	}px`
+}
+
+let enemyArr = createEnemies()
+
 // buildGrid()
 // let walkableCells = Array.from(document.querySelectorAll(".walkable"))
 // let powerUps = Array.from(document.querySelectorAll(".powerUp"))
@@ -210,24 +217,24 @@ const createEnemies = () => {
 
 // let cellsArr = createCellsArr()
 
-let walkableCells
-let powerUps
-let door
-let enemyArr
-let cellsArr
+// let walkableCells
+// let powerUps
+// let door
+// let enemyArr
+// let cellsArr
 
-function start() {
-	buildGrid()
-	walkableCells = Array.from(document.querySelectorAll(".walkable"))
-	powerUps = Array.from(document.querySelectorAll(".powerUp"))
-	door = Array.from(document.querySelectorAll(".door"))
+// function start() {
+// 	buildGrid()
+// 	walkableCells = Array.from(document.querySelectorAll(".walkable"))
+// 	powerUps = Array.from(document.querySelectorAll(".powerUp"))
+// 	door = Array.from(document.querySelectorAll(".door"))
 
-	cellsArr = createCellsArr()
-	setSprite(horizontalAnimation, 1)
-	enemyArr = createEnemies()
-}
+// 	cellsArr = createCellsArr()
+// 	setSprite(horizontalAnimation, 1)
+// 	enemyArr = createEnemies()
+// }
 
-start()
+// start()
 
 function isWalkable(cell) {
 	return walkableCells.includes(cell)
