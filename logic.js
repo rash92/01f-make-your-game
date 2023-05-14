@@ -173,6 +173,10 @@ buildGrid()
 const cellsArr = createCellsArr()
 setSprite(horizontalAnimation, 1)
 
+let walkableCells = Array.from(document.querySelectorAll(".walkable"))
+let powerUps = Array.from(document.querySelectorAll(".powerUp"))
+let door = Array.from(document.querySelectorAll(".door"))
+
 const createEnemies = () => {
 	while (enemyCount > 0) {
 		let randomWalkableCell =
@@ -355,25 +359,25 @@ const checkNotDead = (cell, entity) => {
 	const hasExplosionClass = classNames.some((className) =>
 		cell.classList.contains(className)
 	)
-	// if (entity === "bomberMan") {
-	// 	if (hasExplosionClass || bomberManEnemyCollision()) {
-	// 		killBomberMan()
-	// 	}
-	// } else {
-	// 	if (hasExplosionClass) {
-	// 		killEnemy(cell)
-	// 	} else if (bomberManEnemyCollision()) {
-	// 		killBomberMan()
-	// 	}
-	// }
+	if (entity === "bomberMan") {
+		if (hasExplosionClass || bomberManEnemyCollision()) {
+			killBomberMan()
+		}
+	} else {
+		if (hasExplosionClass) {
+			killEnemy(cell)
+		} else if (bomberManEnemyCollision()) {
+			killBomberMan()
+		}
+	}
 
-	if (hasExplosionClass) {
-		killEnemy(cell)
-	}
-	if (bomberManEnemyCollision()) {
-		isKilled = true
-		killBomberMan()
-	}
+	// if (hasExplosionClass) {
+	// 	killEnemy(cell)
+	// }
+	// if (bomberManEnemyCollision()) {
+	// 	isKilled = true
+	// 	killBomberMan()
+	// }
 }
 
 const isbetweenCells = (position) => position % cellSize !== 0
