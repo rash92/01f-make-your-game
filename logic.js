@@ -1,5 +1,8 @@
 const grid = document.getElementById("game-grid")
 const gameStatus = document.getElementById("game-status")
+const gameOver = document.getElementById("game-over")
+const timer = document.getElementById("timer")
+const killed = document.getElementById("killed")
 const bomberManWrapper = document.createElement("div")
 bomberManWrapper.classList.add("bomberManWrapper")
 bomberManWrapper.classList.add("bomber-man")
@@ -23,15 +26,41 @@ let enemyCount = 3
 let randomDirection = [0, 1, 2, 3]
 let bombPlaced = false
 let currentScore = 0
-let currentLives = 100
+let currentLives = 3
 let gamePaused = false
-let gameOver = false
+let isGameOver = false
 let isMoving = {
 	ArrowUp: false,
 	ArrowDown: false,
 	ArrowLeft: false,
 	ArrowRight: false,
 }
+let killedByEnemy = false
+let isDead = false
+let totalTime = 20
+
+let countdownTimer
+let remainingSeconds = totalTime
+
+function startCountdown() {
+	countdownTimer = setInterval(() => {
+		remainingSeconds--
+		timer.textContent = `Time: ${remainingSeconds}`
+		if (remainingSeconds === 0) {
+			clearInterval(countdownTimer)
+			isGameOver = true
+			if (isGameOver) {
+				gameOver.style.display = "flex"
+			}
+		}
+	}, 1000)
+}
+
+function pauseCountdown() {
+	clearInterval(countdownTimer)
+}
+
+startCountdown()
 
 // power ups
 let currentPower
@@ -125,6 +154,7 @@ const createCellsArr = () => {
 	}
 	return twoDArr
 }
+
 function setSprite(spriteX, spriteY) {
 	const bomberMan = document.querySelector(".bomber-man")
 	const spriteSize = 64
@@ -134,7 +164,7 @@ function setSprite(spriteX, spriteY) {
 }
 
 buildGrid()
-const cellsArr = createCellsArr()
+let cellsArr = createCellsArr()
 setSprite(horizontalAnimation, 1)
 
 let walkableCells = Array.from(document.querySelectorAll(".walkable"))
@@ -220,13 +250,13 @@ const checkNotDead = (cell, entity) => {
 	)
 	if (entity === "bomberMan") {
 		if (hasExplosionClass || bomberManEnemyCollision()) {
-			// killBomberMan()
+			killBomberMan()
 		}
 	} else {
 		if (hasExplosionClass) {
 			killEnemy(cell)
 		} else if (bomberManEnemyCollision()) {
-			// killBomberMan()
+			killBomberMan()
 		}
 	}
 }
@@ -387,25 +417,43 @@ const move = (direction) => {
 
 const killBomberMan = () => {
 	document.removeEventListener("keydown", onKeyDown)
-	if (currentLives === 0) {
-		gameOver = true
+	pauseCountdown()
+
+	if (currentLives === 1) {
+		currentLives -= 1
+		lives.textContent = `Lives ${currentLives}`
+		isGameOver = true
+		if (isGameOver) {
+			gameOver.style.display = "flex"
+		}
+	} else {
+		currentLives -= 1
+		lives.textContent = `Lives ${currentLives}`
+		if (!isGameOver) {
+			isDead = true
+			killed.style.display = "flex"
+		}
+		setTimeout(() => {
+			startCountdown()
+			isDead = false
+			killed.style.display = "none"
+			bomberManWrapper.classList.add("bomber-man")
+			bomberManCurrentPosition = { y: 64, x: 64 }
+			bomberManWrapper.style.transition = `transform 0ms`
+			bomberManWrapper.style.transform = `translate(${
+				bomberManCurrentPosition.x - cellSize
+			}px, ${bomberManCurrentPosition.y - cellSize}px)`
+			setSprite(horizontalAnimation, 1)
+			document.addEventListener("keydown", onKeyDown)
+			window.requestAnimationFrame(gameLoop)
+		}, 3000)
 	}
+
 	bomberManWrapper.classList.remove("bomber-man")
 	bomberManWrapper.classList.add("death")
 	bomberManWrapper.addEventListener("animationend", () => {
 		bomberManWrapper.classList.remove("death")
-		bomberManWrapper.classList.add("bomber-man")
-		bomberManCurrentPosition = { y: 64, x: 64 }
-		bomberManWrapper.style.transition = `transform 0ms`
-		bomberManWrapper.style.transform = `translate(${
-			bomberManCurrentPosition.x - cellSize
-		}px, ${bomberManCurrentPosition.y - cellSize}px)`
-		setSprite(horizontalAnimation, 1)
-		document.addEventListener("keydown", onKeyDown)
-		window.requestAnimationFrame(gameLoop)
 	})
-	currentLives -= 1
-	lives.textContent = `Lives ${currentLives}`
 }
 
 const destroyBlocks = (cell) => {
@@ -678,6 +726,11 @@ const enemyAI = () => {
 	})
 }
 
+const reset = () => {
+	location.reload()
+	remainingSeconds = totalTime
+}
+
 const onKeyDown = (e) => {
 	switch (e.key) {
 		case "ArrowUp":
@@ -708,8 +761,12 @@ const onKeyDown = (e) => {
 				window.requestAnimationFrame(gameLoop)
 			}
 			break
+		case "r":
+			reset()
+			break
 	}
 }
+
 const onKeyUp = (e) => {
 	switch (e.key) {
 		case "ArrowUp":
@@ -738,10 +795,7 @@ const moveInterval = 50
 let lastEnemyMove = 0
 let lastMove = 0
 const gameLoop = (timestamp) => {
-	if (gamePaused) {
-		return
-	}
-	if (gameOver) {
+	if (gamePaused || isGameOver || killedByEnemy || isDead) {
 		return
 	}
 

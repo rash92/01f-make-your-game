@@ -15,7 +15,9 @@
 	position: relative;
 }
 
-#game-status {
+#game-status,
+#game-over,
+#killed {
 	display: none;
 	flex-direction: column;
 	justify-content: center;
