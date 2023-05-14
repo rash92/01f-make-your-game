@@ -17,7 +17,8 @@
 
 #game-status,
 #game-over,
-#killed {
+#player-died,
+#stage-complete {
 	display: none;
 	flex-direction: column;
 	justify-content: center;
@@ -64,6 +65,14 @@
 
 .walkable {
 	background: #388700;
+}
+
+.door {
+	border: 5px solid blue;
+	background-image: url("sprites.png");
+	background-position-y: -192px;
+	background-position-x: -704px;
+	background-size: 896px 1532px;
 }
 
 /* power ups */
