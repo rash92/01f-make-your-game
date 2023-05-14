@@ -40,6 +40,7 @@ let isMoving = {
 	ArrowRight: false,
 }
 let doorAdded = false
+
 // power ups
 let currentPower
 let numOfPowerUps = 2
@@ -287,31 +288,41 @@ const killBomberMan = () => {
 		if (!isGameOver) {
 			startCountdown()
 		}
-		reset()
+		isKilled = false
+		playerDied.style.display = "none"
+		bomberManCurrentPosition = { y: 64, x: 64 }
+		bomberManWrapper.classList.add("bomber-man")
+		bomberManWrapper.style.transition = `transform 0ms`
+		bomberManWrapper.style.transform = `translate(${
+			bomberManCurrentPosition.x - cellSize
+		}px, ${bomberManCurrentPosition.y - cellSize}px)`
+		setSprite(horizontalAnimation, 1)
+		document.addEventListener("keydown", onKeyDown)
+		window.requestAnimationFrame(gameLoop)
 	}, 3000)
 }
 
 const reset = () => {
 	isKilled = false
 
-	grid.innerHTML = ""
-	numOfPowerUps = 2
-	doorAdded = false
+	// grid.innerHTML = ""
+	// numOfPowerUps = 2
+	// doorAdded = false
 
-	buildGrid()
-	grid.appendChild(bomberManWrapper)
+	// buildGrid()
+	// grid.appendChild(bomberManWrapper)
 
-	cellsArr = createCellsArr()
-	walkableCells = Array.from(document.querySelectorAll(".walkable"))
-	powerUps = Array.from(document.querySelectorAll(".powerUp"))
-	door = Array.from(document.querySelectorAll(".door"))
-	enemyCount = 3
+	// cellsArr = createCellsArr()
+	// walkableCells = Array.from(document.querySelectorAll(".walkable"))
+	// powerUps = Array.from(document.querySelectorAll(".powerUp"))
+	// door = Array.from(document.querySelectorAll(".door"))
+	// enemyCount = 3
 
-	// remove existing enemies from the grid
-	enemyArr.forEach((enemy) => enemy.remove())
+	// // remove existing enemies from the grid
+	// enemyArr.forEach((enemy) => enemy.remove())
 
-	// create new enemies in random walkable cells
-	enemyArr = createEnemies()
+	// // create new enemies in random walkable cells
+	// enemyArr = createEnemies()
 
 	playerDied.style.display = "none"
 	bomberManCurrentPosition = { y: 64, x: 64 }
