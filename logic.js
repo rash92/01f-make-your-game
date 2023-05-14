@@ -371,13 +371,13 @@ const checkNotDead = (cell, entity) => {
 		}
 	}
 
-	// if (hasExplosionClass) {
-	// 	killEnemy(cell)
-	// }
-	// if (bomberManEnemyCollision()) {
-	// 	isKilled = true
-	// 	killBomberMan()
-	// }
+	if (hasExplosionClass) {
+		killEnemy(cell)
+	}
+	if (bomberManEnemyCollision()) {
+		isKilled = true
+		killBomberMan()
+	}
 }
 
 const isbetweenCells = (position) => position % cellSize !== 0
