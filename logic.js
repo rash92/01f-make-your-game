@@ -161,6 +161,14 @@ const createCellsArr = () => {
 	return twoDArr
 }
 
+const setSprite = (spriteX, spriteY) => {
+	const bomberMan = document.querySelector(".bomber-man")
+	const spriteSize = 64
+	bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${
+		spriteY * spriteSize
+	}px`
+}
+
 buildGrid()
 const cellsArr = createCellsArr()
 setSprite(horizontalAnimation, 1)
@@ -195,14 +203,6 @@ const createEnemies = () => {
 		}
 	}
 	return Array.from(document.querySelectorAll(".enemy"))
-}
-
-const setSprite = (spriteX, spriteY) => {
-	const bomberMan = document.querySelector(".bomber-man")
-	const spriteSize = 64
-	bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${
-		spriteY * spriteSize
-	}px`
 }
 
 let enemyArr = createEnemies()
