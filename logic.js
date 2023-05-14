@@ -35,9 +35,9 @@ let isMoving = {
 	ArrowLeft: false,
 	ArrowRight: false,
 }
-let killedByEnemy = false
+// let killedByEnemy = false
 let isDead = false
-let totalTime = 20
+let totalTime = 50
 
 let countdownTimer
 let remainingSeconds = totalTime
@@ -49,9 +49,7 @@ function startCountdown() {
 		if (remainingSeconds === 0) {
 			clearInterval(countdownTimer)
 			isGameOver = true
-			if (isGameOver) {
-				gameOver.style.display = "flex"
-			}
+			gameOver.style.display = "flex"
 		}
 	}, 1000)
 }
@@ -248,16 +246,22 @@ const checkNotDead = (cell, entity) => {
 	const hasExplosionClass = classNames.some((className) =>
 		cell.classList.contains(className)
 	)
-	if (entity === "bomberMan") {
-		if (hasExplosionClass || bomberManEnemyCollision()) {
-			killBomberMan()
-		}
-	} else {
-		if (hasExplosionClass) {
-			killEnemy(cell)
-		} else if (bomberManEnemyCollision()) {
-			killBomberMan()
-		}
+	// if (entity === "bomberMan") {
+	// 	if (hasExplosionClass || bomberManEnemyCollision()) {
+	// 		killBomberMan()
+	// 	}
+	// } else {
+	// 	if (hasExplosionClass) {
+	// 		killEnemy(cell)
+	// 	} else if (bomberManEnemyCollision()) {
+	// 		killBomberMan()
+	// 	}
+	// }
+
+	if (hasExplosionClass) {
+		killEnemy(cell)
+	} else if (bomberManEnemyCollision()) {
+		killBomberMan()
 	}
 }
 
@@ -416,6 +420,7 @@ const move = (direction) => {
 }
 
 const killBomberMan = () => {
+	isDead = true
 	document.removeEventListener("keydown", onKeyDown)
 	pauseCountdown()
 
@@ -423,30 +428,12 @@ const killBomberMan = () => {
 		currentLives -= 1
 		lives.textContent = `Lives ${currentLives}`
 		isGameOver = true
-		if (isGameOver) {
-			gameOver.style.display = "flex"
-		}
-	} else {
-		currentLives -= 1
-		lives.textContent = `Lives ${currentLives}`
-		if (!isGameOver) {
-			isDead = true
-			killed.style.display = "flex"
-		}
-		setTimeout(() => {
-			startCountdown()
-			isDead = false
-			killed.style.display = "none"
-			bomberManWrapper.classList.add("bomber-man")
-			bomberManCurrentPosition = { y: 64, x: 64 }
-			bomberManWrapper.style.transition = `transform 0ms`
-			bomberManWrapper.style.transform = `translate(${
-				bomberManCurrentPosition.x - cellSize
-			}px, ${bomberManCurrentPosition.y - cellSize}px)`
-			setSprite(horizontalAnimation, 1)
-			document.addEventListener("keydown", onKeyDown)
-			window.requestAnimationFrame(gameLoop)
-		}, 3000)
+		gameOver.style.display = "flex"
+	}
+	currentLives -= 1
+	lives.textContent = `Lives ${currentLives}`
+	if (!isGameOver) {
+		killed.style.display = "flex"
 	}
 
 	bomberManWrapper.classList.remove("bomber-man")
@@ -454,6 +441,23 @@ const killBomberMan = () => {
 	bomberManWrapper.addEventListener("animationend", () => {
 		bomberManWrapper.classList.remove("death")
 	})
+
+	setTimeout(() => {
+		if (!isGameOver) {
+			startCountdown()
+		}
+		isDead = false
+		killed.style.display = "none"
+		bomberManCurrentPosition = { y: 64, x: 64 }
+		bomberManWrapper.classList.add("bomber-man")
+		bomberManWrapper.style.transition = `transform 0ms`
+		bomberManWrapper.style.transform = `translate(${
+			bomberManCurrentPosition.x - cellSize
+		}px, ${bomberManCurrentPosition.y - cellSize}px)`
+		setSprite(horizontalAnimation, 1)
+		document.addEventListener("keydown", onKeyDown)
+		window.requestAnimationFrame(gameLoop)
+	}, 3000)
 }
 
 const destroyBlocks = (cell) => {
@@ -795,7 +799,7 @@ const moveInterval = 50
 let lastEnemyMove = 0
 let lastMove = 0
 const gameLoop = (timestamp) => {
-	if (gamePaused || isGameOver || killedByEnemy || isDead) {
+	if (gamePaused || isGameOver || isDead) {
 		return
 	}
 
