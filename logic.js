@@ -51,34 +51,34 @@ let remoteControl = false
 let passBombs = false
 let vest = false
 let powerUpObj = [
-	{
-		name: "bomb-up",
-		count: 2,
-	},
-	{
-		name: "fire-up",
-		count: 1,
-	},
-	{
-		name: "skate",
-		count: 1,
-	},
-	{
-		name: "soft-block-pass",
-		count: 1,
-	},
-	{
-		name: "remote-control",
-		count: 1,
-	},
-	{
-		name: "bomb-pass",
-		count: 1,
-	},
-	{
-		name: "full-fire",
-		count: 1,
-	},
+	// {
+	// 	name: "bomb-up",
+	// 	count: 2,
+	// },
+	// {
+	// 	name: "fire-up",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "skate",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "soft-block-pass",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "remote-control",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "bomb-pass",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "full-fire",
+	// 	count: 1,
+	// },
 	{
 		name: "vest",
 		count: 1,
@@ -395,13 +395,18 @@ const move = (direction) => {
 					break
 				case "bomb-pass": // bomb pass - Pass through Bombs
 					passBombs = true
+
 					break
 				case "full-fire": // full fire - Increase your firepower to the max
 					fireRange = 3
 					break
 				case "vest": // vest - Immune to both Bombs blast and enemies
 					vest = true
-					// enemy blast WIP
+
+					// // remove power up after 10 seconds
+					// setTimeout(() => {
+					// 	vest = false
+					// }, 10000)
 					break
 			}
 		}
@@ -446,6 +451,10 @@ const move = (direction) => {
 }
 
 const killBomberMan = () => {
+	if (vest) {
+		return
+	}
+
 	document.removeEventListener("keydown", onKeyDown)
 	isKilled = true
 	pauseCountdown()
@@ -476,14 +485,13 @@ const killBomberMan = () => {
 	}, 3000)
 }
 
-console.log("powerUpObj before:", powerUpObj)
-
 const reset = () => {
 	isKilled = false
 
 	grid.innerHTML = ""
 	numOfPowerUps = 2
 	doorAdded = false
+	// vest = false
 	powerUp.innerText = "Powerup:"
 
 	// reset the number of powerups
@@ -504,8 +512,6 @@ const reset = () => {
 	door = Array.from(document.querySelectorAll(".door"))
 	enemyCount = totalNoEnemy
 
-	console.log("powerUpObj after reset:", powerUpObj)
-
 	// remove existing enemies from the grid
 	enemyArr.forEach((enemy) => enemy.remove())
 
@@ -523,8 +529,6 @@ const reset = () => {
 	document.addEventListener("keydown", onKeyDown)
 	window.requestAnimationFrame(gameLoop)
 }
-
-console.log("numOfPowerUps before reset:", numOfPowerUps)
 
 const destroyBlocks = (cell) => {
 	cell.classList.remove("breakable")
@@ -620,8 +624,7 @@ function explode(cell, style) {
 			Math.abs(parseInt(cell.style.top) - bomberManCurrentPosition.y) <
 				cellSize &&
 			Math.abs(parseInt(cell.style.left) - bomberManCurrentPosition.x) <
-				cellSize &&
-			!vest
+				cellSize
 		) {
 			killBomberMan()
 		}
