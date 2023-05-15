@@ -43,14 +43,14 @@ let isMoving = {
 let doorAdded = false
 
 // power ups
-let currentPower
+let currentPower = ""
 let numOfPowerUps = 2
 let fireRange = 1
 let numBombs = 1
 let remoteControl = false
 let passBombs = false
 let vest = false
-const powerUpObj = [
+let powerUpObj = [
 	{
 		name: "bomb-up",
 		count: 2,
@@ -340,7 +340,7 @@ const move = (direction) => {
 			cell.classList.contains("powerUp") &&
 			cell.classList.contains(powerupValue)
 		) {
-			currentPower = powerupValue
+			// currentPower = powerupValue
 			cell.classList.remove("powerUp")
 			cell.classList.remove(powerupValue)
 
@@ -476,12 +476,24 @@ const killBomberMan = () => {
 	}, 3000)
 }
 
+console.log("powerUpObj before:", powerUpObj)
+
 const reset = () => {
 	isKilled = false
 
 	grid.innerHTML = ""
 	numOfPowerUps = 2
 	doorAdded = false
+	powerUp.innerText = "Powerup:"
+
+	// reset the number of powerups
+	powerUpObj.forEach((v) => {
+		if (v.name !== "bomb-up") {
+			v.count = 1
+		} else {
+			v.count = 2
+		}
+	})
 
 	buildGrid()
 	grid.appendChild(bomberManWrapper)
@@ -491,6 +503,8 @@ const reset = () => {
 	powerUps = Array.from(document.querySelectorAll(".powerUp"))
 	door = Array.from(document.querySelectorAll(".door"))
 	enemyCount = totalNoEnemy
+
+	console.log("powerUpObj after reset:", powerUpObj)
 
 	// remove existing enemies from the grid
 	enemyArr.forEach((enemy) => enemy.remove())
@@ -509,6 +523,8 @@ const reset = () => {
 	document.addEventListener("keydown", onKeyDown)
 	window.requestAnimationFrame(gameLoop)
 }
+
+console.log("numOfPowerUps before reset:", numOfPowerUps)
 
 const destroyBlocks = (cell) => {
 	cell.classList.remove("breakable")
