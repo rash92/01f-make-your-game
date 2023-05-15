@@ -89,7 +89,7 @@ const totalTime = 30
 let countdownTimer
 let remainingSeconds = totalTime
 
-function startCountdown() {
+const startCountdown = () => {
 	countdownTimer = setInterval(() => {
 		remainingSeconds--
 		timer.textContent = `Time: ${remainingSeconds}`
@@ -101,7 +101,7 @@ function startCountdown() {
 	}, 1000)
 }
 
-function pauseCountdown() {
+const pauseCountdown = () => {
 	clearInterval(countdownTimer)
 }
 
@@ -170,13 +170,14 @@ const setSprite = (spriteX, spriteY) => {
 }
 
 buildGrid()
-const cellsArr = createCellsArr()
+let cellsArr = createCellsArr()
 setSprite(horizontalAnimation, 1)
 
 let walkableCells = Array.from(document.querySelectorAll(".walkable"))
 let powerUps = Array.from(document.querySelectorAll(".powerUp"))
 let door = Array.from(document.querySelectorAll(".door"))
 
+let enemyArr
 const createEnemies = () => {
 	while (enemyCount > 0) {
 		let randomWalkableCell =
@@ -209,18 +210,7 @@ const createEnemies = () => {
 	return Array.from(document.querySelectorAll(".enemy"))
 }
 
-let enemyArr = createEnemies()
-
-// buildGrid()
-// let walkableCells = Array.from(document.querySelectorAll(".walkable"))
-// let powerUps = Array.from(document.querySelectorAll(".powerUp"))
-// let door = Array.from(document.querySelectorAll(".door"))
-
-// setSprite(horizontalAnimation, 1)
-// let enemyArr = createEnemies()
-
-// let cellsArr = createCellsArr()
-
+enemyArr = createEnemies()
 // let walkableCells
 // let powerUps
 // let door
@@ -271,80 +261,6 @@ const bomberManEnemyCollision = () => {
 			Math.abs(originalEnemyPosition.x - bomberManCurrentPosition.x) < cellSize
 		)
 	})
-}
-
-const killBomberMan = () => {
-	document.removeEventListener("keydown", onKeyDown)
-	pauseCountdown()
-
-	if (currentLives === 0) {
-		isGameOver = true
-		gameOver.style.display = "flex"
-	} else {
-		currentLives -= 1
-		lives.textContent = `Lives ${currentLives}`
-	}
-
-	if (!isGameOver) {
-		playerDied.style.display = "flex"
-	}
-
-	bomberManWrapper.classList.remove("bomber-man")
-	bomberManWrapper.classList.add("death")
-	bomberManWrapper.addEventListener("animationend", () => {
-		bomberManWrapper.classList.remove("death")
-	})
-
-	setTimeout(() => {
-		if (!isGameOver) {
-			startCountdown()
-		}
-		isKilled = false
-		playerDied.style.display = "none"
-		bomberManCurrentPosition = { y: 64, x: 64 }
-		bomberManWrapper.classList.add("bomber-man")
-		bomberManWrapper.style.transition = `transform 0ms`
-		bomberManWrapper.style.transform = `translate(${
-			bomberManCurrentPosition.x - cellSize
-		}px, ${bomberManCurrentPosition.y - cellSize}px)`
-		setSprite(horizontalAnimation, 1)
-		document.addEventListener("keydown", onKeyDown)
-		window.requestAnimationFrame(gameLoop)
-	}, 3000)
-}
-
-const reset = () => {
-	isKilled = false
-
-	// grid.innerHTML = ""
-	// numOfPowerUps = 2
-	// doorAdded = false
-
-	// buildGrid()
-	// grid.appendChild(bomberManWrapper)
-
-	// cellsArr = createCellsArr()
-	// walkableCells = Array.from(document.querySelectorAll(".walkable"))
-	// powerUps = Array.from(document.querySelectorAll(".powerUp"))
-	// door = Array.from(document.querySelectorAll(".door"))
-	// enemyCount = 3
-
-	// // remove existing enemies from the grid
-	// enemyArr.forEach((enemy) => enemy.remove())
-
-	// // create new enemies in random walkable cells
-	// enemyArr = createEnemies()
-
-	playerDied.style.display = "none"
-	bomberManCurrentPosition = { y: 64, x: 64 }
-	bomberManWrapper.classList.add("bomber-man")
-	bomberManWrapper.style.transition = `transform 0ms`
-	bomberManWrapper.style.transform = `translate(${
-		bomberManCurrentPosition.x - cellSize
-	}px, ${bomberManCurrentPosition.y - cellSize}px)`
-	setSprite(horizontalAnimation, 1)
-	document.addEventListener("keydown", onKeyDown)
-	window.requestAnimationFrame(gameLoop)
 }
 
 const checkNotDead = (cell, entity) => {
@@ -541,6 +457,70 @@ const move = (direction) => {
 		}
 		checkNotDead(cell, "bomberMan")
 	}
+}
+
+const killBomberMan = () => {
+	document.removeEventListener("keydown", onKeyDown)
+	pauseCountdown()
+
+	if (currentLives === 0) {
+		isGameOver = true
+		gameOver.style.display = "flex"
+	} else {
+		currentLives -= 1
+		lives.textContent = `Lives ${currentLives}`
+	}
+
+	if (!isGameOver) {
+		playerDied.style.display = "flex"
+	}
+
+	bomberManWrapper.classList.remove("bomber-man")
+	bomberManWrapper.classList.add("death")
+	bomberManWrapper.addEventListener("animationend", () => {
+		bomberManWrapper.classList.remove("death")
+	})
+
+	setTimeout(() => {
+		if (!isGameOver) {
+			startCountdown()
+		}
+		reset()
+	}, 3000)
+}
+
+const reset = () => {
+	isKilled = false
+
+	grid.innerHTML = ""
+	numOfPowerUps = 2
+	doorAdded = false
+
+	buildGrid()
+	grid.appendChild(bomberManWrapper)
+
+	cellsArr = createCellsArr()
+	walkableCells = Array.from(document.querySelectorAll(".walkable"))
+	powerUps = Array.from(document.querySelectorAll(".powerUp"))
+	door = Array.from(document.querySelectorAll(".door"))
+	enemyCount = 3
+
+	// remove existing enemies from the grid
+	enemyArr.forEach((enemy) => enemy.remove())
+
+	// create new enemies in random walkable cells
+	enemyArr = createEnemies()
+
+	playerDied.style.display = "none"
+	bomberManCurrentPosition = { y: 64, x: 64 }
+	bomberManWrapper.classList.add("bomber-man")
+	bomberManWrapper.style.transition = `transform 0ms`
+	bomberManWrapper.style.transform = `translate(${
+		bomberManCurrentPosition.x - cellSize
+	}px, ${bomberManCurrentPosition.y - cellSize}px)`
+	setSprite(horizontalAnimation, 1)
+	document.addEventListener("keydown", onKeyDown)
+	window.requestAnimationFrame(gameLoop)
 }
 
 const destroyBlocks = (cell) => {
