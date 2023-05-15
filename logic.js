@@ -44,44 +44,44 @@ let doorAdded = false;
 // power ups
 let currentPower;
 let numOfPowerUps = 2;
-let fireRange = 3;
+let fireRange = 1;
 let numBombs = 1;
 let remoteControl = false;
 let passBombs = false;
 let vest = false;
 const powerUpObj = [
-  // {
-  //   name: "bomb-up",
-  //   count: 2,
-  // },
-  // {
-  //   name: "fire-up",
-  //   count: 1,
-  // },
-  // {
-  //   name: "skate",
-  //   count: 1,
-  // },
-  // {
-  //   name: "soft-block-pass",
-  //   count: 1,
-  // },
-  // {
-  //   name: "remote-control",
-  //   count: 1,
-  // },
-  // {
-  //   name: "bomb-pass",
-  //   count: 1,
-  // },
+  {
+    name: "bomb-up",
+    count: 2,
+  },
+  {
+    name: "fire-up",
+    count: 1,
+  },
+  {
+    name: "skate",
+    count: 1,
+  },
+  {
+    name: "soft-block-pass",
+    count: 1,
+  },
+  {
+    name: "remote-control",
+    count: 1,
+  },
+  {
+    name: "bomb-pass",
+    count: 1,
+  },
   {
     name: "full-fire",
     count: 1,
   },
-  // {
-  //   name: "vest",
-  //   count: 1,
-  // },
+  {
+    name: "vest",
+    count: 1,
+  },
 ];
 const powerUpLists = powerUpObj.map((v) => v.name);
 
