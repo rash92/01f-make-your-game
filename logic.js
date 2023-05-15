@@ -402,7 +402,6 @@ const move = (direction) => {
 					break
 				case "vest": // vest - Immune to both Bombs blast and enemies
 					vest = true
-
 					// // remove power up after 10 seconds
 					// setTimeout(() => {
 					// 	vest = false
