@@ -198,6 +198,38 @@
 	animation: explosion-bottom 1s steps(1) 1;
 }
 
+.explosion-fireRange-bottom {
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: explosion-fire-up-bottom 1s steps(1) 1;
+}
+
+.explosion-fireRange-top {
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: explosion-fire-up-top 1s steps(1) 1;
+}
+
+.explosion-fireRange-right {
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: explosion-fire-up-right 1s steps(1) 1;
+}
+
+.explosion-fireRange-left {
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	animation: explosion-fire-up-left 1s steps(1) 1;
+}
+
 .breakable-block-destruction {
 	background: #388700;
 	background-image: url("sprites.png");
@@ -416,6 +448,99 @@
 	}
 	100% {
 		background-position-y: -512px;
+		background-position-x: -128px;
+	}
+}
+
+@keyframes explosion-fire-up-top {
+	0% {
+		background-position-y: -320px;
+		background-position-x: -128px;
+	}
+	25% {
+		background-position-y: -320px;
+		background-position-x: -448px;
+	}
+	50% {
+		background-position-y: -640px;
+		background-position-x: -128px;
+	}
+	75% {
+		background-position-y: -640px;
+		background-position-x: -448px;
+	}
+	100% {
+		background-position-y: -320px;
+		background-position-x: -128px;
+	}
+}
+
+
+@keyframes explosion-fire-up-bottom {
+	0% {
+		background-position-y: -448px;
+		background-position-x: -128px;
+	}
+	25% {
+		background-position-y: -448px;
+		background-position-x: -448px;
+	}
+	50% {
+		background-position-y: -768px;
+		background-position-x: -128px;
+	}
+	75% {
+		background-position-y: -768px;
+		background-position-x: -448px;
+	}
+	100% {
+		background-position-y: -448px;
+		background-position-x: -128px;
+	}	
+}
+
+@keyframes explosion-fire-up-right {
+	0% {
+		background-position-y: -384px;
+		background-position-x: -192px;
+	}
+	25% {
+		background-position-y: -384px;
+		background-position-x: -512px;
+	}
+	50% {
+		background-position-y: -704px;
+		background-position-x: -192px;
+	}
+	75% {
+		background-position-y: -704px;
+		background-position-x: -512px;
+	}
+	100% {
+		background-position-y: -384px;
+		background-position-x: -192px;
+	}
+}
+
+@keyframes explosion-fire-up-left {
+	0% {
+		background-position-y: -384px;
+		background-position-x: -64px;
+	}
+	25% {
+		background-position-y: -384px;
+		background-position-x: -384px;
+	}
+	50% {
+		background-position-y: -704px;
+		background-position-x: -64px;
+	}
+	75% {
+		background-position-y: -704px;
+		background-position-x: -384px;
+	}
+	100% {
+		background-position-y: -384px;
 		background-position-x: -128px;
 	}
 }

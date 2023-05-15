@@ -28,7 +28,7 @@ let enemyCount = totalNoEnemy;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 let currentScore = 0;
-let currentLives = 2;
+let currentLives = 100;
 let gamePaused = false;
 let isGameOver = false;
 let isKilled = false;
@@ -50,42 +50,42 @@ let remoteControl = false;
 let passBombs = false;
 let vest = false;
 const powerUpObj = [
-  {
-    name: "bomb-up",
-    count: 2,
-  },
   // {
-  // 	name: "fire-up",
-  // 	count: 1,
+  //   name: "bomb-up",
+  //   count: 2,
   // },
   {
-    name: "skate",
+    name: "fire-up",
     count: 1,
   },
-  {
-    name: "soft-block-pass",
-    count: 1,
-  },
-  {
-    name: "remote-control",
-    count: 1,
-  },
-  {
-    name: "bomb-pass",
-    count: 1,
-  },
+  // {
+  //   name: "skate",
+  //   count: 1,
+  // },
+  // {
+  //   name: "soft-block-pass",
+  //   count: 1,
+  // },
+  // {
+  //   name: "remote-control",
+  //   count: 1,
+  // },
+  // {
+  //   name: "bomb-pass",
+  //   count: 1,
+  // },
   // {
   // 	name: "full-fire",
   // 	count: 1,
   // },
-  {
-    name: "vest",
-    count: 1,
-  },
+  // {
+  //   name: "vest",
+  //   count: 1,
+  // },
 ];
 const powerUpLists = powerUpObj.map((v) => v.name);
 
-const totalTime = 20;
+const totalTime = 200;
 let countdownTimer;
 let remainingSeconds = totalTime;
 
@@ -237,8 +237,24 @@ const bomberManEnemyCollision = () => {
       y: enemyData.y + enemyData.rely,
       x: enemyData.x + enemyData.relx,
     };
-    console.log("emeny y, bombermna y", originalEnemyPosition.y, bomberManCurrentPosition.y);
-    console.log("emeny x, bombermna x", originalEnemyPosition.x, bomberManCurrentPosition.x);
+    if (
+      Math.abs(originalEnemyPosition.y - bomberManCurrentPosition.y - 4) <
+        cellSize &&
+      Math.abs(originalEnemyPosition.x - bomberManCurrentPosition.x - 4) <
+        cellSize
+    ) {
+      console.log(
+        "emeny y, bombermna y",
+        originalEnemyPosition.y,
+        bomberManCurrentPosition.y
+      );
+      console.log(
+        "emeny x, bombermna x",
+        originalEnemyPosition.x,
+        bomberManCurrentPosition.x
+      );
+    }
+
     return (
       Math.abs(originalEnemyPosition.y - bomberManCurrentPosition.y) <
         cellSize &&
@@ -369,9 +385,9 @@ const move = (direction) => {
         case "bomb-up": // increase number of bomb
           numBombs += 1;
           break;
-        // case "fire-up": // change explosion and range by 1 tile
-        // 	fireRange = 2
-        // 	break
+        case "fire-up": // change explosion and range by 1 tile
+          fireRange = 2;
+          break;
         case "skate": // skate - Increase Bomberman's speed
           step = 0.5;
           break;
@@ -438,7 +454,7 @@ const move = (direction) => {
 
 const killBomberMan = () => {
   document.removeEventListener("keydown", onKeyDown);
-  isKilled = true
+  isKilled = true;
   pauseCountdown();
 
   if (currentLives === 0) {
@@ -583,6 +599,31 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+function explode(cell, style) {
+  if (cell.classList.contains("indestructible")) {
+    return false;
+  } else {
+    if (cell.classList.contains("breakable")) {
+      destroyBlocks(cell);
+    }
+    killEnemy(cell);
+    if (
+      Math.abs(parseInt(cell.style.top) - bomberManCurrentPosition.y) <
+        cellSize &&
+      Math.abs(parseInt(cell.style.left) - bomberManCurrentPosition.x) <
+        cellSize &&
+      !vest
+    ) {
+      killBomberMan();
+    }
+    cell.classList.add(style);
+    cell.addEventListener("animationend", () => {
+      cell.classList.remove(style);
+    });
+    return true
+  }
+}
+
 function detonate(bombElement, bomberManPosition, bomberManCell) {
   let explosionRangeMinusY = bomberManPosition.y - fireRange;
   if (explosionRangeMinusY < 0) {
@@ -623,103 +664,32 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
       bombPlaced = false;
     });
 
-    // Explosion Top
-    // for (let i = 1; i <= fireRange; i++) {
-    // 	explosionTop = cellsArr[bomberManPosition.y - i][bomberManPosition.x]
-    if (!explosionTop.classList.contains("indestructible")) {
-      if (explosionTop.classList.contains("breakable")) {
-        destroyBlocks(explosionTop);
+    if (fireRange > 1) {
+      let explosionTopFR =
+        cellsArr[bomberManPosition.y - 1][bomberManPosition.x];
+      let explosionBottomFR =
+        cellsArr[bomberManPosition.y + 1][bomberManPosition.x];
+      let explosionRightFR =
+        cellsArr[bomberManPosition.y][bomberManPosition.x + 1];
+      let explosionLeftFR =
+        cellsArr[bomberManPosition.y][bomberManPosition.x - 1];
+      if (explode(explosionTopFR, "explosion-fireRange-top")) {
+        explode(explosionTop, "explosion-top");
       }
-      killEnemy(explosionTop);
-      if (
-        Math.abs(
-          parseInt(explosionTop.style.top) - bomberManCurrentPosition.y
-        ) < cellSize &&
-        Math.abs(
-          parseInt(explosionTop.style.left) - bomberManCurrentPosition.x
-        ) < cellSize &&
-        !vest
-      ) {
-        killBomberMan();
+      if (explode(explosionBottomFR, "explosion-fireRange-bottom")) {
+        explode(explosionBottom, "explosion-bottom");
       }
-
-      explosionTop.classList.add("explosion-top");
-      explosionTop.addEventListener("animationend", () => {
-        explosionTop.classList.remove("explosion-top");
-      });
-    }
-    // }
-    // Explosion Bottom
-    // for (let i = 1; i <= fireRange; i++) {
-    // explosionBottom = cellsArr[bomberManPosition.y + i][bomberManPosition.x]
-    if (!explosionBottom.classList.contains("indestructible")) {
-      if (explosionBottom.classList.contains("breakable")) {
-        destroyBlocks(explosionBottom);
+      if (explode(explosionRightFR, "explosion-fireRange-right")) {
+        explode(explosionRight, "explosion-right");
       }
-      killEnemy(explosionBottom);
-      if (
-        Math.abs(
-          parseInt(explosionBottom.style.top) - bomberManCurrentPosition.y
-        ) < cellSize &&
-        Math.abs(
-          parseInt(explosionBottom.style.left) - bomberManCurrentPosition.x
-        ) < cellSize &&
-        !vest
-      ) {
-        killBomberMan();
+      if (explode(explosionLeftFR, "explosion-fireRange-left")) {
+        explode(explosionLeft, "explosion-left");
       }
-
-      explosionBottom.classList.add("explosion-bottom");
-      explosionBottom.addEventListener("animationend", () => {
-        explosionBottom.classList.remove("explosion-bottom");
-      });
-    }
-    // }
-
-    // Explosion Right
-    if (!explosionRight.classList.contains("indestructible")) {
-      if (explosionRight.classList.contains("breakable")) {
-        destroyBlocks(explosionRight);
-      }
-      killEnemy(explosionRight);
-      if (
-        Math.abs(
-          parseInt(explosionRight.style.top) - bomberManCurrentPosition.y
-        ) < cellSize &&
-        Math.abs(
-          parseInt(explosionRight.style.left) - bomberManCurrentPosition.x
-        ) < cellSize &&
-        !vest
-      ) {
-        killBomberMan();
-      }
-      explosionRight.classList.add("explosion-right");
-      explosionRight.addEventListener("animationend", () => {
-        explosionRight.classList.remove("explosion-right");
-      });
-    }
-
-    // Explosion Left
-    if (!explosionLeft.classList.contains("indestructible")) {
-      if (explosionLeft.classList.contains("breakable")) {
-        destroyBlocks(explosionLeft);
-      }
-      killEnemy(explosionLeft);
-      if (
-        Math.abs(
-          parseInt(explosionLeft.style.top) - bomberManCurrentPosition.y
-        ) < cellSize &&
-        Math.abs(
-          parseInt(explosionLeft.style.left) - bomberManCurrentPosition.x
-        ) < cellSize &&
-        !vest
-      ) {
-        killBomberMan();
-      }
-      explosionLeft.classList.add("explosion-left");
-      explosionLeft.addEventListener("animationend", () => {
-        explosionLeft.classList.remove("explosion-left");
-      });
+    } else {
+      explode(explosionTop, "explosion-top");
+      explode(explosionBottom, "explosion-bottom");
+      explode(explosionRight, "explosion-right");
+      explode(explosionLeft, "explosion-left");
     }
   });
 }
@@ -795,11 +765,11 @@ const onKeyDown = (e) => {
       break;
     case "p":
       gamePaused = !gamePaused;
-      pauseCountdown()
+      pauseCountdown();
       if (gamePaused) {
         gameStatus.style.display = "flex";
       } else {
-        startCountdown()
+        startCountdown();
         gameStatus.style.display = "none";
         window.requestAnimationFrame(gameLoop);
       }
