@@ -54,10 +54,10 @@ const powerUpObj = [
   //   name: "bomb-up",
   //   count: 2,
   // },
-  {
-    name: "fire-up",
-    count: 1,
-  },
+  // {
+  //   name: "fire-up",
+  //   count: 1,
+  // },
   // {
   //   name: "skate",
   //   count: 1,
@@ -74,10 +74,10 @@ const powerUpObj = [
   //   name: "bomb-pass",
   //   count: 1,
   // },
-  // {
-  // 	name: "full-fire",
-  // 	count: 1,
-  // },
+  {
+  	name: "full-fire",
+  	count: 1,
+  },
   // {
   //   name: "vest",
   //   count: 1,
@@ -230,6 +230,7 @@ const checkPowerUp = (cell) => {
   return powerup[0];
 };
 
+// RASH FIX THIS IT'S MATHS!
 const bomberManEnemyCollision = () => {
   return enemyArr.some((enemy) => {
     const enemyData = JSON.parse(enemy.dataset.enemy);
@@ -237,24 +238,6 @@ const bomberManEnemyCollision = () => {
       y: enemyData.y + enemyData.rely,
       x: enemyData.x + enemyData.relx,
     };
-    if (
-      Math.abs(originalEnemyPosition.y - bomberManCurrentPosition.y - 4) <
-        cellSize &&
-      Math.abs(originalEnemyPosition.x - bomberManCurrentPosition.x - 4) <
-        cellSize
-    ) {
-      console.log(
-        "emeny y, bombermna y",
-        originalEnemyPosition.y,
-        bomberManCurrentPosition.y
-      );
-      console.log(
-        "emeny x, bombermna x",
-        originalEnemyPosition.x,
-        bomberManCurrentPosition.x
-      );
-    }
-
     return (
       Math.abs(originalEnemyPosition.y - bomberManCurrentPosition.y) <
         cellSize &&
@@ -270,7 +253,12 @@ const checkNotDead = (cell, entity) => {
     "explosion-top",
     "explosion-right",
     "explosion-left",
-    "explosion-bottom",
+    "explosion-fireRange-bottom",
+    "explosion-fireRange-top",
+    "explosion-fireRange-bottom",
+    "explosion-fireRange-right",
+    "explosion-fireRange-left",
+    ""
   ];
 
   const hasExplosionClass = classNames.some((className) =>
@@ -403,9 +391,9 @@ const move = (direction) => {
         case "bomb-pass": // bomb pass - Pass through Bombs
           passBombs = true;
           break;
-        // case "full-fire": // full fire - Increase your firepower to the max
-        // 	fireRange = 3
-        // break
+        case "full-fire": // full fire - Increase your firepower to the max
+        	fireRange = 3
+        break
         case "vest": // vest - Immune to both Bombs blast and enemies
           vest = true;
           // enemy blast WIP
