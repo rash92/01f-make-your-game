@@ -23,7 +23,7 @@ let bomberManCurrentPosition = {
 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-const totalNoEnemy = 1;
+const totalNoEnemy = 0;
 let enemyCount = totalNoEnemy;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
@@ -44,7 +44,7 @@ let doorAdded = false;
 // power ups
 let currentPower;
 let numOfPowerUps = 2;
-let fireRange = 1;
+let fireRange = 3;
 let numBombs = 1;
 let remoteControl = false;
 let passBombs = false;
@@ -613,6 +613,17 @@ function explode(cell, style) {
 }
 
 function detonate(bombElement, bomberManPosition, bomberManCell) {
+  let explosionMap = {
+    top: [],
+    bottom: [],
+    right: [],
+    left: []
+  }
+  let objectArr = {}
+
+
+
+  // checking for the walls
   let explosionRangeMinusY = bomberManPosition.y - fireRange;
   if (explosionRangeMinusY < 0) {
     explosionRangeMinusY = 1;
@@ -638,6 +649,41 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
   let explosionRight = cellsArr[bomberManPosition.y][explosionRangePlusX];
   let explosionLeft = cellsArr[bomberManPosition.y][explosionRangeMinusX];
 
+
+  for (let i = 1; i <= fireRange; i++){
+
+    let explosionTopFRMinusY = bomberManPosition.y - i;
+    if (explosionTopFRMinusY < 0) {
+      explosionTopFRMinusY = 1;
+    }
+
+    let explosionTopFR =
+          cellsArr[explosionTopFRMinusY][bomberManPosition.x];
+
+    if (i === fireRange && !explosionTopFR.classList.contains("indestructible")) {
+      if (explosionMap.top.length > 0){
+        explosionMap.top.pop()
+      } 
+      objectArr = {
+        cell: explosionTopFR,
+        style: "explosion-top"
+      }
+      explosionMap.top.push(objectArr)
+    } 
+    
+    if (!explosionTopFR.classList.contains("indestructible")) {
+      objectArr = {
+        cell: explosionTopFR,
+        style: "explosion-fire-up-top"
+      }
+      explosionMap.top.push(objectArr)
+    }
+    
+
+    console.log("explosionMap before:", explosionMap)
+    
+  }
+
   bombElement.addEventListener("animationend", () => {
     bombElement.remove();
 
@@ -651,27 +697,28 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
       bomberManCell.classList.add("walkable");
       bombPlaced = false;
     });
-
     if (fireRange > 1) {
-      let explosionTopFR =
-        cellsArr[bomberManPosition.y - 1][bomberManPosition.x];
-      let explosionBottomFR =
-        cellsArr[bomberManPosition.y + 1][bomberManPosition.x];
-      let explosionRightFR =
-        cellsArr[bomberManPosition.y][bomberManPosition.x + 1];
-      let explosionLeftFR =
-        cellsArr[bomberManPosition.y][bomberManPosition.x - 1];
-      if (explode(explosionTopFR, "explosion-fireRange-top")) {
-        explode(explosionTop, "explosion-top");
-      }
-      if (explode(explosionBottomFR, "explosion-fireRange-bottom")) {
-        explode(explosionBottom, "explosion-bottom");
-      }
-      if (explode(explosionRightFR, "explosion-fireRange-right")) {
-        explode(explosionRight, "explosion-right");
-      }
-      if (explode(explosionLeftFR, "explosion-fireRange-left")) {
-        explode(explosionLeft, "explosion-left");
+      for (let i = 1; i < fireRange; i++){
+        let explosionTopFR =
+          cellsArr[bomberManPosition.y - i][bomberManPosition.x];
+        let explosionBottomFR =
+          cellsArr[bomberManPosition.y + i][bomberManPosition.x];
+        let explosionRightFR =
+          cellsArr[bomberManPosition.y][bomberManPosition.x + i];
+        let explosionLeftFR =
+          cellsArr[bomberManPosition.y][bomberManPosition.x - i];
+        if (!explode(explosionTopFR, "explosion-fireRange-top")) {
+          explode(cellsArr[bomberManPosition.y + i][bomberManPosition.x], "explosion-top");
+        }
+        if (!explode(explosionBottomFR, "explosion-fireRange-bottom")) {
+          explode(explosionBottomFR, "explosion-bottom");
+        }
+        if (!explode(explosionRightFR, "explosion-fireRange-right")) {
+          explode(explosionRightFR, "explosion-right");
+        }
+        if (!explode(explosionLeftFR, "explosion-fireRange-left")) {
+          explode(explosionLeftFR, "explosion-left");
+        }
       }
     } else {
       explode(explosionTop, "explosion-top");
