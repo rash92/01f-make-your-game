@@ -23,7 +23,7 @@ let bomberManCurrentPosition = {
 }
 let horizontalAnimation = 0
 let verticalAnimation = 3
-const totalNoEnemy = 3
+const totalNoEnemy = 1
 let enemyCount = totalNoEnemy
 let randomDirection = [0, 1, 2, 3]
 let bombPlaced = false
@@ -85,7 +85,7 @@ const powerUpObj = [
 ]
 const powerUpLists = powerUpObj.map((v) => v.name)
 
-const totalTime = 30
+const totalTime = 200
 let countdownTimer
 let remainingSeconds = totalTime
 
@@ -579,6 +579,7 @@ const bomb = () => {
 		bomberManCell.appendChild(bombElement)
 		if (!passBombs) {
 			bomberManCell.classList.remove("walkable")
+      walkableCells = Array.from(document.querySelectorAll(".walkable"))
 		}
 
 		if (remoteControl) {
