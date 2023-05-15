@@ -85,7 +85,7 @@ const powerUpObj = [
 ];
 const powerUpLists = powerUpObj.map((v) => v.name);
 
-const totalTime = 200;
+const totalTime = 20;
 let countdownTimer;
 let remainingSeconds = totalTime;
 
@@ -176,8 +176,8 @@ setSprite(horizontalAnimation, 1);
 let walkableCells = Array.from(document.querySelectorAll(".walkable"));
 let powerUps = Array.from(document.querySelectorAll(".powerUp"));
 let door = Array.from(document.querySelectorAll(".door"));
-
 let enemyArr;
+
 const createEnemies = () => {
   while (enemyCount > 0) {
     let randomWalkableCell =
@@ -211,24 +211,6 @@ const createEnemies = () => {
 };
 
 enemyArr = createEnemies();
-// let walkableCells
-// let powerUps
-// let door
-// let enemyArr
-// let cellsArr
-
-// function start() {
-// 	buildGrid()
-// 	walkableCells = Array.from(document.querySelectorAll(".walkable"))
-// 	powerUps = Array.from(document.querySelectorAll(".powerUp"))
-// 	door = Array.from(document.querySelectorAll(".door"))
-
-// 	cellsArr = createCellsArr()
-// 	setSprite(horizontalAnimation, 1)
-// 	enemyArr = createEnemies()
-// }
-
-// start()
 
 function isWalkable(cell) {
   return walkableCells.includes(cell);
@@ -255,12 +237,8 @@ const bomberManEnemyCollision = () => {
       y: enemyData.y + enemyData.rely,
       x: enemyData.x + enemyData.relx,
     };
-    console.log(
-      Math.abs(originalEnemyPosition.y - bomberManCurrentPosition.y) <
-        cellSize &&
-        Math.abs(originalEnemyPosition.x - bomberManCurrentPosition.x) <
-          cellSize
-    );
+    console.log("emeny y, bombermna y", originalEnemyPosition.y, bomberManCurrentPosition.y);
+    console.log("emeny x, bombermna x", originalEnemyPosition.x, bomberManCurrentPosition.x);
     return (
       Math.abs(originalEnemyPosition.y - bomberManCurrentPosition.y) <
         cellSize &&
@@ -817,9 +795,11 @@ const onKeyDown = (e) => {
       break;
     case "p":
       gamePaused = !gamePaused;
+      pauseCountdown()
       if (gamePaused) {
         gameStatus.style.display = "flex";
       } else {
+        startCountdown()
         gameStatus.style.display = "none";
         window.requestAnimationFrame(gameLoop);
       }
@@ -859,6 +839,7 @@ const moveInterval = 50;
 let lastEnemyMove = 0;
 let lastMove = 0;
 const gameLoop = (timestamp) => {
+  walkableCells = Array.from(document.querySelectorAll(".walkable"));
   if (gamePaused || isGameOver || isKilled || stageCleared) {
     return;
   }
