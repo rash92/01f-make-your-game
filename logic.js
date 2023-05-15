@@ -75,8 +75,8 @@ const powerUpObj = [
   //   count: 1,
   // },
   {
-  	name: "full-fire",
-  	count: 1,
+    name: "full-fire",
+    count: 1,
   },
   // {
   //   name: "vest",
@@ -258,7 +258,7 @@ const checkNotDead = (cell, entity) => {
     "explosion-fireRange-bottom",
     "explosion-fireRange-right",
     "explosion-fireRange-left",
-    ""
+    "",
   ];
 
   const hasExplosionClass = classNames.some((className) =>
@@ -392,8 +392,8 @@ const move = (direction) => {
           passBombs = true;
           break;
         case "full-fire": // full fire - Increase your firepower to the max
-        	fireRange = 3
-        break
+          fireRange = 3;
+          break;
         case "vest": // vest - Immune to both Bombs blast and enemies
           vest = true;
           // enemy blast WIP
@@ -608,7 +608,7 @@ function explode(cell, style) {
     cell.addEventListener("animationend", () => {
       cell.classList.remove(style);
     });
-    return true
+    return true;
   }
 }
 
@@ -617,72 +617,77 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
     top: [],
     bottom: [],
     right: [],
-    left: []
-  }
-  let objectArr = {}
-
-
-
-  // checking for the walls
-  let explosionRangeMinusY = bomberManPosition.y - fireRange;
-  if (explosionRangeMinusY < 0) {
-    explosionRangeMinusY = 1;
-  }
-
-  let explosionRangePlusY = bomberManPosition.y + fireRange;
-  if (explosionRangePlusY > 12) {
-    explosionRangePlusY = 12;
-  }
-
-  let explosionRangeMinusX = bomberManPosition.x - fireRange;
-  if (explosionRangeMinusX < 0) {
-    explosionRangeMinusX = 1;
-  }
-
-  let explosionRangePlusX = bomberManPosition.x + fireRange;
-  if (explosionRangePlusX > 13) {
-    explosionRangePlusX = 13;
-  }
-
-  let explosionTop = cellsArr[explosionRangeMinusY][bomberManPosition.x];
-  let explosionBottom = cellsArr[explosionRangePlusY][bomberManPosition.x];
-  let explosionRight = cellsArr[bomberManPosition.y][explosionRangePlusX];
-  let explosionLeft = cellsArr[bomberManPosition.y][explosionRangeMinusX];
-
-
-  for (let i = 1; i <= fireRange; i++){
-
-    let explosionTopFRMinusY = bomberManPosition.y - i;
-    if (explosionTopFRMinusY < 0) {
-      explosionTopFRMinusY = 1;
-    }
-
-    let explosionTopFR =
-          cellsArr[explosionTopFRMinusY][bomberManPosition.x];
-
-    if (i === fireRange && !explosionTopFR.classList.contains("indestructible")) {
-      if (explosionMap.top.length > 0){
-        explosionMap.top.pop()
-      } 
-      objectArr = {
-        cell: explosionTopFR,
-        style: "explosion-top"
+    left: [],
+  };
+  let explosionData = {}
+  for(let i = 1; i <= fireRange;i++) {
+    if(bomberManPosition.y - i >= 0 && 
+      cellsArr[bomberManPosition.y - i] !== null && 
+      cellsArr[bomberManPosition.y - i][bomberManPosition.x].classList.contains("walkable") ||
+      bomberManPosition.y - i >= 0 && 
+      cellsArr[bomberManPosition.y - i] !== null && 
+      cellsArr[bomberManPosition.y - i][bomberManPosition.x].classList.contains("breakable")) {
+        if(i === fireRange || cellsArr[bomberManPosition.y - i - 1][bomberManPosition.x].classList.contains("indestructible")) {
+          explosionData = {
+            cell: cellsArr[bomberManPosition.y - i][bomberManPosition.x],
+            style: "explosion-top"
+          }
+          explosionMap.top.push(explosionData)
+        } else {
+          explosionData = {
+            cell: cellsArr[bomberManPosition.y - i][bomberManPosition.x],
+            style: "explosion-fireRange-top"
+          }
+          explosionMap.top.push(explosionData)
+        }
       }
-      explosionMap.top.push(objectArr)
-    } 
-    
-    if (!explosionTopFR.classList.contains("indestructible")) {
-      objectArr = {
-        cell: explosionTopFR,
-        style: "explosion-fire-up-top"
-      }
-      explosionMap.top.push(objectArr)
     }
-    
+    // if(bomberManPosition.y - i >= 0 && 
+    //    cellsArr[bomberManPosition.y - i] !== null && 
+    //    cellsArr[bomberManPosition.y - i][bomberManPosition.x].classList.contains("walkable") && i === fireRange) {
+    //   explosionData = {
+    //     cell: cellsArr[bomberManPosition.y - i][bomberManPosition.x],
+    //     style: "explosion-top"
+    //   }
+    //   explosionMap.top.push(explosionData)
+    // } else if (bomberManPosition.y - i >= 0 && 
+    //            cellsArr[bomberManPosition.y - i][bomberManPosition.x] !== null &&
+    //            !cellsArr[bomberManPosition.y - i][bomberManPosition.x].classList.contains("walkable")) {
+    //   explosionData = {
+    //     cell: cellsArr[bomberManPosition.y - i][bomberManPosition.x],
+    //     style: "explosion-fire-up-top"
+    //   }
+    //   explosionMap.top.push(explosionData)
+    // }
 
-    console.log("explosionMap before:", explosionMap)
-    
-  }
+  console.log(explosionMap);
+
+  // for (let i = 1; i <= fireRange; i++) {
+  //   if (
+  //     cellsArr[bomberManPosition.y - i] &&
+  //     cellsArr[bomberManPosition.y - i][bomberManPosition.x] !== null
+  //   ) {
+  //     let explosionTopFR =
+  //       cellsArr[bomberManPosition.y - i][bomberManPosition.x];
+  //     if (explosionTopFR.classList.contains("indestructible")) {
+  //       explosionMap.top.pop();
+  //       objectArr = {
+  //         cell: cellsArr[bomberManPosition.y ][bomberManPosition.x],
+  //         style: "explosion-top",
+  //       };
+  //       explosionMap.top.push(objectArr);
+  //     } else {
+  //       objectArr = {
+  //         cell: explosionTopFR,
+  //         style: "explosion-fire-up-top",
+  //       };
+  //       explosionMap.top.push(objectArr);
+  //     }
+  //   } else {
+  //       console.log('Cell does not exist or is indestructible');
+  //       // Here you can put the code you want to execute when the cell doesn't exist or is indestructible
+  //   }
+  // }
 
   bombElement.addEventListener("animationend", () => {
     bombElement.remove();
@@ -697,37 +702,40 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
       bomberManCell.classList.add("walkable");
       bombPlaced = false;
     });
-    if (fireRange > 1) {
-      for (let i = 1; i < fireRange; i++){
-        let explosionTopFR =
-          cellsArr[bomberManPosition.y - i][bomberManPosition.x];
-        let explosionBottomFR =
-          cellsArr[bomberManPosition.y + i][bomberManPosition.x];
-        let explosionRightFR =
-          cellsArr[bomberManPosition.y][bomberManPosition.x + i];
-        let explosionLeftFR =
-          cellsArr[bomberManPosition.y][bomberManPosition.x - i];
-        if (!explode(explosionTopFR, "explosion-fireRange-top")) {
-          explode(cellsArr[bomberManPosition.y + i][bomberManPosition.x], "explosion-top");
-        }
-        if (!explode(explosionBottomFR, "explosion-fireRange-bottom")) {
-          explode(explosionBottomFR, "explosion-bottom");
-        }
-        if (!explode(explosionRightFR, "explosion-fireRange-right")) {
-          explode(explosionRightFR, "explosion-right");
-        }
-        if (!explode(explosionLeftFR, "explosion-fireRange-left")) {
-          explode(explosionLeftFR, "explosion-left");
-        }
-      }
-    } else {
-      explode(explosionTop, "explosion-top");
-      explode(explosionBottom, "explosion-bottom");
-      explode(explosionRight, "explosion-right");
-      explode(explosionLeft, "explosion-left");
-    }
+    //   if (fireRange > 1) {
+    //     for (let i = 1; i < fireRange; i++){
+    //       let explosionTopFR =
+    //         cellsArr[bomberManPosition.y - i][bomberManPosition.x];
+    //       let explosionBottomFR =
+    //         cellsArr[bomberManPosition.y + i][bomberManPosition.x];
+    //       let explosionRightFR =
+    //         cellsArr[bomberManPosition.y][bomberManPosition.x + i];
+    //       let explosionLeftFR =
+    //         cellsArr[bomberManPosition.y][bomberManPosition.x - i];
+    //       if (!explode(explosionTopFR, "explosion-fireRange-top")) {
+    //         explode(cellsArr[bomberManPosition.y + i][bomberManPosition.x], "explosion-top");
+    //       }
+    //       if (!explode(explosionBottomFR, "explosion-fireRange-bottom")) {
+    //         explode(explosionBottomFR, "explosion-bottom");
+    //       }
+    //       if (!explode(explosionRightFR, "explosion-fireRange-right")) {
+    //         explode(explosionRightFR, "explosion-right");
+    //       }
+    //       if (!explode(explosionLeftFR, "explosion-fireRange-left")) {
+    //         explode(explosionLeftFR, "explosion-left");
+    //       }
+    //     }
+    //   } else {
+    //     explode(explosionTop, "explosion-top");
+    //     explode(explosionBottom, "explosion-bottom");
+    //     explode(explosionRight, "explosion-right");
+    //     explode(explosionLeft, "explosion-left");
+    //   }
+    // });
   });
+
 }
+
 
 const enemyAI = () => {
   enemyArr.forEach((enemy) => {
