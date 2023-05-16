@@ -196,6 +196,17 @@
 	animation: block-destruction 1s steps(1) 1;
 }
 
+.exit {
+	background-image: url("sprites.png");
+	width: 64px;
+	height: 64px;
+	background-size: 896px 1532px;
+	background-position-x: -704px;
+	background-position-y: -192px;
+}
+
+
+
 .enemy {
 	background-image: url("sprites.png");
 	/* top: 64px; */

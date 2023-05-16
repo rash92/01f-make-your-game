@@ -5,9 +5,10 @@ bomberManWrapper.classList.add("bomberManWrapper");
 bomberManWrapper.classList.add("bomber-man");
 bomberManWrapper.style.top = "64px";
 bomberManWrapper.style.left = "64px";
-grid.appendChild(bomberManWrapper);
+// grid.appendChild(bomberManWrapper);
 const score = document.querySelector(".score");
 const lives = document.querySelector(".lives");
+const level = document.querySelector(".level")
 const gridRow = 13;
 const gridCol = 15;
 const cellSize = 64;
@@ -19,11 +20,12 @@ let bomberManCurrentPosition = {
 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-let enemyCount = 3;
+let enemyCount = 1;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 let currentScore = 0;
 let currentLives = 100;
+let currentLevel = 0;
 let gamePaused = false;
 let gameOver = false;
 let isMoving = {
@@ -32,6 +34,7 @@ let isMoving = {
   ArrowLeft: false,
   ArrowRight: false,
 };
+
 
 // power ups
 let currentPower;
@@ -127,17 +130,9 @@ const createCellsArr = () => {
 function setSprite(spriteX, spriteY) {
   const bomberMan = document.querySelector(".bomber-man");
   const spriteSize = 64;
-  bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${
-    spriteY * spriteSize
-  }px`;
+  bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${spriteY * spriteSize
+    }px`;
 }
-
-buildGrid();
-const cellsArr = createCellsArr();
-setSprite(horizontalAnimation, 1);
-
-let walkableCells = Array.from(document.querySelectorAll(".walkable"));
-let powerUps = Array.from(document.querySelectorAll(".powerUp"));
 
 const createEnemies = () => {
   while (enemyCount > 0) {
@@ -171,7 +166,28 @@ const createEnemies = () => {
   return Array.from(document.querySelectorAll(".enemy"));
 };
 
-let enemyArr = createEnemies();
+const generateLevel = (numEnemies) => {
+  currentLevel++
+  level.textContent = "Level: " + currentLevel
+  enemyCount = numEnemies
+  grid.textContent = ''
+  buildGrid();
+  cellsArr = createCellsArr();
+  grid.appendChild(bomberManWrapper);
+  setSprite(horizontalAnimation, 1);
+  walkableCells = Array.from(document.querySelectorAll(".walkable"));
+  powerUps = Array.from(document.querySelectorAll(".powerUp"));
+  enemyArr = createEnemies()
+}
+
+
+//generate level for first time
+let cellsArr;
+let walkableCells;
+let powerUps;
+let enemyArr;
+generateLevel(enemyCount)
+
 
 function isWalkable(cell) {
   walkableCells = Array.from(document.querySelectorAll(".walkable"));
@@ -196,12 +212,12 @@ const bomberManEnemyCollision = () => {
       x: enemyData.x + enemyData.relx,
     };
     if (
-      Math.abs(originalEnemyPosition.y - bomberManCurrentPosition.y) < cellSize && 
+      Math.abs(originalEnemyPosition.y - bomberManCurrentPosition.y) < cellSize &&
       Math.abs(originalEnemyPosition.x - bomberManCurrentPosition.x) < cellSize
     ) {
       return true;
     }
-    
+
   });
 };
 
@@ -369,9 +385,8 @@ const move = (direction) => {
     }
     // Animate the movement
     bomberManWrapper.style.transition = `transform ${speed}ms`;
-    bomberManWrapper.style.transform = `translate3d(${
-      newPosition.x - cellSize
-    }px, ${newPosition.y - cellSize}px, 0)`;
+    bomberManWrapper.style.transform = `translate3d(${newPosition.x - cellSize
+      }px, ${newPosition.y - cellSize}px, 0)`;
     bomberManCurrentPosition = newPosition;
     // Update sprite based on the direction
     if (direction === "ArrowUp" || direction === "ArrowDown") {
@@ -382,6 +397,11 @@ const move = (direction) => {
       horizontalAnimation = (horizontalAnimation + 1) % 3;
     }
     checkNotDead(cell, "bomberMan");
+  }
+
+  if (cell.classList.contains("exit")) {
+    generateLevel(2 * currentLevel)
+    console.log("walked on exit")
   }
 };
 
@@ -397,9 +417,8 @@ const killBomberMan = () => {
     bomberManWrapper.classList.add("bomber-man");
     bomberManCurrentPosition = { y: 64, x: 64 };
     bomberManWrapper.style.transition = `transform 0ms`;
-    bomberManWrapper.style.transform = `translate(${
-      bomberManCurrentPosition.x - cellSize
-    }px, ${bomberManCurrentPosition.y - cellSize}px)`;
+    bomberManWrapper.style.transform = `translate(${bomberManCurrentPosition.x - cellSize
+      }px, ${bomberManCurrentPosition.y - cellSize}px)`;
     setSprite(horizontalAnimation, 1);
     document.addEventListener("keydown", onKeyDown);
     window.requestAnimationFrame(gameLoop);
@@ -421,6 +440,10 @@ const destroyBlocks = (cell) => {
   score.textContent = `Score ${currentScore}`;
 };
 
+const revealExit = (cell) => {
+  cell.classList.add("exit")
+}
+
 const killEnemy = (cell) => {
   const enemyToKill = enemyArr.find((enemy) => {
     const enemyData = JSON.parse(enemy.dataset.enemy);
@@ -436,6 +459,10 @@ const killEnemy = (cell) => {
 
   if (enemyToKill) {
     enemyToKill.classList.remove("enemy");
+    if (document.querySelectorAll(".enemy").length === 0) {
+      revealExit(cellsArr[1][1])
+      console.log("no more enemies!")
+    }
     enemyToKill.classList.add("enemy-death");
     enemyToKill.addEventListener("animationend", () => {
       enemyToKill.classList.remove("enemy-death");
