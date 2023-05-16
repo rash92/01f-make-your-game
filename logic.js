@@ -23,7 +23,7 @@ let bomberManCurrentPosition = {
 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-const totalNoEnemy = 0;
+const totalNoEnemy = 1;
 let enemyCount = totalNoEnemy;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
@@ -230,21 +230,20 @@ const checkPowerUp = (cell) => {
   return powerup[0];
 };
 
-// RASH FIX THIS IT'S MATHS!
+
 const bomberManEnemyCollision = () => {
+  const bomberManBounding = bomberManWrapper.getBoundingClientRect()
   return enemyArr.some((enemy) => {
-    const enemyData = JSON.parse(enemy.dataset.enemy);
-    let originalEnemyPosition = {
-      y: enemyData.y + enemyData.rely,
-      x: enemyData.x + enemyData.relx,
-    };
+    const enemyBoundingBox = enemy.getBoundingClientRect()
     return (
-      Math.abs(originalEnemyPosition.y - bomberManCurrentPosition.y) <
-        cellSize &&
-      Math.abs(originalEnemyPosition.x - bomberManCurrentPosition.x) < cellSize
-    );
+          bomberManBounding.right > enemyBoundingBox.left + 1 &&
+          bomberManBounding.left < enemyBoundingBox.right - 1 &&
+          bomberManBounding.bottom > enemyBoundingBox.top + 1 &&
+          bomberManBounding.top < enemyBoundingBox.bottom - 1
+        );
   });
 };
+
 
 // CheckNotDead checks whether when an entity walks into a cell, it kills them.
 const checkNotDead = (cell, entity) => {
