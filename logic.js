@@ -29,7 +29,7 @@ let enemyCount = totalNoEnemy
 let randomDirection = [0, 1, 2, 3]
 let bombPlaced = false
 let currentScore = 0
-let currentLives = 100
+let currentLives = 3
 let currentLevel = 1
 let gamePaused = false
 let isGameOver = false
@@ -53,10 +53,10 @@ let remoteControl = false
 let passBombs = false
 let vest = false
 const powerUpObj = [
-	// {
-	//   name: "bomb-up",
-	//   count: 2,
-	// },
+	{
+		name: "bomb-up",
+		count: 2,
+	},
 	// {
 	//   name: "fire-up",
 	//   count: 1,
@@ -73,10 +73,10 @@ const powerUpObj = [
 	//   name: "remote-control",
 	//   count: 1,
 	// },
-	{
-		name: "bomb-pass",
-		count: 1,
-	},
+	// {
+	//   name: "bomb-pass",
+	//   count: 1,
+	// },
 	// {
 	//   name: "full-fire",
 	//   count: 1,
@@ -207,6 +207,10 @@ let powerUps
 let enemyArr
 
 const generateLevel = (numEnemies, numPowerups) => {
+	if (currentLevel > 1) {
+		remainingSeconds = totalTime
+	}
+
 	isKilled = false
 	level.textContent = "Level: " + currentLevel
 	enemyCount = numEnemies
@@ -230,6 +234,11 @@ const generateLevel = (numEnemies, numPowerups) => {
 	powerUps = Array.from(document.querySelectorAll(".powerUp"))
 	enemyArr = createEnemies()
 
+	// level change background colour beginning WIP
+	if (currentLevel == 2) {
+		walkableCells.forEach((cell) => (cell.style.background = "teal"))
+	}
+
 	playerDied.style.display = "none"
 	bomberManCurrentPosition = { y: 64, x: 64 }
 	bomberManWrapper.classList.add("bomber-man")
@@ -248,7 +257,7 @@ function isWalkable(cell, entity) {
 		return (
 			cell.classList.contains("walkable") &&
 			!cell.classList.contains("breakable") &&
-			!cell.classList.contains("bomb")
+			!cell.hasChildNodes()
 		)
 	} else {
 		return walkableCells.includes(cell)
@@ -563,25 +572,22 @@ const bomb = () => {
 	if (bomberManCell.classList.contains("breakable")) {
 		return
 	}
-	for (let i = 1; i <= numBombs; i++) {
-		const bombElement = document.createElement("div")
-		bombElement.classList.add("bomb")
-		bombPlaced = true
-		bomberManCell.appendChild(bombElement)
-		if (!passBombs) {
-			bomberManCell.classList.remove("walkable")
-			walkableCells = Array.from(document.querySelectorAll(".walkable"))
-		}
-		if (remoteControl) {
-			remoteControlBombElements.push({
-				bombElement,
-				bomberManPosition,
-				bomberManCell,
-			})
-		} else {
-			bombElement.style.animation = "bomb-animation 1s steps(1) 2"
-			detonate(bombElement, bomberManPosition, bomberManCell)
-		}
+	const bombElement = document.createElement("div")
+	bombElement.classList.add("bomb")
+	bomberManCell.appendChild(bombElement)
+	if (!passBombs) {
+		bomberManCell.classList.remove("walkable")
+		walkableCells = Array.from(document.querySelectorAll(".walkable"))
+	}
+	if (remoteControl) {
+		remoteControlBombElements.push({
+			bombElement,
+			bomberManPosition,
+			bomberManCell,
+		})
+	} else {
+		bombElement.style.animation = "bomb-animation 1s steps(1) 2"
+		detonate(bombElement, bomberManPosition, bomberManCell)
 	}
 }
 
@@ -698,8 +704,8 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 		bomberManCell.addEventListener("animationend", () => {
 			bomberManCell.classList.remove("explosion-middle")
 			bomberManCell.classList.add("walkable")
-			bombPlaced = false
 		})
+		bombPlaced = false
 		// Loop through the object and call explode
 		Object.keys(explosionMap).forEach((direction) => {
 			explosionMap[direction].forEach((cell) => {
@@ -776,7 +782,11 @@ const onKeyDown = (e) => {
 			bomberManCurrentPosition.direction = e.key
 			break
 		case "x":
-			if (!bombPlaced) bomb()
+			console.log(bombPlaced)
+			if (!bombPlaced && numBombs >= 1) {
+				bomb()
+				bombPlaced = !bombPlaced
+			}
 			break
 		case "p":
 			gamePaused = !gamePaused
