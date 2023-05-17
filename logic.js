@@ -65,18 +65,18 @@ const powerUpObj = [
 	//   name: "skate",
 	//   count: 1,
 	// },
-	{
-		name: "soft-block-pass",
-		count: 1,
-	},
+	// {
+	//   name: "soft-block-pass",
+	//   count: 1,
+	// },
 	// {
 	//   name: "remote-control",
 	//   count: 1,
 	// },
-	// {
-	//   name: "bomb-pass",
-	//   count: 1,
-	// },
+	{
+		name: "bomb-pass",
+		count: 1,
+	},
 	// {
 	//   name: "full-fire",
 	//   count: 1,
@@ -564,10 +564,8 @@ const bomb = () => {
 	}
 
 	for (let i = 1; i <= numBombs; i++) {
-		const bombElement = document.createElement("div")
-		bombElement.classList.add("bomb")
 		bombPlaced = true
-		bomberManCell.appendChild(bombElement)
+		bomberManCell.classList.add("bomb")
 		if (!passBombs) {
 			bomberManCell.classList.remove("walkable")
 			walkableCells = Array.from(document.querySelectorAll(".walkable"))
@@ -575,13 +573,12 @@ const bomb = () => {
 
 		if (remoteControl) {
 			remoteControlBombElements.push({
-				bombElement,
 				bomberManPosition,
 				bomberManCell,
 			})
 		} else {
-			bombElement.style.animation = "bomb-animation 1s steps(1) 2"
-			detonate(bombElement, bomberManPosition, bomberManCell)
+			bomberManCell.style.animation = "bomb-animation 1s steps(1) 2"
+			detonate(bomberManPosition, bomberManCell)
 		}
 	}
 }
@@ -589,8 +586,8 @@ const bomb = () => {
 document.addEventListener("keydown", (e) => {
 	if (e.key === " " && remoteControl && remoteControlBombElements.length > 0) {
 		remoteControlBombElements.forEach((v) => {
-			v.bombElement.style.animation = "bomb-animation 1s steps(1) 2"
-			detonate(v.bombElement, v.bomberManPosition, v.bomberManCell)
+			v.bomberManCell.style.animation = "bomb-animation 1s steps(1) 2"
+			detonate(v.bomberManPosition, v.bomberManCell)
 		})
 		remoteControlBombElements.length = 0
 	}
@@ -614,8 +611,8 @@ function explode(cell, style) {
 	})
 }
 
-function detonate(bombElement, bomberManPosition, bomberManCell) {
-	// Create explosion map
+function detonate(bomberManPosition, bomberManCell) {
+	// Create explosion mape
 	let explosionMap = {
 		top: [],
 		bottom: [],
@@ -694,8 +691,8 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 		checkCellAndPush(i, bomberManPosition.y, bomberManPosition.x + i, "right")
 	}
 
-	bombElement.addEventListener("animationend", () => {
-		bombElement.remove()
+	bomberManCell.addEventListener("animationend", () => {
+		bomberManCell.classList.remove("bomb")
 
 		// Explosion Middle
 		setTimeout(() => {
@@ -703,6 +700,8 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 		}, 0)
 
 		bomberManCell.addEventListener("animationend", () => {
+			console.log(bomberManCell)
+			console.log("happened")
 			bomberManCell.classList.remove("explosion-middle")
 			bomberManCell.classList.add("walkable")
 			bombPlaced = false
