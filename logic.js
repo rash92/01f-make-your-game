@@ -488,7 +488,9 @@ const killBomberMan = () => {
   }
 
   if (!isGameOver) {
-    playerDied.style.display = "flex";
+    setTimeout(() => {
+      playerDied.style.display = "flex"
+    }, 1000)    
   }
 
   bomberManWrapper.classList.remove("bomber-man");
@@ -559,28 +561,28 @@ const bomb = () => {
     y: Math.round(bomberManCurrentPosition.y / cellSize),
     x: Math.round(bomberManCurrentPosition.x / cellSize),
   };
-
   const bomberManCell = cellsArr[bomberManPosition.y][bomberManPosition.x];
   if(bomberManCell.classList.contains("breakable")) {
     return
   }
-
   for (let i = 1; i <= numBombs; i++) {
+    const bombElement = document.createElement("div");
+    bombElement.classList.add("bomb");
     bombPlaced = true;
-    bomberManCell.classList.add("bomb");
+    bomberManCell.appendChild(bombElement);
     if (!passBombs) {
       bomberManCell.classList.remove("walkable");
       walkableCells = Array.from(document.querySelectorAll(".walkable"));
     }
-
     if (remoteControl) {
       remoteControlBombElements.push({
+        bombElement,
         bomberManPosition,
         bomberManCell,
       });
     } else {
-        bomberManCell.style.animation = "bomb-animation 1s steps(1) 2";
-        detonate(bomberManPosition, bomberManCell);
+        bombElement.style.animation = "bomb-animation 1s steps(1) 2";
+        detonate(bombElement, bomberManPosition, bomberManCell);
     }
   }
 };
@@ -614,8 +616,8 @@ function explode(cell, style) {
   });
 }
 
-function detonate(bomberManPosition, bomberManCell) {
-  // Create explosion mape
+function detonate(bombElement, bomberManPosition, bomberManCell) {
+  // Create explosion map
   let explosionMap = {
     top: [],
     bottom: [],
@@ -628,11 +630,9 @@ function detonate(bomberManPosition, bomberManCell) {
     right: true,
     left: true,
   };
-
   // decide whether a cell should be classed with "explosion-direction" or "explosion-fireRange-direction"
   function checkCellAndPush(idx, posY, posX, direction) {
     if (!continueExploring[direction]) return; // If flag for this direction is false, return immediately
-
     let wallCheckerY, wallCheckerX;
     switch (direction) {
       case "top":
@@ -657,7 +657,6 @@ function detonate(bomberManPosition, bomberManCell) {
       continueExploring[direction] = false;
       return;
     }
-
     if (
       posY >= 0 &&
       posY < cellsArr.length &&
@@ -693,18 +692,13 @@ function detonate(bomberManPosition, bomberManCell) {
     checkCellAndPush(i, bomberManPosition.y, bomberManPosition.x - i, "left");
     checkCellAndPush(i, bomberManPosition.y, bomberManPosition.x + i, "right");
   }
-
-  bomberManCell.addEventListener("animationend", () => {
-   bomberManCell.classList.remove("bomb")
-
+  bombElement.addEventListener("animationend", () => {
+    bombElement.remove();
     // Explosion Middle
     setTimeout(() => {
       bomberManCell.classList.add("explosion-middle");
     }, 0);
-
     bomberManCell.addEventListener("animationend", () => {
-      console.log(bomberManCell);
-      console.log("happened");
       bomberManCell.classList.remove("explosion-middle");
       bomberManCell.classList.add("walkable");
       bombPlaced = false;
@@ -791,8 +785,10 @@ const onKeyDown = (e) => {
       gamePaused = !gamePaused;
       pauseCountdown();
       if (gamePaused) {
+        document.body.classList.add("pause-animation")
         gameStatus.style.display = "flex";
       } else {
+        document.body.classList.remove("pause-animation")
         startCountdown();
         gameStatus.style.display = "none";
         window.requestAnimationFrame(gameLoop);
