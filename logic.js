@@ -24,12 +24,12 @@ let bomberManCurrentPosition = {
 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-const totalNoEnemy = 1;
+const totalNoEnemy = 3;
 let enemyCount = totalNoEnemy;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 let currentScore = 0;
-let currentLives = 100;
+let currentLives = 3;
 let currentLevel = 1;
 let gamePaused = false;
 let isGameOver = false;
@@ -53,38 +53,38 @@ let remoteControl = false;
 let passBombs = false;
 let vest = false;
 const powerUpObj = [
-  // {
-  //   name: "bomb-up",
-  //   count: 2,
-  // },
-  // {
-  //   name: "fire-up",
-  //   count: 1,
-  // },
-  // {
-  //   name: "skate",
-  //   count: 1,
-  // },
-  // {
-  //   name: "soft-block-pass",
-  //   count: 1,
-  // },
-  // {
-  //   name: "remote-control",
-  //   count: 1,
-  // },
+  {
+    name: "bomb-up",
+    count: 2,
+  },
+  {
+    name: "fire-up",
+    count: 1,
+  },
+  {
+    name: "skate",
+    count: 1,
+  },
+  {
+    name: "soft-block-pass",
+    count: 1,
+  },
+  {
+    name: "remote-control",
+    count: 1,
+  },
   {
     name: "bomb-pass",
     count: 1,
   },
-  // {
-  //   name: "full-fire",
-  //   count: 1,
-  // },
-  // {
-  //   name: "vest",
-  //   count: 1,
-  // },
+  {
+    name: "full-fire",
+    count: 1,
+  },
+  {
+    name: "vest",
+    count: 1,
+  },
 ];
 const powerUpLists = powerUpObj.map((v) => v.name);
 
@@ -207,6 +207,10 @@ let powerUps;
 let enemyArr;
 
 const generateLevel = (numEnemies, numPowerups) => {
+  if(currentLevel > 1) {
+    remainingSeconds = totalTime
+  }
+  
   isKilled = false;
   level.textContent = "Level: " + currentLevel;
   enemyCount = numEnemies;
