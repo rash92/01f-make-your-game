@@ -250,8 +250,7 @@ const generateLevel = (numEnemies, numPowerups) => {
 function isWalkable(cell, entity) {
   if(entity === "enemy") {
     return cell.classList.contains("walkable") && 
-    !cell.classList.contains("breakable") &&
-    !cell.classList.contains("bomb")
+    !cell.classList.contains("breakable") && !cell.hasChildNodes()
   } else {
     return walkableCells.includes(cell);
   }
