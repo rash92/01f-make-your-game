@@ -25,7 +25,7 @@ let bomberManCurrentPosition = {
 }
 let horizontalAnimation = 0
 let verticalAnimation = 3
-const totalNoEnemy = 1
+let totalNoEnemy = 1
 let enemyCount = totalNoEnemy
 let randomDirection = [0, 1, 2, 3]
 let bombPlaced = false
@@ -474,7 +474,8 @@ const move = (direction) => {
 
 	if (cell.classList.contains("exit")) {
 		currentLevel++
-		generateLevel(2, totalNoPowerups + currentLevel)
+		totalNoEnemy = 2 * currentLevel
+		generateLevel(2 * currentLevel, totalNoPowerups + currentLevel)
 		console.log("walked on exit")
 	}
 }
