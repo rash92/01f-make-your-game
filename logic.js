@@ -199,11 +199,27 @@ const createEnemies = () => {
   return Array.from(document.querySelectorAll(".enemy"));
 };
 
+//generate level for first time
+let cellsArr;
+let walkableCells;
+let breakableCells;
+let powerUps;
+let enemyArr;
+
 const generateLevel = (numEnemies, numPowerups) => {
   isKilled = false;
   level.textContent = "Level: " + currentLevel;
   enemyCount = numEnemies;
   numOfPowerUps = numPowerups;
+
+  powerUpObj.forEach((power) => {
+    if(power !== "bomb-up") {
+      power.count = 1
+    } else {
+      power.count = 2
+    }
+  })
+  
   grid.textContent = "";
   buildGrid();
   cellsArr = createCellsArr();
@@ -211,6 +227,7 @@ const generateLevel = (numEnemies, numPowerups) => {
 
  
   walkableCells = Array.from(document.querySelectorAll(".walkable"));
+  breakableCells = Array.from(document.querySelectorAll(".breakable"))
   powerUps = Array.from(document.querySelectorAll(".powerUp"));
   enemyArr = createEnemies();
 
@@ -227,12 +244,8 @@ const generateLevel = (numEnemies, numPowerups) => {
   window.requestAnimationFrame(gameLoop);
 };
 
-//generate level for first time
-let cellsArr;
-let walkableCells;
-let powerUps;
-let enemyArr;
-// generateLevel(enemyCount);
+
+
 
 function isWalkable(cell, entity) {
   if(entity === "enemy") {
@@ -404,9 +417,7 @@ const move = (direction) => {
           break;
         case "soft-block-pass": // soft block pass - Pass through Soft Blocks
           // include breakable cells as walkable
-          walkableCells = Array.from(
-            document.querySelectorAll(".walkable,.breakable")
-          );
+          breakableCells.forEach((cell) => cell.classList.add("walkable"))
           break;
         case "remote-control": // remote control - Manually detonate a Bombs with certain button
           remoteControl = true;
@@ -550,6 +561,9 @@ const bomb = () => {
   };
 
   const bomberManCell = cellsArr[bomberManPosition.y][bomberManPosition.x];
+  if(bomberManCell.classList.contains("breakable")) {
+    return
+  }
 
   for (let i = 1; i <= numBombs; i++) {
     const bombElement = document.createElement("div");
