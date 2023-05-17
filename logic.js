@@ -53,38 +53,38 @@ let remoteControl = false;
 let passBombs = false;
 let vest = false;
 const powerUpObj = [
-  {
-    name: "bomb-up",
-    count: 2,
-  },
-  {
-    name: "fire-up",
-    count: 1,
-  },
-  {
-    name: "skate",
-    count: 1,
-  },
+  // {
+  //   name: "bomb-up",
+  //   count: 2,
+  // },
+  // {
+  //   name: "fire-up",
+  //   count: 1,
+  // },
+  // {
+  //   name: "skate",
+  //   count: 1,
+  // },
   {
     name: "soft-block-pass",
     count: 1,
   },
-  {
-    name: "remote-control",
-    count: 1,
-  },
-  {
-    name: "bomb-pass",
-    count: 1,
-  },
-  {
-    name: "full-fire",
-    count: 1,
-  },
-  {
-    name: "vest",
-    count: 1,
-  },
+  // {
+  //   name: "remote-control",
+  //   count: 1,
+  // },
+  // {
+  //   name: "bomb-pass",
+  //   count: 1,
+  // },
+  // {
+  //   name: "full-fire",
+  //   count: 1,
+  // },
+  // {
+  //   name: "vest",
+  //   count: 1,
+  // },
 ];
 const powerUpLists = powerUpObj.map((v) => v.name);
 
@@ -234,8 +234,14 @@ let powerUps;
 let enemyArr;
 // generateLevel(enemyCount);
 
-function isWalkable(cell) {
-  return walkableCells.includes(cell);
+function isWalkable(cell, entity) {
+  if(entity === "enemy") {
+    return cell.classList.contains("walkable") && 
+    !cell.classList.contains("breakable") &&
+    !cell.classList.contains("bomb")
+  } else {
+    return walkableCells.includes(cell);
+  }
 }
 
 function isPowerUp(cell) {
@@ -409,7 +415,7 @@ const move = (direction) => {
           passBombs = true;
           break;
         case "full-fire": // full fire - Increase your firepower to the max
-          fireRange = 3;
+          fireRange = 10;
           break;
         case "vest": // vest - Immune to both Bombs blast and enemies
           vest = true;
@@ -418,15 +424,6 @@ const move = (direction) => {
       }
     }
   }
-
-  // if (
-  //   isDoor(cell) &&
-  //   enemyArr.length === 0 &&
-  //   !cell.classList.contains("breakable")
-  // ) {
-  //   stageCleared = true;
-  //   stageComplete.style.display = "flex";
-  // }
 
   if (
     isWalkable(cell) ||
@@ -464,6 +461,9 @@ const move = (direction) => {
 };
 
 const killBomberMan = () => {
+  if(vest) {
+    return
+  }
   document.removeEventListener("keydown", onKeyDown);
   isKilled = true;
   pauseCountdown();
@@ -492,41 +492,6 @@ const killBomberMan = () => {
     }
     generateLevel(totalNoEnemy, 2);
   }, 3000);
-};
-
-const reset = () => {
-  isKilled = false;
-
-  grid.innerHTML = "";
-  numOfPowerUps = 2;
-  doorAdded = false;
-
-  buildGrid();
-  grid.appendChild(bomberManWrapper);
-
-  cellsArr = createCellsArr();
-  walkableCells = Array.from(document.querySelectorAll(".walkable"));
-  powerUps = Array.from(document.querySelectorAll(".powerUp"));
-  door = Array.from(document.querySelectorAll(".door"));
-  enemyCount = totalNoEnemy;
-
-  // remove existing enemies from the grid
-  enemyArr.forEach((enemy) => enemy.remove());
-
-  // create new enemies in random walkable cells
-  enemyArr = createEnemies();
-
-  playerDied.style.display = "none";
-  bomberManCurrentPosition = { y: 64, x: 64 };
-  bomberManWrapper.classList.add("bomber-man");
-  bomberManWrapper.style.transition = `transform 0ms`;
-  bomberManWrapper.style.transform = `translate(${
-    bomberManCurrentPosition.x - cellSize
-  }px, ${bomberManCurrentPosition.y - cellSize}px)`;
-  setSprite(horizontalAnimation, 1);
-  document.addEventListener("keydown", onKeyDown);
-  
-  window.requestAnimationFrame(gameLoop);
 };
 
 const destroyBlocks = (cell) => {
@@ -628,8 +593,7 @@ function explode(cell, style) {
     Math.abs(parseInt(cell.style.top) - bomberManCurrentPosition.y) <
       cellSize &&
     Math.abs(parseInt(cell.style.left) - bomberManCurrentPosition.x) <
-      cellSize &&
-    !vest
+      cellSize
   ) {
     killBomberMan();
   }
@@ -775,7 +739,7 @@ const enemyAI = () => {
 
     const cell = cellsArr[newEnemyY][newEnemyX];
 
-    if (isWalkable(cell)) {
+    if (isWalkable(cell, "enemy")) {
       enemy.style.transition = `transform 1000ms`;
       enemy.style.transform = `translate(${relativeEnemyPosition.x}px, ${relativeEnemyPosition.y}px)`;
       enemyData.rely = relativeEnemyPosition.y;
