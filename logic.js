@@ -9,9 +9,10 @@ bomberManWrapper.classList.add("bomberManWrapper");
 bomberManWrapper.classList.add("bomber-man");
 bomberManWrapper.style.top = "64px";
 bomberManWrapper.style.left = "64px";
-grid.appendChild(bomberManWrapper);
+// grid.appendChild(bomberManWrapper);
 const score = document.querySelector(".score");
 const lives = document.querySelector(".lives");
+const level = document.querySelector(".level");
 const gridRow = 13;
 const gridCol = 15;
 const cellSize = 64;
@@ -29,6 +30,7 @@ let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 let currentScore = 0;
 let currentLives = 100;
+let currentLevel = 1;
 let gamePaused = false;
 let isGameOver = false;
 let isKilled = false;
@@ -43,7 +45,8 @@ let doorAdded = false;
 
 // power ups
 let currentPower;
-let numOfPowerUps = 2;
+const totalNoPowerups = 2
+let numOfPowerUps = totalNoPowerups;
 let fireRange = 1;
 let numBombs = 1;
 let remoteControl = false;
@@ -130,11 +133,6 @@ const buildGrid = () => {
       } else {
         cell.classList.add("breakable");
 
-        if (Math.random() < 0.1 && !doorAdded) {
-          cell.classList.add("door");
-          doorAdded = true;
-        }
-
         // assign power ups
         if (Math.random() < 0.1 && numOfPowerUps > 0) {
           let randomPowerUp =
@@ -169,15 +167,6 @@ const setSprite = (spriteX, spriteY) => {
   }px`;
 };
 
-buildGrid();
-let cellsArr = createCellsArr();
-setSprite(horizontalAnimation, 1);
-
-let walkableCells = Array.from(document.querySelectorAll(".walkable"));
-let powerUps = Array.from(document.querySelectorAll(".powerUp"));
-let door = Array.from(document.querySelectorAll(".door"));
-let enemyArr;
-
 const createEnemies = () => {
   while (enemyCount > 0) {
     let randomWalkableCell =
@@ -210,7 +199,40 @@ const createEnemies = () => {
   return Array.from(document.querySelectorAll(".enemy"));
 };
 
-enemyArr = createEnemies();
+const generateLevel = (numEnemies, numPowerups) => {
+  isKilled = false;
+  level.textContent = "Level: " + currentLevel;
+  enemyCount = numEnemies;
+  numOfPowerUps = numPowerups;
+  grid.textContent = "";
+  buildGrid();
+  cellsArr = createCellsArr();
+  grid.appendChild(bomberManWrapper);
+
+ 
+  walkableCells = Array.from(document.querySelectorAll(".walkable"));
+  powerUps = Array.from(document.querySelectorAll(".powerUp"));
+  enemyArr = createEnemies();
+
+  playerDied.style.display = "none";
+  bomberManCurrentPosition = { y: 64, x: 64 };
+  bomberManWrapper.classList.add("bomber-man");
+  bomberManWrapper.style.transition = `transform 0ms`;
+  bomberManWrapper.style.transform = `translate(${
+    bomberManCurrentPosition.x - cellSize
+  }px, ${bomberManCurrentPosition.y - cellSize}px)`;
+  setSprite(horizontalAnimation, 1);
+  document.addEventListener("keydown", onKeyDown);
+  document.addEventListener("keyup", onKeyUp);
+  window.requestAnimationFrame(gameLoop);
+};
+
+//generate level for first time
+let cellsArr;
+let walkableCells;
+let powerUps;
+let enemyArr;
+// generateLevel(enemyCount);
 
 function isWalkable(cell) {
   return walkableCells.includes(cell);
@@ -220,30 +242,24 @@ function isPowerUp(cell) {
   return powerUps.includes(cell);
 }
 
-function isDoor(cell) {
-  return door.includes(cell);
-}
-
 const checkPowerUp = (cell) => {
   const classes = cell.classList;
   const powerup = powerUpLists.filter((v) => v === classes[classes.length - 2]);
   return powerup[0];
 };
 
-
 const bomberManEnemyCollision = () => {
-  const bomberManBounding = bomberManWrapper.getBoundingClientRect()
+  const bomberManBounding = bomberManWrapper.getBoundingClientRect();
   return enemyArr.some((enemy) => {
-    const enemyBoundingBox = enemy.getBoundingClientRect()
+    const enemyBoundingBox = enemy.getBoundingClientRect();
     return (
-          bomberManBounding.right > enemyBoundingBox.left + 10 &&
-          bomberManBounding.left < enemyBoundingBox.right -10 &&
-          bomberManBounding.bottom > enemyBoundingBox.top + 10 &&
-          bomberManBounding.top < enemyBoundingBox.bottom -10
-        );
+      bomberManBounding.right > enemyBoundingBox.left + 10 &&
+      bomberManBounding.left < enemyBoundingBox.right - 10 &&
+      bomberManBounding.bottom > enemyBoundingBox.top + 10 &&
+      bomberManBounding.top < enemyBoundingBox.bottom - 10
+    );
   });
 };
-
 
 // CheckNotDead checks whether when an entity walks into a cell, it kills them.
 const checkNotDead = (cell, entity) => {
@@ -403,14 +419,14 @@ const move = (direction) => {
     }
   }
 
-  if (
-    isDoor(cell) &&
-    enemyArr.length === 0 &&
-    !cell.classList.contains("breakable")
-  ) {
-    stageCleared = true;
-    stageComplete.style.display = "flex";
-  }
+  // if (
+  //   isDoor(cell) &&
+  //   enemyArr.length === 0 &&
+  //   !cell.classList.contains("breakable")
+  // ) {
+  //   stageCleared = true;
+  //   stageComplete.style.display = "flex";
+  // }
 
   if (
     isWalkable(cell) ||
@@ -438,6 +454,12 @@ const move = (direction) => {
       horizontalAnimation = (horizontalAnimation + 1) % 3;
     }
     checkNotDead(cell, "bomberMan");
+  }
+
+  if (cell.classList.contains("exit")) {
+    currentLevel++
+    generateLevel(2 * currentLevel, totalNoPowerups + currentLevel);
+    console.log("walked on exit");
   }
 };
 
@@ -468,7 +490,7 @@ const killBomberMan = () => {
     if (!isGameOver) {
       startCountdown();
     }
-    reset();
+    generateLevel(totalNoEnemy, 2);
   }, 3000);
 };
 
@@ -503,6 +525,7 @@ const reset = () => {
   }px, ${bomberManCurrentPosition.y - cellSize}px)`;
   setSprite(horizontalAnimation, 1);
   document.addEventListener("keydown", onKeyDown);
+  
   window.requestAnimationFrame(gameLoop);
 };
 
@@ -517,6 +540,10 @@ const destroyBlocks = (cell) => {
 
   currentScore += 10;
   score.textContent = `Score ${currentScore}`;
+};
+
+const revealExit = (cell) => {
+  cell.classList.add("exit");
 };
 
 const killEnemy = (cell) => {
@@ -534,6 +561,10 @@ const killEnemy = (cell) => {
 
   if (enemyToKill) {
     enemyToKill.classList.remove("enemy");
+    if (document.querySelectorAll(".enemy").length === 0) {
+      revealExit(cellsArr[1][1]);
+      console.log("no more enemies!");
+    }
     enemyToKill.classList.add("enemy-death");
     enemyToKill.addEventListener("animationend", () => {
       enemyToKill.classList.remove("enemy-death");
@@ -572,8 +603,8 @@ const bomb = () => {
         bomberManCell,
       });
     } else {
-      bombElement.style.animation = "bomb-animation 1s steps(1) 2";
-      detonate(bombElement, bomberManPosition, bomberManCell);
+        bombElement.style.animation = "bomb-animation 1s steps(1) 2";
+        detonate(bombElement, bomberManPosition, bomberManCell);
     }
   }
 };
@@ -808,8 +839,7 @@ const onKeyUp = (e) => {
   }
 };
 
-document.addEventListener("keydown", onKeyDown);
-document.addEventListener("keyup", onKeyUp);
+
 
 const getBombermanDirection = () => {
   for (let key in isMoving) {
@@ -846,4 +876,4 @@ const gameLoop = (timestamp) => {
   }
   window.requestAnimationFrame(gameLoop);
 };
-window.requestAnimationFrame(gameLoop);
+generateLevel(totalNoEnemy, totalNoPowerups)
