@@ -236,10 +236,10 @@ const bomberManEnemyCollision = () => {
   return enemyArr.some((enemy) => {
     const enemyBoundingBox = enemy.getBoundingClientRect()
     return (
-          bomberManBounding.right > enemyBoundingBox.left + 1 &&
-          bomberManBounding.left < enemyBoundingBox.right - 1 &&
-          bomberManBounding.bottom > enemyBoundingBox.top + 1 &&
-          bomberManBounding.top < enemyBoundingBox.bottom - 1
+          bomberManBounding.right > enemyBoundingBox.left + 10 &&
+          bomberManBounding.left < enemyBoundingBox.right -10 &&
+          bomberManBounding.bottom > enemyBoundingBox.top + 10 &&
+          bomberManBounding.top < enemyBoundingBox.bottom -10
         );
   });
 };
@@ -264,10 +264,12 @@ const checkNotDead = (cell, entity) => {
     cell.classList.contains(className)
   );
   if (entity === "bomberMan") {
+    // Bomber walks into explosion or enemy
     if (hasExplosionClass || bomberManEnemyCollision()) {
       killBomberMan();
     }
   } else {
+    // enemy walks into explosion or bomberman
     if (hasExplosionClass) {
       killEnemy(cell);
     } else if (bomberManEnemyCollision()) {
@@ -747,11 +749,11 @@ const enemyAI = () => {
       enemy.style.transform = `translate(${relativeEnemyPosition.x}px, ${relativeEnemyPosition.y}px)`;
       enemyData.rely = relativeEnemyPosition.y;
       enemyData.relx = relativeEnemyPosition.x;
-      checkNotDead(cell, "enemy");
     } else {
       enemyData.direction =
         randomDirection[(enemyData.direction + 1) % randomDirection.length];
     }
+    checkNotDead(cell, "enemy");
     enemy.dataset.enemy = JSON.stringify(enemyData);
   });
 };
