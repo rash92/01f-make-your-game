@@ -1,6 +1,10 @@
 const grid = document.getElementById("game-grid")
 const gameStatus = document.getElementById("game-status")
 const gameOver = document.getElementById("game-over")
+<<<<<<< HEAD
+=======
+const gameStart = document.getElementById("game-start")
+>>>>>>> master
 const stageComplete = document.getElementById("stage-complete")
 const timer = document.getElementById("timer")
 const playerDied = document.getElementById("player-died")
@@ -13,6 +17,10 @@ bomberManWrapper.style.left = "64px"
 const score = document.querySelector(".score")
 const lives = document.querySelector(".lives")
 const level = document.querySelector(".level")
+<<<<<<< HEAD
+=======
+const power = document.getElementById("powerUp")
+>>>>>>> master
 const gridRow = 13
 const gridCol = 15
 const cellSize = 64
@@ -24,7 +32,11 @@ let bomberManCurrentPosition = {
 }
 let horizontalAnimation = 0
 let verticalAnimation = 3
+<<<<<<< HEAD
 const totalNoEnemy = 1
+=======
+const totalNoEnemy = 3
+>>>>>>> master
 let enemyCount = totalNoEnemy
 let randomDirection = [0, 1, 2, 3]
 let bombPlaced = false
@@ -33,6 +45,10 @@ let currentLives = 3
 let currentLevel = 1
 let gamePaused = false
 let isGameOver = false
+<<<<<<< HEAD
+=======
+let isGameStart = false
+>>>>>>> master
 let isKilled = false
 let stageCleared = false
 let isMoving = {
@@ -41,8 +57,11 @@ let isMoving = {
 	ArrowLeft: false,
 	ArrowRight: false,
 }
+<<<<<<< HEAD
 let doorAdded = false
 
+=======
+>>>>>>> master
 // power ups
 let currentPower
 const totalNoPowerups = 2
@@ -57,6 +76,7 @@ const powerUpObj = [
 		name: "bomb-up",
 		count: 2,
 	},
+<<<<<<< HEAD
 	// {
 	//   name: "fire-up",
 	//   count: 1,
@@ -85,6 +105,36 @@ const powerUpObj = [
 	//   name: "vest",
 	//   count: 1,
 	// },
+=======
+	{
+		name: "fire-up",
+		count: 1,
+	},
+	{
+		name: "skate",
+		count: 1,
+	},
+	{
+		name: "soft-block-pass",
+		count: 1,
+	},
+	{
+		name: "remote-control",
+		count: 1,
+	},
+	{
+		name: "bomb-pass",
+		count: 1,
+	},
+	{
+		name: "full-fire",
+		count: 1,
+	},
+	{
+		name: "vest",
+		count: 1,
+	},
+>>>>>>> master
 ]
 const powerUpLists = powerUpObj.map((v) => v.name)
 
@@ -107,8 +157,11 @@ const startCountdown = () => {
 const pauseCountdown = () => {
 	clearInterval(countdownTimer)
 }
+<<<<<<< HEAD
 
 startCountdown()
+=======
+>>>>>>> master
 
 const buildGrid = () => {
 	for (let row = 0; row < gridRow; row++) {
@@ -172,10 +225,17 @@ const createEnemies = () => {
 		let randomWalkableCell =
 			walkableCells[Math.floor(Math.random() * walkableCells.length)]
 
+<<<<<<< HEAD
 		if (
 			randomWalkableCell.style.top !== `${bomberManCurrentPosition.y}px` &&
 			randomWalkableCell.style.left !== `${bomberManCurrentPosition.x}px`
 		) {
+=======
+		let topPosition = parseInt(randomWalkableCell.style.top.split("px")[0])
+		let leftPosition = parseInt(randomWalkableCell.style.left.split("px")[0])
+
+		if (Math.abs(topPosition) > 192 && Math.abs(leftPosition) > 192) {
+>>>>>>> master
 			const enemyObj = {
 				id: enemyCount,
 				y: parseInt(randomWalkableCell.style.top.split("px")[0]),
@@ -213,6 +273,10 @@ const generateLevel = (numEnemies, numPowerups) => {
 
 	isKilled = false
 	level.textContent = "Level: " + currentLevel
+<<<<<<< HEAD
+=======
+	lives.textContent = `Lives ${currentLives}`
+>>>>>>> master
 	enemyCount = numEnemies
 	numOfPowerUps = numPowerups
 
@@ -234,10 +298,17 @@ const generateLevel = (numEnemies, numPowerups) => {
 	powerUps = Array.from(document.querySelectorAll(".powerUp"))
 	enemyArr = createEnemies()
 
+<<<<<<< HEAD
 	// level change background colour beginning WIP
 	if (currentLevel == 2) {
 		walkableCells.forEach((cell) => (cell.style.background = "teal"))
 	}
+=======
+	// // level change background colour beginning WIP
+	// if (currentLevel == 2) {
+	//   walkableCells.forEach(cell => cell.style.background = "teal")
+	// }
+>>>>>>> master
 
 	playerDied.style.display = "none"
 	bomberManCurrentPosition = { y: 64, x: 64 }
@@ -247,12 +318,20 @@ const generateLevel = (numEnemies, numPowerups) => {
 		bomberManCurrentPosition.x - cellSize
 	}px, ${bomberManCurrentPosition.y - cellSize}px)`
 	setSprite(horizontalAnimation, 1)
+<<<<<<< HEAD
+=======
+	document.body.classList.remove("pause-animation")
+>>>>>>> master
 	document.addEventListener("keydown", onKeyDown)
 	document.addEventListener("keyup", onKeyUp)
 	window.requestAnimationFrame(gameLoop)
 }
 
 function isWalkable(cell, entity) {
+<<<<<<< HEAD
+=======
+	if (cell === undefined) return false
+>>>>>>> master
 	if (entity === "enemy") {
 		return (
 			cell.classList.contains("walkable") &&
@@ -370,13 +449,20 @@ const move = (direction) => {
 
 	if (isPowerUp(cell)) {
 		const powerupValue = checkPowerUp(cell)
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 		if (
 			!cell.classList.contains("breakable") &&
 			cell.classList.contains("powerUp") &&
 			cell.classList.contains(powerupValue)
 		) {
+<<<<<<< HEAD
 			// currentPower = powerupValue
+=======
+			currentPower = powerupValue
+>>>>>>> master
 			cell.classList.remove("powerUp")
 			cell.classList.remove(powerupValue)
 
@@ -409,7 +495,11 @@ const move = (direction) => {
 				vest = false
 			}
 
+<<<<<<< HEAD
 			powerUp.textContent = `Powerup: ${powerupValue}`
+=======
+			power.textContent = `${powerupValue}`
+>>>>>>> master
 
 			// apply powerup
 			switch (powerupValue) {
@@ -491,7 +581,13 @@ const killBomberMan = () => {
 		gameOver.style.display = "flex"
 	} else {
 		currentLives -= 1
+<<<<<<< HEAD
 		lives.textContent = `Lives ${currentLives}`
+=======
+		setTimeout(() => {
+			lives.textContent = `Lives ${currentLives}`
+		}, 1000)
+>>>>>>> master
 	}
 
 	if (!isGameOver) {
@@ -504,6 +600,10 @@ const killBomberMan = () => {
 	bomberManWrapper.classList.add("death")
 	bomberManWrapper.addEventListener("animationend", () => {
 		bomberManWrapper.classList.remove("death")
+<<<<<<< HEAD
+=======
+		document.body.classList.add("pause-animation")
+>>>>>>> master
 	})
 
 	setTimeout(() => {
@@ -574,7 +674,14 @@ const bomb = () => {
 	}
 	const bombElement = document.createElement("div")
 	bombElement.classList.add("bomb")
+<<<<<<< HEAD
 	bomberManCell.appendChild(bombElement)
+=======
+	bombElement.style.top = bomberManCell.style.top
+	bombElement.style.left = bomberManCell.style.left
+	grid.appendChild(bombElement)
+	bombPlaced = !bombPlaced
+>>>>>>> master
 	if (!passBombs) {
 		bomberManCell.classList.remove("walkable")
 		walkableCells = Array.from(document.querySelectorAll(".walkable"))
@@ -704,8 +811,13 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
 		bomberManCell.addEventListener("animationend", () => {
 			bomberManCell.classList.remove("explosion-middle")
 			bomberManCell.classList.add("walkable")
+<<<<<<< HEAD
 		})
 		bombPlaced = false
+=======
+			bombPlaced = false
+		})
+>>>>>>> master
 		// Loop through the object and call explode
 		Object.keys(explosionMap).forEach((direction) => {
 			explosionMap[direction].forEach((cell) => {
@@ -755,13 +867,68 @@ const enemyAI = () => {
 			enemyData.rely = relativeEnemyPosition.y
 			enemyData.relx = relativeEnemyPosition.x
 		} else {
+<<<<<<< HEAD
 			enemyData.direction =
 				randomDirection[(enemyData.direction + 1) % randomDirection.length]
+=======
+			enemyData.direction = getNewDirection(
+				Math.floor((originalEnemyPosition.y + enemyData.rely) / cellSize),
+				Math.floor((originalEnemyPosition.x + enemyData.relx) / cellSize),
+				enemyData.direction
+			)
+>>>>>>> master
 		}
 		checkNotDead(cell, "enemy")
 		enemy.dataset.enemy = JSON.stringify(enemyData)
 	})
 }
+<<<<<<< HEAD
+=======
+
+function getNewDirection(posY, posX, oldDirection) {
+	let possibleCells = {
+		top:
+			posY - 1 >= 0
+				? {
+						newCell: isWalkable(cellsArr[posY - 1][posX], "enemy"),
+						newDirection: 0,
+				  }
+				: null,
+		bottom:
+			posY + 1 < cellsArr.length
+				? {
+						newCell: isWalkable(cellsArr[posY + 1][posX], "enemy"),
+						newDirection: 2,
+				  }
+				: null,
+		right:
+			posX + 1 < cellsArr[0].length
+				? {
+						newCell: isWalkable(cellsArr[posY][posX + 1], "enemy"),
+						newDirection: 1,
+				  }
+				: null,
+		left:
+			posX - 1 >= 0
+				? {
+						newCell: isWalkable(cellsArr[posY][posX - 1], "enemy"),
+						newDirection: 3,
+				  }
+				: null,
+	}
+	let newDirectionArray = []
+	for (let key in possibleCells) {
+		if (
+			possibleCells[key] &&
+			possibleCells[key].newCell &&
+			possibleCells[key].newDirection !== oldDirection
+		) {
+			newDirectionArray.push(possibleCells[key].newDirection)
+		}
+	}
+	return newDirectionArray[Math.floor(Math.random() * newDirectionArray.length)]
+}
+>>>>>>> master
 
 const onKeyDown = (e) => {
 	switch (e.key) {
@@ -782,11 +949,15 @@ const onKeyDown = (e) => {
 			bomberManCurrentPosition.direction = e.key
 			break
 		case "x":
+<<<<<<< HEAD
 			console.log(bombPlaced)
 			if (!bombPlaced && numBombs >= 1) {
 				bomb()
 				bombPlaced = !bombPlaced
 			}
+=======
+			if (!bombPlaced) bomb()
+>>>>>>> master
 			break
 		case "p":
 			gamePaused = !gamePaused
@@ -805,6 +976,14 @@ const onKeyDown = (e) => {
 			location.reload()
 			remainingSeconds = totalTime
 			break
+<<<<<<< HEAD
+=======
+		case "Enter":
+			isGameStart = true
+			gameStart.style.display = "none"
+			generateLevel(totalNoEnemy, totalNoPowerups)
+			startCountdown()
+>>>>>>> master
 	}
 }
 
@@ -834,7 +1013,11 @@ let lastEnemyMove = 0
 let lastMove = 0
 const gameLoop = (timestamp) => {
 	walkableCells = Array.from(document.querySelectorAll(".walkable"))
+<<<<<<< HEAD
 	if (gamePaused || isGameOver || isKilled || stageCleared) {
+=======
+	if (gamePaused || isGameOver || isKilled || stageCleared || !isGameStart) {
+>>>>>>> master
 		return
 	}
 
@@ -854,4 +1037,9 @@ const gameLoop = (timestamp) => {
 	}
 	window.requestAnimationFrame(gameLoop)
 }
+<<<<<<< HEAD
 generateLevel(totalNoEnemy, totalNoPowerups)
+=======
+
+window.addEventListener("keydown", onKeyDown)
+>>>>>>> master
