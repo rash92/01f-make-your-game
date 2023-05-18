@@ -767,8 +767,12 @@ const enemyAI = () => {
       enemyData.rely = relativeEnemyPosition.y;
       enemyData.relx = relativeEnemyPosition.x;
     } else {
-      enemyData.direction =
-        randomDirection[(enemyData.direction + 1) % randomDirection.length];
+      let newDirection = randomDirection[Math.floor(Math.random() * randomDirection.length)]
+      if (newDirection === enemyData.direction) {
+        newDirection = randomDirection[Math.floor(Math.random() * randomDirection.length)]
+      } else {
+        enemyData.direction = newDirection
+      }
     }
     checkNotDead(cell, "enemy");
     enemy.dataset.enemy = JSON.stringify(enemyData);
