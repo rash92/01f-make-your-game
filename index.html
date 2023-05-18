@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-			rel="stylesheet"
-		/>
-		<link rel="stylesheet" href="styles.css" />
-		<title>BOMBERMAN | WIP</title>
-	</head>
-	<body>
-		<div id="grid-wrapper">
-			<div id="game-status">
-				<div id="pause">
-					<h1>GAME PAUSED</h1>
-					<p>Press 'P' to resume</p>
-				</div>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+	<link rel="stylesheet" href="styles.css" />
+	<title>BOMBERMAN | WIP</title>
+</head>
+
+<body>
+	<div id="grid-wrapper">
+		<div id="game-status">
+			<div id="start-up">
+				<h1>Press 'S' to start</h1>
+			</div>
+			<div id="pause">
+				<h1>GAME PAUSED</h1>
+				<p>Press 'P' to resume</p>
+				<p>Press 'R' to restart</p>
 			</div>
 			<div id="game-over">
 				<h1>GAME OVER</h1>
@@ -31,15 +33,17 @@
 			<div id="stage-complete">
 				<h1>STAGE COMPLETE</h1>
 			</div>
-			<div id="info">
-				<div id="timer">Time:</div>
-				<div id="powerUp">Powerup:</div>
-				<div class="score">Score: 0</div>
-				<div class="lives">Lives: 0</div>
-				<div class="level"></div>
-			</div>
-			<div id="game-grid"></div>
 		</div>
-	</body>
-	<script src="logic.js"></script>
+		<div id="info">
+			<div id="timer">Time:</div>
+			<div id="powerUp">Powerup:</div>
+			<div class="score">Score: 0</div>
+			<div class="lives">Lives: 0</div>
+			<div class="level"></div>
+		</div>
+		<div id="game-grid"></div>
+	</div>
+</body>
+<script src="logic.js"></script>
+
 </html>
