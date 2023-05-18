@@ -2,6 +2,7 @@ const grid = document.getElementById("game-grid");
 const gameStatus = document.getElementById("game-status");
 const startUp = document.getElementById("start-up");
 const gameOver = document.getElementById("game-over");
+const pause = document.getElementById("pause")
 const stageComplete = document.getElementById("stage-complete");
 const timer = document.getElementById("timer");
 const playerDied = document.getElementById("player-died");
@@ -30,9 +31,12 @@ const totalNoEnemy = 3;
 let enemyCount = totalNoEnemy;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
-let currentScore = 0;
-let currentLives = 3;
-let currentLevel = 1;
+const startingScore = 0
+let currentScore = startingScore;
+const startinglives = 3
+let currentLives = startinglives;
+const startingLevel = 1
+let currentLevel = startingLevel;
 let gamePaused = false;
 let isGameOver = false;
 let isKilled = false;
@@ -215,6 +219,7 @@ const generateLevel = (numEnemies, numPowerups) => {
   bombPlaced = false
   level.textContent = `Level: ${currentLevel}`;
   lives.textContent = `Lives: ${currentLives}`;
+  score.textContent = `Score: ${currentScore}`
   enemyCount = numEnemies;
   numOfPowerUps = numPowerups;
 
@@ -493,8 +498,8 @@ const killBomberMan = () => {
   pauseCountdown();
 
   if (currentLives === 0) {
-    isGameOver = true;
-    gameOver.style.display = "flex";
+    gameOverHandler()
+    return
   } else {
     currentLives -= 1;
     setTimeout(() => {
@@ -830,38 +835,44 @@ const onKeyDown = (e) => {
     case "ArrowDown":
     case "ArrowRight":
     case "ArrowLeft":
-      if (isMoving[e.key]) {
-        return;
+      if(!isGameOver) {
+        if (isMoving[e.key]) {
+          return;
+        }
+        isMoving = {
+          ArrowUp: false,
+          ArrowDown: false,
+          ArrowLeft: false,
+          ArrowRight: false,
+        };
+        isMoving[e.key] = true;
+        bomberManCurrentPosition.direction = e.key;
       }
-      isMoving = {
-        ArrowUp: false,
-        ArrowDown: false,
-        ArrowLeft: false,
-        ArrowRight: false,
-      };
-      isMoving[e.key] = true;
-      bomberManCurrentPosition.direction = e.key;
       break;
     case "x":
-      if (!bombPlaced) bomb();
+      if (!isGameOver && !bombPlaced) bomb();
       break;
     case "p":
-      gamePaused = !gamePaused;
-      pauseCountdown();
-      if (gamePaused) {
-        document.body.classList.add("pause-animation");
-        gameStatus.style.display = "flex";
-      } else {
-        document.body.classList.remove("pause-animation");
-        startCountdown();
-        gameStatus.style.display = "none";
-        window.requestAnimationFrame(gameLoop);
+      if(!isGameOver) {
+        gamePaused = !gamePaused;
+        pauseCountdown();
+        if (gamePaused) {
+          document.body.classList.add("pause-animation");
+          pause.style.display = "flex";
+        } else {
+          document.body.classList.remove("pause-animation");
+          startCountdown();
+          pause.style.display = "none";
+          window.requestAnimationFrame(gameLoop);
+        }
       }
       break;
     case "r":
-      currentScore = 0;
-      currentLives = 3;
-      currentLevel = 1;
+      pause.style.display = "none";
+      gamePaused = false;
+      currentScore = startingScore;
+      currentLives = startinglives;
+      currentLevel = startingLevel;
       remainingSeconds = totalTime;
       generateLevel(totalNoPowerups, totalNoPowerups);
       break;
@@ -915,8 +926,14 @@ const gameLoop = (timestamp) => {
   window.requestAnimationFrame(gameLoop);
 };
 
+function gameOverHandler() {
+  pauseCountdown()
+  isGameOver = true;
+  gameOver.style.display = "flex";
+  document.addEventListener("keydown", onKeyDown);
+}
+
 function start() {
-  console.log("start fired");
   function keydownHandler(e) {
     if (e.key === "s") {
       setTimeout(() => {
