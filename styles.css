@@ -16,6 +16,7 @@
 }
 
 #game-status {
+	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
@@ -29,7 +30,6 @@
 #game-over,
 #player-died,
 #stage-complete
-#start-up,
 #pause {
 	flex-direction: column;
 	justify-content: center;
@@ -45,7 +45,21 @@
 #game-status,
 #start-up {
 	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+	position: absolute;
+	height: 832px;
+	width: 960px;
 	color: black;
+	z-index: 10;
+}
+
+#start-up > div {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
 }
 
 
