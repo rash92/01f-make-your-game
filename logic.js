@@ -210,8 +210,9 @@ const generateLevel = (numEnemies, numPowerups) => {
   if (currentLevel > 1) {
     remainingSeconds = totalTime;
   }
-  isGameOver = false
+  isGameOver = false;
   isKilled = false;
+  bombPlaced = false
   level.textContent = `Level: ${currentLevel}`;
   lives.textContent = `Lives: ${currentLives}`;
   enemyCount = numEnemies;
@@ -858,8 +859,11 @@ const onKeyDown = (e) => {
       }
       break;
     case "r":
+      currentScore = 0;
+      currentLives = 3;
+      currentLevel = 1;
       remainingSeconds = totalTime;
-      generateLevel(totalNoPowerups, totalNoPowerups)
+      generateLevel(totalNoPowerups, totalNoPowerups);
       break;
   }
 };
