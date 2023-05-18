@@ -29,7 +29,7 @@
 
 #game-over,
 #player-died,
-#stage-complete
+#stage-complete,
 #pause {
 	flex-direction: column;
 	justify-content: center;
@@ -42,7 +42,6 @@
 	z-index: 10;
 }
 
-#game-status,
 #start-up {
 	display: flex;
 	flex-direction: column;
