@@ -172,10 +172,13 @@ const createEnemies = () => {
     let randomWalkableCell =
       walkableCells[Math.floor(Math.random() * walkableCells.length)];
 
-    if (
-      randomWalkableCell.style.top !== `${bomberManCurrentPosition.y}px` &&
-      randomWalkableCell.style.left !== `${bomberManCurrentPosition.x}px`
-    ) {
+      let topPosition = parseInt(randomWalkableCell.style.top.split("px")[0]);
+      let leftPosition = parseInt(randomWalkableCell.style.left.split("px")[0]);
+  
+      if (
+        Math.abs(topPosition) > 192 && 
+        Math.abs(leftPosition) > 192 
+      ) {
       const enemyObj = {
         id: enemyCount,
         y: parseInt(randomWalkableCell.style.top.split("px")[0]),
