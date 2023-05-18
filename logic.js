@@ -580,7 +580,9 @@ const bomb = () => {
   }
   const bombElement = document.createElement("div");
   bombElement.classList.add("bomb");
-  bomberManCell.appendChild(bombElement);
+  bombElement.style.top = bomberManCell.style.top
+  bombElement.style.left = bomberManCell.style.left
+  grid.appendChild(bombElement);
   bombPlaced = !bombPlaced
   if (!passBombs) {
     bomberManCell.classList.remove("walkable");

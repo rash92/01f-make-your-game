@@ -139,14 +139,12 @@
 }
 
 .bomber-man {
-	/* top: 64px;
-	left: 64px; */
 	width: 64px;
 	height: 64px;
 	background-image: url("sprites.png");
 	background-size: 896px 1532px;
 	position: absolute;
-	z-index: 2;
+	z-index: 3;
 }
 
 .bomb {
@@ -156,6 +154,8 @@
 	height: 64px;
 	background-position-y: -192px;
 	background-size: 896px 1532px;
+	position: absolute;
+	z-index: 1;
 }
 
 .explosion-top {
@@ -183,6 +183,7 @@
 }
 
 .explosion-middle {
+	background: #388700;
 	background-image: url("sprites.png");
 	width: 64px;
 	height: 64px;
@@ -258,7 +259,7 @@
 	height: 64px;
 	background-size: 896px 1532px;
 	position: absolute;
-	z-index: 1;
+	z-index: 2;
 	animation: enemy-animation 1s steps(1) infinite;
 }
 
