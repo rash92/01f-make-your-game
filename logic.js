@@ -249,6 +249,7 @@ const generateLevel = (numEnemies, numPowerups) => {
     bomberManCurrentPosition.x - cellSize
   }px, ${bomberManCurrentPosition.y - cellSize}px)`;
   setSprite(horizontalAnimation, 1);
+  document.body.classList.remove("pause-animation")
   document.addEventListener("keydown", onKeyDown);
   document.addEventListener("keyup", onKeyUp);
   window.requestAnimationFrame(gameLoop);
@@ -509,6 +510,7 @@ const killBomberMan = () => {
   bomberManWrapper.classList.add("death");
   bomberManWrapper.addEventListener("animationend", () => {
     bomberManWrapper.classList.remove("death");
+    document.body.classList.add("pause-animation")
   });
 
   setTimeout(() => {
