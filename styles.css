@@ -31,19 +31,6 @@
 	z-index: 10;
 }
 
-#game-start {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	height: 832px;
-	width: 960px;
-	background: rgba(0, 0, 0, 0.5);
-	color: white;
-	z-index: 10;
-}
-
 #info {
 	display: flex;
 	flex-direction: row;
@@ -261,6 +248,8 @@
 	background-position-x: -704px;
 	background-position-y: -192px;
 }
+
+
 
 .enemy {
 	background-image: url("sprites.png");
@@ -502,6 +491,7 @@
 	}
 }
 
+
 @keyframes explosion-fire-up-bottom {
 	0% {
 		background-position-y: -448px;
@@ -522,7 +512,7 @@
 	100% {
 		background-position-y: -448px;
 		background-position-x: -128px;
-	}
+	}	
 }
 
 @keyframes explosion-fire-up-right {

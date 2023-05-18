@@ -1,7 +1,6 @@
 const grid = document.getElementById("game-grid")
 const gameStatus = document.getElementById("game-status")
 const gameOver = document.getElementById("game-over")
-const gameStart = document.getElementById("game-start")
 const stageComplete = document.getElementById("stage-complete")
 const timer = document.getElementById("timer")
 const playerDied = document.getElementById("player-died")
@@ -35,7 +34,6 @@ let currentLives = 3
 let currentLevel = 1
 let gamePaused = false
 let isGameOver = false
-let isGameStart = false
 let isKilled = false
 let stageCleared = false
 let isMoving = {
@@ -44,6 +42,8 @@ let isMoving = {
 	ArrowLeft: false,
 	ArrowRight: false,
 }
+let doorAdded = false
+
 // power ups
 let currentPower
 const totalNoPowerups = 2
@@ -108,6 +108,8 @@ const startCountdown = () => {
 const pauseCountdown = () => {
 	clearInterval(countdownTimer)
 }
+
+startCountdown()
 
 const buildGrid = () => {
 	for (let row = 0; row < gridRow; row++) {
@@ -855,11 +857,6 @@ const onKeyDown = (e) => {
 			location.reload()
 			remainingSeconds = totalTime
 			break
-		case "Enter":
-			isGameStart = true
-			gameStart.style.display = "none"
-			generateLevel(totalNoEnemy, totalNoPowerups)
-			startCountdown()
 	}
 }
 
@@ -889,7 +886,7 @@ let lastEnemyMove = 0
 let lastMove = 0
 const gameLoop = (timestamp) => {
 	walkableCells = Array.from(document.querySelectorAll(".walkable"))
-	if (gamePaused || isGameOver || isKilled || stageCleared || !isGameStart) {
+	if (gamePaused || isGameOver || isKilled || stageCleared) {
 		return
 	}
 
@@ -909,5 +906,4 @@ const gameLoop = (timestamp) => {
 	}
 	window.requestAnimationFrame(gameLoop)
 }
-
-window.addEventListener("keydown", onKeyDown)
+generateLevel(totalNoEnemy, totalNoPowerups)
