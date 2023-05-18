@@ -15,11 +15,22 @@
 	position: relative;
 }
 
-#game-status,
+#game-status {
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	height: 832px;
+	width: 960px;
+	color: white;
+	z-index: 10;
+}
+
 #game-over,
 #player-died,
-#stage-complete {
-	display: none;
+#stage-complete
+#start-up,
+#pause {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
@@ -31,8 +42,22 @@
 	z-index: 10;
 }
 
-#info {
+#game-status,
+#start-up {
 	display: flex;
+	color: black;
+}
+
+
+#game-over,
+#player-died,
+#stage-complete,
+#pause {
+	display: none;
+}
+
+#info {
+	display: none;
 	flex-direction: row;
 	justify-content: space-evenly;
 	align-items: center;

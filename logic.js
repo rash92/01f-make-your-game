@@ -1,5 +1,6 @@
 const grid = document.getElementById("game-grid");
 const gameStatus = document.getElementById("game-status");
+const startUp = document.getElementById("start-up");
 const gameOver = document.getElementById("game-over");
 const stageComplete = document.getElementById("stage-complete");
 const timer = document.getElementById("timer");
@@ -9,11 +10,11 @@ bomberManWrapper.classList.add("bomberManWrapper");
 bomberManWrapper.classList.add("bomber-man");
 bomberManWrapper.style.top = "64px";
 bomberManWrapper.style.left = "64px";
-// grid.appendChild(bomberManWrapper);
+const infoWrapper = document.getElementById("info");
 const score = document.querySelector(".score");
 const lives = document.querySelector(".lives");
 const level = document.querySelector(".level");
-const power = document.getElementById("powerUp")
+const power = document.getElementById("powerUp");
 const gridRow = 13;
 const gridCol = 15;
 const cellSize = 64;
@@ -108,8 +109,6 @@ const startCountdown = () => {
 const pauseCountdown = () => {
   clearInterval(countdownTimer);
 };
-
-startCountdown();
 
 const buildGrid = () => {
   for (let row = 0; row < gridRow; row++) {
@@ -211,10 +210,10 @@ const generateLevel = (numEnemies, numPowerups) => {
   if (currentLevel > 1) {
     remainingSeconds = totalTime;
   }
-
+  isGameOver = false
   isKilled = false;
-  level.textContent = "Level: " + currentLevel;
-  lives.textContent = `Lives ${currentLives}`;
+  level.textContent = `Level: ${currentLevel}`;
+  lives.textContent = `Lives: ${currentLives}`;
   enemyCount = numEnemies;
   numOfPowerUps = numPowerups;
 
@@ -242,6 +241,7 @@ const generateLevel = (numEnemies, numPowerups) => {
   // }
 
   playerDied.style.display = "none";
+  gameOver.style.display = "none";
   bomberManCurrentPosition = { y: 64, x: 64 };
   bomberManWrapper.classList.add("bomber-man");
   bomberManWrapper.style.transition = `transform 0ms`;
@@ -253,10 +253,12 @@ const generateLevel = (numEnemies, numPowerups) => {
   document.addEventListener("keydown", onKeyDown);
   document.addEventListener("keyup", onKeyUp);
   window.requestAnimationFrame(gameLoop);
+  infoWrapper.style.display = "flex";
+  startCountdown();
 };
 
 function isWalkable(cell, entity) {
-  if(cell === undefined) return false;
+  if (cell === undefined) return false;
   if (entity === "enemy") {
     return (
       cell.classList.contains("walkable") &&
@@ -412,7 +414,7 @@ const move = (direction) => {
         vest = false;
       }
 
-      power.textContent = `${powerupValue}`
+      power.textContent = `${powerupValue}`;
 
       // apply powerup
       switch (powerupValue) {
@@ -580,10 +582,10 @@ const bomb = () => {
   }
   const bombElement = document.createElement("div");
   bombElement.classList.add("bomb");
-  bombElement.style.top = bomberManCell.style.top
-  bombElement.style.left = bomberManCell.style.left
+  bombElement.style.top = bomberManCell.style.top;
+  bombElement.style.left = bomberManCell.style.left;
   grid.appendChild(bombElement);
-  bombPlaced = !bombPlaced
+  bombPlaced = !bombPlaced;
   if (!passBombs) {
     bomberManCell.classList.remove("walkable");
     walkableCells = Array.from(document.querySelectorAll(".walkable"));
@@ -777,30 +779,48 @@ const enemyAI = () => {
 
 function getNewDirection(posY, posX, oldDirection) {
   let possibleCells = {
-    top: posY - 1 >= 0 ? {
-      newCell: isWalkable(cellsArr[posY - 1][posX], "enemy"),
-      newDirection: 0,
-    } : null,
-    bottom: posY + 1 < cellsArr.length ? {
-      newCell: isWalkable(cellsArr[posY + 1][posX], "enemy"),
-      newDirection: 2,
-    } : null,
-    right: posX + 1 < cellsArr[0].length ? {
-      newCell: isWalkable(cellsArr[posY][posX + 1], "enemy"),
-      newDirection: 1,
-    } : null,
-    left: posX - 1 >= 0 ? {
-      newCell: isWalkable(cellsArr[posY][posX - 1], "enemy"),
-      newDirection: 3,
-    } : null,
+    top:
+      posY - 1 >= 0
+        ? {
+            newCell: isWalkable(cellsArr[posY - 1][posX], "enemy"),
+            newDirection: 0,
+          }
+        : null,
+    bottom:
+      posY + 1 < cellsArr.length
+        ? {
+            newCell: isWalkable(cellsArr[posY + 1][posX], "enemy"),
+            newDirection: 2,
+          }
+        : null,
+    right:
+      posX + 1 < cellsArr[0].length
+        ? {
+            newCell: isWalkable(cellsArr[posY][posX + 1], "enemy"),
+            newDirection: 1,
+          }
+        : null,
+    left:
+      posX - 1 >= 0
+        ? {
+            newCell: isWalkable(cellsArr[posY][posX - 1], "enemy"),
+            newDirection: 3,
+          }
+        : null,
   };
   let newDirectionArray = [];
   for (let key in possibleCells) {
-    if (possibleCells[key] && possibleCells[key].newCell && possibleCells[key].newDirection !== oldDirection) {
+    if (
+      possibleCells[key] &&
+      possibleCells[key].newCell &&
+      possibleCells[key].newDirection !== oldDirection
+    ) {
       newDirectionArray.push(possibleCells[key].newDirection);
     }
   }
-  return newDirectionArray[Math.floor(Math.random() * newDirectionArray.length)];
+  return newDirectionArray[
+    Math.floor(Math.random() * newDirectionArray.length)
+  ];
 }
 
 const onKeyDown = (e) => {
@@ -838,8 +858,8 @@ const onKeyDown = (e) => {
       }
       break;
     case "r":
-      location.reload();
       remainingSeconds = totalTime;
+      generateLevel(totalNoPowerups, totalNoPowerups)
       break;
   }
 };
@@ -890,4 +910,19 @@ const gameLoop = (timestamp) => {
   }
   window.requestAnimationFrame(gameLoop);
 };
-generateLevel(totalNoEnemy, totalNoPowerups);
+
+function start() {
+  console.log("start fired");
+  function keydownHandler(e) {
+    if (e.key === "s") {
+      setTimeout(() => {
+        startUp.style.display = "none";
+        document.removeEventListener("keydown", keydownHandler);
+        generateLevel(totalNoEnemy, totalNoPowerups);
+      }, 500);
+    }
+  }
+  document.addEventListener("keydown", keydownHandler);
+}
+
+start();
