@@ -75,14 +75,14 @@ const powerUpObj = [
   //   name: "soft-block-pass",
   //   count: 1,
   // },
-  {
-    name: "remote-control",
-    count: 1,
-  },
   // {
-  //   name: "bomb-pass",
+  //   name: "remote-control",
   //   count: 1,
   // },
+  {
+    name: "bomb-pass",
+    count: 1,
+  },
   // {
   //   name: "full-fire",
   //   count: 1,
@@ -271,7 +271,7 @@ function isWalkable(cell, entity) {
     return (
       cell.classList.contains("walkable") &&
       !cell.classList.contains("breakable") &&
-      !cell.hasChildNodes()
+      !cell.classList.contains("hasBomb")
     );
   } else {
     return walkableCells.includes(cell);
@@ -579,8 +579,10 @@ const bomb = () => {
   bombPlaced = !bombPlaced;
   if (!passBombs) {
     bomberManCell.classList.remove("walkable");
-    walkableCells = Array.from(document.querySelectorAll(".walkable"));
+  } else {
+    bomberManCell.classList.add("hasBomb");
   }
+  walkableCells = Array.from(document.querySelectorAll(".walkable"));
   if (remoteControl) {
     remoteControlBombElements = {
       bomb: bombElement,
@@ -689,6 +691,7 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
   }
   bombElement.addEventListener("animationend", () => {
     bombElement.remove();
+    bomberManCell.classList.remove("hasBomb")
     // Explosion Middle
     bomberManCell.classList.add("explosion-middle");
     bomberManCell.addEventListener("animationend", () => {
