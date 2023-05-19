@@ -27,7 +27,7 @@ let bomberManCurrentPosition = {
 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-const totalNoEnemy = 3;
+const totalNoEnemy = 1;
 let enemyCount = totalNoEnemy;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
@@ -59,38 +59,38 @@ let remoteControl = false;
 let passBombs = false;
 let vest = false;
 const powerUpObj = [
-  // {
-  //   name: "bomb-up",
-  //   count: 2,
-  // },
-  // {
-  //   name: "fire-up",
-  //   count: 1,
-  // },
-  // {
-  //   name: "skate",
-  //   count: 1,
-  // },
-  // {
-  //   name: "soft-block-pass",
-  //   count: 1,
-  // },
-  // {
-  //   name: "remote-control",
-  //   count: 1,
-  // },
+  {
+    name: "bomb-up",
+    count: 2,
+  },
+  {
+    name: "fire-up",
+    count: 1,
+  },
+  {
+    name: "skate",
+    count: 1,
+  },
+  {
+    name: "soft-block-pass",
+    count: 1,
+  },
+  {
+    name: "remote-control",
+    count: 1,
+  },
   {
     name: "bomb-pass",
     count: 1,
   },
-  // {
-  //   name: "full-fire",
-  //   count: 1,
-  // },
-  // {
-  //   name: "vest",
-  //   count: 1,
-  // },
+  {
+    name: "full-fire",
+    count: 1,
+  },
+  {
+    name: "vest",
+    count: 1,
+  },
 ];
 const powerUpLists = powerUpObj.map((v) => v.name);
 
@@ -214,10 +214,22 @@ const generateLevel = (numPowerups) => {
   if (currentLevel > 1) {
     remainingSeconds = totalTime;
   }
+  
+
+  // Reset Power Ups if died but not if next level
+  if (currentLevel === 1 || isKilled) {
+    currentPower = "";
+    fireRange = 1;
+    numBombs = 1;
+    remoteControl = false;
+    passBombs = false;
+    vest = false;
+  }
+
   isGameOver = false;
   isKilled = false;
   bombPlaced = false;
-  currentPower = "";
+
   level.textContent = `Level: ${currentLevel}`;
   lives.textContent = `Lives: ${currentLives}`;
   score.textContent = `Score: ${currentScore}`;
@@ -527,10 +539,6 @@ const destroyBlocks = (cell) => {
   score.textContent = `Score ${currentScore}`;
 };
 
-const revealExit = (cell) => {
-  cell.classList.add("exit");
-};
-
 const killEnemy = (cell) => {
   const enemyToKill = enemyArr.find((enemy) => {
     const enemyData = JSON.parse(enemy.dataset.enemy);
@@ -559,6 +567,10 @@ const killEnemy = (cell) => {
       score.textContent = `Score ${currentScore}`;
     });
   }
+};
+
+const revealExit = (cell) => {
+  cell.classList.add("exit");
 };
 
 let remoteControlBombElements = {};
@@ -691,7 +703,7 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
   }
   bombElement.addEventListener("animationend", () => {
     bombElement.remove();
-    bomberManCell.classList.remove("hasBomb")
+    bomberManCell.classList.remove("hasBomb");
     // Explosion Middle
     bomberManCell.classList.add("explosion-middle");
     bomberManCell.addEventListener("animationend", () => {
