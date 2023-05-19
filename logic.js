@@ -23,7 +23,7 @@ let step = 0.25;
 let bomberManCurrentPosition = {
   y: 64,
   x: 64,
-  direction: ""
+  direction: "",
 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
@@ -59,38 +59,38 @@ let remoteControl = false;
 let passBombs = false;
 let vest = false;
 const powerUpObj = [
-  {
-    name: "bomb-up",
-    count: 2,
-  },
-  {
-    name: "fire-up",
-    count: 1,
-  },
-  {
-    name: "skate",
-    count: 1,
-  },
-  {
-    name: "soft-block-pass",
-    count: 1,
-  },
+  // {
+  //   name: "bomb-up",
+  //   count: 2,
+  // },
+  // {
+  //   name: "fire-up",
+  //   count: 1,
+  // },
+  // {
+  //   name: "skate",
+  //   count: 1,
+  // },
+  // {
+  //   name: "soft-block-pass",
+  //   count: 1,
+  // },
   {
     name: "remote-control",
     count: 1,
   },
-  {
-    name: "bomb-pass",
-    count: 1,
-  },
-  {
-    name: "full-fire",
-    count: 1,
-  },
-  {
-    name: "vest",
-    count: 1,
-  },
+  // {
+  //   name: "bomb-pass",
+  //   count: 1,
+  // },
+  // {
+  //   name: "full-fire",
+  //   count: 1,
+  // },
+  // {
+  //   name: "vest",
+  //   count: 1,
+  // },
 ];
 const powerUpLists = powerUpObj.map((v) => v.name);
 
@@ -217,11 +217,11 @@ const generateLevel = (numPowerups) => {
   isGameOver = false;
   isKilled = false;
   bombPlaced = false;
-  currentPower = ""
+  currentPower = "";
   level.textContent = `Level: ${currentLevel}`;
   lives.textContent = `Lives: ${currentLives}`;
   score.textContent = `Score: ${currentScore}`;
-  power.textContent = `PowerUp: ${currentPower}`
+  power.textContent = `PowerUp: ${currentPower}`;
   enemyCount = totalNoEnemy * currentLevel;
   numOfPowerUps = numPowerups;
 
@@ -289,7 +289,6 @@ const checkPowerUp = (cell) => {
 };
 
 const bomberManEnemyCollision = () => {
-  console.log("called");
   const bomberManBounding = bomberManWrapper.getBoundingClientRect();
   return enemyArr.some((enemy) => {
     const enemyBoundingBox = enemy.getBoundingClientRect();
@@ -469,7 +468,7 @@ const move = (direction) => {
       newPosition.x - cellSize
     }px, ${newPosition.y - cellSize}px, 0)`;
     bomberManCurrentPosition = newPosition;
-    bomberManCurrentPosition.direction = direction
+    bomberManCurrentPosition.direction = direction;
     // Update sprite based on the direction
     if (direction === "ArrowUp" || direction === "ArrowDown") {
       setSprite(verticalAnimation, direction === "ArrowUp" ? 1 : 0);
@@ -564,7 +563,7 @@ const killEnemy = (cell) => {
   }
 };
 
-let remoteControlBombElements = [];
+let remoteControlBombElements = {};
 const bomb = () => {
   const bomberManPosition = {
     y: Math.round(bomberManCurrentPosition.y / cellSize),
@@ -585,26 +584,27 @@ const bomb = () => {
     walkableCells = Array.from(document.querySelectorAll(".walkable"));
   }
   if (remoteControl) {
-    remoteControlBombElements.push({
-      bombElement,
-      bomberManPosition,
-      bomberManCell,
-    });
+    remoteControlBombElements = {
+      bomb: bombElement,
+      bmanposition: bomberManPosition,
+      cell: bomberManCell,
+    };
+    console.log(remoteControlBombElements);
   } else {
     bombElement.style.animation = "bomb-animation 1s steps(1) 2";
     detonate(bombElement, bomberManPosition, bomberManCell);
   }
 };
 
-document.addEventListener("keydown", (e) => {
-  if (e.key === " " && remoteControl && remoteControlBombElements.length > 0) {
-    remoteControlBombElements.forEach((v) => {
-      v.bomberManCell.style.animation = "bomb-animation 1s steps(1) 2";
-      detonate(v.bomberManPosition, v.bomberManCell);
-    });
-    remoteControlBombElements.length = 0;
-  }
-});
+// document.addEventListener("keydown", (e) => {
+//   if (e.key === " " && remoteControl && remoteControlBombElements.length > 0) {
+//     remoteControlBombElements.forEach((v) => {
+//       v.bomberManCell.style.animation = "bomb-animation 1s steps(1) 2";
+//       detonate(v.bomberManPosition, v.bomberManCell);
+//     });
+//     remoteControlBombElements.length = 0;
+//   }
+// });
 
 function explode(cell, style) {
   if (cell.classList.contains("breakable")) {
@@ -837,6 +837,24 @@ const onKeyDown = (e) => {
       break;
     case "x":
       if (!isGameOver && !bombPlaced) bomb();
+      break;
+    case " ":
+      if (!isGameOver) {
+        if (
+          remoteControl &&
+          Object.keys(remoteControlBombElements).length !== 0
+        ) {
+          console.log("here");
+          remoteControlBombElements.bomb.style.animation =
+            "bomb-animation 1s steps(1) 2";
+          detonate(
+            remoteControlBombElements.bomb,
+            remoteControlBombElements.bmanposition,
+            remoteControlBombElements.cell
+          );
+          remoteControlBombElements = {};
+        }
+      }
       break;
     case "p":
       if (!isGameOver) {
