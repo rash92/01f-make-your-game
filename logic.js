@@ -216,9 +216,11 @@ const generateLevel = (numEnemies, numPowerups) => {
   isGameOver = false;
   isKilled = false;
   bombPlaced = false;
+  currentPower = ""
   level.textContent = `Level: ${currentLevel}`;
   lives.textContent = `Lives: ${currentLives}`;
   score.textContent = `Score: ${currentScore}`;
+  power.textContent = `PowerUp: ${currentPower}`
   enemyCount = numEnemies;
   numOfPowerUps = numPowerups;
 
@@ -259,7 +261,7 @@ const generateLevel = (numEnemies, numPowerups) => {
   document.addEventListener("keyup", onKeyUp);
   window.requestAnimationFrame(gameLoop);
   infoWrapper.style.display = "flex";
-  startCountdown();
+  //   startCountdown();
 };
 
 function isWalkable(cell, entity) {
@@ -300,6 +302,7 @@ const bomberManEnemyCollision = () => {
 
 // CheckNotDead checks whether when an entity walks into a cell, it kills them.
 const checkNotDead = (cell, entity) => {
+  console.log("called");
   const classNames = [
     "explosion-middle",
     "explosion-top",
@@ -316,18 +319,14 @@ const checkNotDead = (cell, entity) => {
   const hasExplosionClass = classNames.some((className) =>
     cell.classList.contains(className)
   );
+
   if (entity === "bomberMan") {
-    // Bomber walks into explosion or enemy
-    if (hasExplosionClass || bomberManEnemyCollision()) {
-      killBomberMan();
-    }
-  } else {
-    // enemy walks into explosion or bomberman
+    // Bomber walks into explosion or enem
     if (hasExplosionClass) {
-      killEnemy(cell);
-    } else if (bomberManEnemyCollision()) {
       killBomberMan();
     }
+  } else if (hasExplosionClass) {
+    killEnemy(cell);
   }
 };
 
@@ -419,7 +418,7 @@ const move = (direction) => {
         vest = false;
       }
 
-      power.textContent = `${powerupValue}`;
+      power.textContent = `PowerUp: ${currentPower}`;
 
       // apply powerup
       switch (powerupValue) {
@@ -494,17 +493,11 @@ const killBomberMan = () => {
   }
   document.removeEventListener("keydown", onKeyDown);
   isKilled = true;
-  pauseCountdown();
-
-  
-  if(currentLives > 0) {
-    currentLives -= 1;
-	lives.textContent = `Lives ${currentLives}`;
-	if(currentLives !== 0) {
-		setTimeout(() => {
-			playerDied.style.display = "flex";
-		  }, 1000);
-	}
+  //   pauseCountdown();
+  currentLives -= 1;
+  if (currentLives > 0) {
+    playerDied.style.display = "flex";
+    lives.textContent = `Lives ${currentLives}`;
   }
 
   bomberManWrapper.classList.remove("bomber-man");
@@ -516,7 +509,7 @@ const killBomberMan = () => {
 
   setTimeout(() => {
     if (!isGameOver) {
-      startCountdown();
+      //   startCountdown();
     }
     generateLevel(totalNoEnemy, 2);
   }, 3000);
@@ -847,13 +840,13 @@ const onKeyDown = (e) => {
     case "p":
       if (!isGameOver) {
         gamePaused = !gamePaused;
-        pauseCountdown();
+        // pauseCountdown();
         if (gamePaused) {
           document.body.classList.add("pause-animation");
           pause.style.display = "flex";
         } else {
           document.body.classList.remove("pause-animation");
-          startCountdown();
+          //   startCountdown();
           pause.style.display = "none";
           window.requestAnimationFrame(gameLoop);
         }
@@ -897,7 +890,11 @@ let lastEnemyMove = 0;
 let lastMove = 0;
 const gameLoop = (timestamp) => {
   walkableCells = Array.from(document.querySelectorAll(".walkable"));
+  if (bomberManEnemyCollision()) {
+    killBomberMan();
+  }
   if (currentLives === 0) {
+    lives.textContent = `Lives: ${currentLives}`;
     gameOverHandler();
     return;
   }
@@ -923,7 +920,7 @@ const gameLoop = (timestamp) => {
 };
 
 function gameOverHandler() {
-  pauseCountdown();
+  //   pauseCountdown();
   isGameOver = true;
   gameOver.style.display = "flex";
   document.addEventListener("keydown", onKeyDown);
