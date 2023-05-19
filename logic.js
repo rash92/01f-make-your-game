@@ -209,7 +209,7 @@ let breakableCells;
 let powerUps;
 let enemyArr;
 
-const generateLevel = (numEnemies, numPowerups) => {
+const generateLevel = (numPowerups) => {
   if (currentLevel > 1) {
     remainingSeconds = totalTime;
   }
@@ -221,7 +221,7 @@ const generateLevel = (numEnemies, numPowerups) => {
   lives.textContent = `Lives: ${currentLives}`;
   score.textContent = `Score: ${currentScore}`;
   power.textContent = `PowerUp: ${currentPower}`
-  enemyCount = numEnemies;
+  enemyCount = totalNoEnemy * currentLevel;
   numOfPowerUps = numPowerups;
 
   powerUpObj.forEach((power) => {
@@ -482,7 +482,7 @@ const move = (direction) => {
 
   if (cell.classList.contains("exit")) {
     currentLevel++;
-    generateLevel(2 * currentLevel, totalNoPowerups + currentLevel);
+    generateLevel(totalNoPowerups + currentLevel);
     console.log("walked on exit");
   }
 };
@@ -511,7 +511,7 @@ const killBomberMan = () => {
     if (!isGameOver) {
       //   startCountdown();
     }
-    generateLevel(totalNoEnemy, 2);
+    generateLevel(2);
   }, 3000);
 };
 
@@ -859,7 +859,7 @@ const onKeyDown = (e) => {
       currentLives = startinglives;
       currentLevel = startingLevel;
       remainingSeconds = totalTime;
-      generateLevel(totalNoPowerups, totalNoPowerups);
+      generateLevel(totalNoPowerups);
       break;
   }
 };
@@ -932,7 +932,7 @@ function start() {
       setTimeout(() => {
         startUp.style.display = "none";
         document.removeEventListener("keydown", keydownHandler);
-        generateLevel(totalNoEnemy, totalNoPowerups);
+        generateLevel(totalNoPowerups);
       }, 500);
     }
   }
