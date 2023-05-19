@@ -23,6 +23,7 @@ let step = 0.25;
 let bomberManCurrentPosition = {
   y: 64,
   x: 64,
+  direction: ""
 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
@@ -288,6 +289,7 @@ const checkPowerUp = (cell) => {
 };
 
 const bomberManEnemyCollision = () => {
+  console.log("called");
   const bomberManBounding = bomberManWrapper.getBoundingClientRect();
   return enemyArr.some((enemy) => {
     const enemyBoundingBox = enemy.getBoundingClientRect();
@@ -302,7 +304,6 @@ const bomberManEnemyCollision = () => {
 
 // CheckNotDead checks whether when an entity walks into a cell, it kills them.
 const checkNotDead = (cell, entity) => {
-  console.log("called");
   const classNames = [
     "explosion-middle",
     "explosion-top",
@@ -456,7 +457,6 @@ const move = (direction) => {
     isWalkable(cell) ||
     (isPowerUp(cell) && !cell.classList.contains("breakable"))
   ) {
-    // checkNotDead(cell, "bomberMan");
     if (
       newPosition.x === bomberManCurrentPosition.x &&
       newPosition.y === bomberManCurrentPosition.y
@@ -469,6 +469,7 @@ const move = (direction) => {
       newPosition.x - cellSize
     }px, ${newPosition.y - cellSize}px, 0)`;
     bomberManCurrentPosition = newPosition;
+    bomberManCurrentPosition.direction = direction
     // Update sprite based on the direction
     if (direction === "ArrowUp" || direction === "ArrowDown") {
       setSprite(verticalAnimation, direction === "ArrowUp" ? 1 : 0);
@@ -890,9 +891,6 @@ let lastEnemyMove = 0;
 let lastMove = 0;
 const gameLoop = (timestamp) => {
   walkableCells = Array.from(document.querySelectorAll(".walkable"));
-  if (bomberManEnemyCollision()) {
-    killBomberMan();
-  }
   if (currentLives === 0) {
     lives.textContent = `Lives: ${currentLives}`;
     gameOverHandler();
@@ -900,6 +898,9 @@ const gameLoop = (timestamp) => {
   }
   if (gamePaused || isGameOver || isKilled || stageCleared) {
     return;
+  }
+  if (bomberManEnemyCollision()) {
+    killBomberMan();
   }
 
   const enemyDeltaTime = timestamp - lastEnemyMove;
