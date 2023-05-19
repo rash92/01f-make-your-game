@@ -1,3 +1,12 @@
+:root {
+	--gridHeight: 832px;
+	--gridWidth: 960px;
+	--cellHeight: 64px;
+	--cellWidth: 64px;
+	--cellColor: #388700;
+	--spriteSheetsize: 896px 1532px;
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -21,8 +30,8 @@
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	height: 832px;
-	width: 960px;
+	height: var(--gridHeight);
+	width: var(--gridWidth);
 	color: white;
 	z-index: 10;
 }
@@ -35,8 +44,8 @@
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	height: 832px;
-	width: 960px;
+	height: var(--gridHeight);
+	width: var(--gridWidth);
 	background: rgba(0, 0, 0, 0.5);
 	color: white;
 	z-index: 10;
@@ -48,8 +57,8 @@
 	justify-content: space-evenly;
 	align-items: center;
 	position: absolute;
-	height: 832px;
-	width: 960px;
+	height: var(--gridHeight);
+	width: var(--gridWidth);
 	color: black;
 	z-index: 10;
 }
@@ -82,27 +91,27 @@
 
 #game-grid {
 	position: relative;
-	height: 832px;
-	width: 960px;
+	height: var(--gridHeight);
+	width: var(--gridWidth);
 }
 
 .cell {
 	position: absolute;
-	height: 64px;
-	width: 64px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
 }
 
 .indestructible {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
 	background-position-x: -192px;
 	background-position-y: -192px;
-	background-size: 896px 1532px;
+	background-size: var(--spriteSheetsize);
 }
 
 .walkable {
-	background: #388700;
+	background: var(--cellColor);
 }
 
 .door {
@@ -110,14 +119,14 @@
 	background-image: url("sprites.png");
 	background-position-y: -192px;
 	background-position-x: -704px;
-	background-size: 896px 1532px;
+	background-size: var(--spriteSheetsize);
 }
 
 /* power ups */
 .powerUp {
 	border: 5px solid red;
 	background-image: url("sprites.png");
-	background-size: 896px 1532px;
+	background-size: var(--spriteSheetsize);
 }
 
 /* bomb up - Increase the number of bombs you can set at once */
@@ -163,24 +172,18 @@
 
 .breakable {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
 	background-position-x: -256px;
 	background-position-y: -192px;
-	background-size: 896px 1532px;
-}
-
-/* These two are unnecessary */
-.bomberManWrapper {
-	position: absolute;
-	z-index: 2;
+	background-size: var(--spriteSheetsize);
 }
 
 .bomber-man {
-	width: 64px;
-	height: 64px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
 	background-image: url("sprites.png");
-	background-size: 896px 1532px;
+	background-size: var(--spriteSheetsize);
 	position: absolute;
 	z-index: 3;
 }
@@ -188,101 +191,101 @@
 .bomb {
 	background: #388700;
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
 	background-position-y: -192px;
-	background-size: 896px 1532px;
+	background-size: var(--spriteSheetsize);
 	position: absolute;
 	z-index: 1;
 }
 
 .explosion-top {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: explosion-top 1s steps(1) 1;
 }
 
 .explosion-right {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: explosion-right 1s steps(1) 1;
 }
 
 .explosion-left {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: explosion-left 1s steps(1) 1;
 }
 
 .explosion-middle {
-	background: #388700;
+	background: var(--cellColor);
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: explosion-middle 1s steps(1) 1;
 }
 
 .explosion-bottom {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: explosion-bottom 1s steps(1) 1;
 }
 
 .explosion-fireRange-bottom {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: explosion-fire-up-bottom 1s steps(1) 1;
 }
 
 .explosion-fireRange-top {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: explosion-fire-up-top 1s steps(1) 1;
 }
 
 .explosion-fireRange-right {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: explosion-fire-up-right 1s steps(1) 1;
 }
 
 .explosion-fireRange-left {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: explosion-fire-up-left 1s steps(1) 1;
 }
 
 .breakable-block-destruction {
-	background: #388700;
+	background: var(--cellColor);
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: block-destruction 1s steps(1) 1;
 }
 
 .exit {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	background-position-x: -704px;
 	background-position-y: -192px;
 }
@@ -291,11 +294,9 @@
 
 .enemy {
 	background-image: url("sprites.png");
-	/* top: 64px; */
-	/* left: 64px; */
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	position: absolute;
 	z-index: 2;
 	animation: enemy-animation 1s steps(1) infinite;
@@ -303,9 +304,9 @@
 
 .enemy-death {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	position: absolute;
 	z-index: 1;
 	animation: enemy-death 1s steps(1) 1;
@@ -313,9 +314,9 @@
 
 .death {
 	background-image: url("sprites.png");
-	width: 64px;
-	height: 64px;
-	background-size: 896px 1532px;
+	height: var(--cellHeight);
+	width: var(--cellWidth);
+	background-size: var(--spriteSheetsize);
 	animation: death-animation 1s steps(1) 1;
 	position: absolute;
 	z-index: 2;
