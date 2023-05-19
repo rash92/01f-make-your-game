@@ -483,7 +483,6 @@ const move = (direction) => {
   if (cell.classList.contains("exit")) {
     currentLevel++;
     generateLevel(totalNoPowerups + currentLevel);
-    console.log("walked on exit");
   }
 };
 
@@ -549,7 +548,6 @@ const killEnemy = (cell) => {
     enemyToKill.classList.remove("enemy");
     if (document.querySelectorAll(".enemy").length === 0) {
       revealExit(cellsArr[1][1]);
-      console.log("no more enemies!");
     }
     enemyToKill.classList.add("enemy-death");
     enemyToKill.addEventListener("animationend", () => {
@@ -589,22 +587,11 @@ const bomb = () => {
       bmanposition: bomberManPosition,
       cell: bomberManCell,
     };
-    console.log(remoteControlBombElements);
   } else {
     bombElement.style.animation = "bomb-animation 1s steps(1) 2";
     detonate(bombElement, bomberManPosition, bomberManCell);
   }
 };
-
-// document.addEventListener("keydown", (e) => {
-//   if (e.key === " " && remoteControl && remoteControlBombElements.length > 0) {
-//     remoteControlBombElements.forEach((v) => {
-//       v.bomberManCell.style.animation = "bomb-animation 1s steps(1) 2";
-//       detonate(v.bomberManPosition, v.bomberManCell);
-//     });
-//     remoteControlBombElements.length = 0;
-//   }
-// });
 
 function explode(cell, style) {
   if (cell.classList.contains("breakable")) {
@@ -844,7 +831,6 @@ const onKeyDown = (e) => {
           remoteControl &&
           Object.keys(remoteControlBombElements).length !== 0
         ) {
-          console.log("here");
           remoteControlBombElements.bomb.style.animation =
             "bomb-animation 1s steps(1) 2";
           detonate(
