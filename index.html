@@ -48,18 +48,32 @@
 					<p>Press 'R' to restart</p>
 				</div>
 				<div id="scoreboard-wrapper">
+						<form id="enter-name">
+							<h2>Enter Your Name</h2>
+							<input type="text" name="username" autocomplete="off" autofocus maxlength="3">
+						</form>
 					<table id="scoreboard-table">
 						<thead>
 							<tr>
-								<th>Rank</th>
-								<th>Name</th>
-								<th>Score</th>
-								<th>Time</th>
+								<th>
+									<div>Rank</div>
+								</th>
+								<th>
+									<div>Name</div>
+								</th>
+								<th>
+									<div>Score</div>
+								</th>
+								<th>
+									<div>Time</div>
+								</th>
 							</tr>
 						</thead>
 						<tbody>
 						</tbody>
 					</table>
+					<div><button id="prev" type="submit">&lt;-</button> Page 1/50 <button id="next"
+							type="submit">-&gt;</button> </div>
 				</div>
 			</div>
 			<div id="player-died">

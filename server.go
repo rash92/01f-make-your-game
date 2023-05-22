@@ -58,6 +58,12 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Uprader Error: ", err)
 		return
 	}
+	data, err := json.Marshal(scores)
+	if err != nil {
+		fmt.Println("Marshalling Error: ", err)
+	} else if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
+		return
+	}
 	for {
 		_, p, err := conn.ReadMessage()
 		if err != nil {

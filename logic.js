@@ -2,6 +2,9 @@ const grid = document.getElementById("game-grid");
 const gameStatus = document.getElementById("game-status");
 const startUp = document.getElementById("start-up");
 const gameOver = document.getElementById("game-over");
+let scoreBoardData;
+const scoreTable = document.getElementById("scoreboard-table");
+const scoreTableBody = scoreTable.getElementsByTagName("tbody")[0];
 const pause = document.getElementById("pause");
 const stageComplete = document.getElementById("stage-complete");
 const timer = document.getElementById("timer");
@@ -33,7 +36,7 @@ let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
 const startingScore = 0;
 let currentScore = startingScore;
-const startinglives = 3;
+const startinglives = 1;
 let currentLives = startinglives;
 const startingLevel = 1;
 let currentLevel = startingLevel;
@@ -99,7 +102,7 @@ let countdownTimer;
 let remainingSeconds = totalTime;
 
 const startCountdown = () => {
-  if(!isKilled) {
+  if (!isKilled) {
     clearInterval(countdownTimer);
   }
   countdownTimer = setInterval(() => {
@@ -112,7 +115,6 @@ const startCountdown = () => {
     }
   }, 1000);
 };
-
 
 const pauseCountdown = () => {
   clearInterval(countdownTimer);
@@ -218,7 +220,6 @@ const generateLevel = (numPowerups) => {
   if (currentLevel > 1) {
     remainingSeconds = totalTime;
   }
-  
 
   // Reset Power Ups if died or reset but not if next level
   if (currentLevel === 1 || isKilled) {
@@ -279,8 +280,8 @@ const generateLevel = (numPowerups) => {
   document.addEventListener("keyup", onKeyUp);
   window.requestAnimationFrame(gameLoop);
   infoWrapper.style.display = "flex";
-  if(isKilled) {
-    remainingSeconds = totalTime
+  if (isKilled) {
+    remainingSeconds = totalTime;
   }
   startCountdown();
 };
@@ -438,7 +439,7 @@ const move = (direction) => {
         vest = false;
       }
 
-      power.innerHTML = `PowerUp:</br>${currentPower}`;;
+      power.innerHTML = `PowerUp:</br>${currentPower}`;
 
       // apply powerup
       switch (powerupValue) {
@@ -510,10 +511,9 @@ const killBomberMan = () => {
   if (vest) {
     return;
   }
-  pauseCountdown()
+  pauseCountdown();
   document.removeEventListener("keydown", onKeyDown);
   isKilled = true;
-  //   pauseCountdown();
   currentLives -= 1;
   if (currentLives > 0) {
     playerDied.style.display = "flex";
@@ -528,8 +528,8 @@ const killBomberMan = () => {
   });
 
   setTimeout(() => {
-    if (!isGameOver) {
-      //   startCountdown();
+    if (isGameOver) {
+      return;
     }
     generateLevel(2);
   }, 3000);
@@ -948,11 +948,45 @@ const gameLoop = (timestamp) => {
   window.requestAnimationFrame(gameLoop);
 };
 
+let socket = new WebSocket("ws://localhost:8080/ws");
+
+socket.onopen = function (e) {
+  console.log("[open] Connection Established");
+};
+
+socket.onmessage = function (event) {
+  if (isGameOver) {
+    scoreBoardData = JSON.parse(event.data);
+    console.log("[message] Data received from server:", scoreBoardData);
+    insertScoreTableData(scoreBoardData);
+  }
+};
+
+socket.onerror = function (error) {
+  console.log(`[error] ${error.message}`);
+};
+
 function gameOverHandler() {
   pauseCountdown();
   isGameOver = true;
-  gameOver.style.display = "flex";
+  const form = document.getElementById("enter-name");
+  gameOver.style.display = "flex"
+  form.style.display = "flex"
   document.addEventListener("keydown", onKeyDown);
+  
+  form.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      console.log("Sending a new score to the server");
+      let newScore = {
+        player: this.elements.username.value,
+        score: currentScore,
+        time: remainingSeconds,
+      };
+      socket.send(JSON.stringify(newScore));
+      form.style.display = "none"
+    }
+  });
 }
 
 function start() {
@@ -969,3 +1003,59 @@ function start() {
 }
 
 start();
+
+let currentPage = 1;
+let rowsPerPage = 5;
+const prevButton = document.getElementById("prev");
+const nextButton = document.getElementById("next");
+
+function displayRows() {
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const rows = scoreTableBody.querySelectorAll("tr");
+  rows.forEach((row, index) => {
+    if (index >= startIndex && index < endIndex) {
+      row.style.display = "table-row";
+    } else {
+      row.style.display = "none";
+    }
+  });
+}
+
+nextButton.addEventListener("click", () => {
+  const numRows = scoreTableBody.querySelectorAll("tr").length;
+  const numPages = Math.ceil(numRows / rowsPerPage);
+  if (currentPage < numPages) {
+    currentPage++;
+    displayRows();
+  }
+});
+
+prevButton.addEventListener("click", () => {
+  const numRows = scoreTableBody.querySelectorAll("tr").length;
+  if (currentPage > 1) {
+    currentPage--;
+    displayRows();
+  }
+});
+
+function insertScoreTableData(data) {
+  for (let i = 0; i < data.length; i++) {
+    const row = scoreTableBody.insertRow();
+    const rankCell = row.insertCell(0);
+    rankCell.textContent = getOrdinal(i + 1);
+    const nameCell = row.insertCell(1);
+    nameCell.textContent = data[i].player;
+    const scoreCell = row.insertCell(2);
+    scoreCell.textContent = data[i].score;
+    const timeCell = row.insertCell(3);
+    timeCell.textContent = data[i].time;
+  }
+  displayRows();
+}
+
+function getOrdinal(n) {
+  var s = ["th", "st", "nd", "rd"],
+    v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
