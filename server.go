@@ -31,7 +31,6 @@ var (
 
 func main() {
 	loadInitialScores()
-	fmt.Println(scores)
 
 	http.HandleFunc("/ws", wsHandler)
 	http.ListenAndServe(":8080", nil)
@@ -81,7 +80,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			return scores[i].Score > scores[j].Score
 		})
 		mu.Unlock()
-
+		fmt.Println(scores)
 		data, err := json.Marshal(scores)
 		if err != nil {
 			fmt.Println("Marshalling Error: ", err)

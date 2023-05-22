@@ -949,32 +949,30 @@ const gameLoop = (timestamp) => {
 };
 
 let socket = new WebSocket("ws://localhost:8080/ws");
+const form = document.getElementById("enter-name");
+let currentPage = 1;
+let rowsPerPage = 5;
 
 socket.onopen = function (e) {
   console.log("[open] Connection Established");
 };
 
 socket.onmessage = function (event) {
-    scoreBoardData = JSON.parse(event.data);
-    console.log("[message] Data received from server:", scoreBoardData);
-    insertScoreTableData(scoreBoardData);
+  scoreBoardData = JSON.parse(event.data);
+  console.log("[message] Data received from server:", scoreBoardData);
+  insertScoreTableData(scoreBoardData);
 };
 
 socket.onerror = function (error) {
   console.log(`[error] ${error.message}`);
 };
 
-function gameOverHandler() {
-  pauseCountdown();
-  isGameOver = true;
-  const form = document.getElementById("enter-name");
-  gameOver.style.display = "flex"
-  form.style.display = "flex"
-  document.addEventListener("keydown", onKeyDown);
-  
-  form.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
+
+
+form.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    if (isGameOver) {
       console.log("Sending a new score to the server");
       let newScore = {
         player: this.elements.username.value,
@@ -982,9 +980,20 @@ function gameOverHandler() {
         time: remainingSeconds,
       };
       socket.send(JSON.stringify(newScore));
-      form.style.display = "none"
+      form.style.display = "none";
+      isGameOver = false;
+      currentPage = 1
     }
-  });
+  }
+});
+
+function gameOverHandler() {
+  console.log("called");
+  pauseCountdown();
+  isGameOver = true;
+  gameOver.style.display = "flex";
+  form.style.display = "flex";
+  document.addEventListener("keydown", onKeyDown);
 }
 
 function start() {
@@ -1002,8 +1011,7 @@ function start() {
 
 start();
 
-let currentPage = 1;
-let rowsPerPage = 5;
+
 const prevButton = document.getElementById("prev");
 const nextButton = document.getElementById("next");
 
@@ -1038,6 +1046,7 @@ prevButton.addEventListener("click", () => {
 });
 
 function insertScoreTableData(data) {
+  scoreTableBody.innerHTML = "";
   for (let i = 0; i < data.length; i++) {
     const row = scoreTableBody.insertRow();
     const rankCell = row.insertCell(0);
