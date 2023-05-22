@@ -27,7 +27,7 @@ let bomberManCurrentPosition = {
 };
 let horizontalAnimation = 0;
 let verticalAnimation = 3;
-const totalNoEnemy = 3;
+const totalNoEnemy = 1;
 let enemyCount = totalNoEnemy;
 let randomDirection = [0, 1, 2, 3];
 let bombPlaced = false;
@@ -218,6 +218,7 @@ const generateLevel = (numPowerups) => {
 
   // Reset Power Ups if died or reset but not if next level
   if (currentLevel === 1 || isKilled) {
+    speed = 50;
     currentPower = "";
     fireRange = 1;
     numBombs = 1;

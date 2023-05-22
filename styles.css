@@ -14,6 +14,10 @@
 	font-family: "Press Start 2P", cursive;
 }
 
+body {
+	background-color: lightgray;
+}
+
 #grid-wrapper {
 	display: flex;
 	flex-direction: column;
@@ -51,6 +55,21 @@
 	z-index: 10;
 }
 
+#powerUP-info {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	margin-top: 5%;
+	background-color: black;
+	border: 1px solid red;
+}
+
+#powerUP-info h1, #powerUP-info p {
+	font-size: 1rem;
+	line-height: 2rem;
+	padding: 1%;
+}
+
 #start-up {
 	display: flex;
 	flex-direction: column;
@@ -81,11 +100,12 @@
 #info {
 	display: none;
 	flex-direction: row;
-	justify-content: space-evenly;
+	justify-content: space-between;
 	align-items: center;
 	top: 0;
 	height: 100px;
 	width: 100%;
+	max-width: var(--gridWidth);
 	position: absolute;
 }
 
@@ -204,7 +224,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: explosion-top 1s steps(1) 1;
+	animation: explosion-top 0.5s steps(1) 1;
 }
 
 .explosion-right {
@@ -212,7 +232,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: explosion-right 1s steps(1) 1;
+	animation: explosion-right 0.5s steps(1) 1;
 }
 
 .explosion-left {
@@ -220,7 +240,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: explosion-left 1s steps(1) 1;
+	animation: explosion-left 0.5s steps(1) 1;
 }
 
 .explosion-middle {
@@ -229,7 +249,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: explosion-middle 1s steps(1) 1;
+	animation: explosion-middle 0.5s steps(1) 1;
 }
 
 .explosion-bottom {
@@ -237,7 +257,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: explosion-bottom 1s steps(1) 1;
+	animation: explosion-bottom 0.5s steps(1) 1;
 }
 
 .explosion-fireRange-bottom {
@@ -245,7 +265,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: explosion-fire-up-bottom 1s steps(1) 1;
+	animation: explosion-fire-up-bottom 0.5s steps(1) 1;
 }
 
 .explosion-fireRange-top {
@@ -253,7 +273,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: explosion-fire-up-top 1s steps(1) 1;
+	animation: explosion-fire-up-top 0.5s steps(1) 1;
 }
 
 .explosion-fireRange-right {
@@ -261,7 +281,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: explosion-fire-up-right 1s steps(1) 1;
+	animation: explosion-fire-up-right 0.5s steps(1) 1;
 }
 
 .explosion-fireRange-left {
@@ -269,7 +289,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: explosion-fire-up-left 1s steps(1) 1;
+	animation: explosion-fire-up-left 0.5s steps(1) 1;
 }
 
 .breakable-block-destruction {
@@ -278,7 +298,7 @@
 	height: var(--cellHeight);
 	width: var(--cellWidth);
 	background-size: var(--spriteSheetsize);
-	animation: block-destruction 1s steps(1) 1;
+	animation: block-destruction 0.5s steps(1) 1;
 }
 
 .exit {
