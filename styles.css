@@ -109,6 +109,27 @@ body {
 	position: absolute;
 }
 
+.info-box {
+	display: flex;
+	flex-direction: column;
+	margin: 2%;
+	padding: 2%;
+	font-size: 1.2rem;
+}
+
+.info-box div {
+	margin-top: 10%;
+}
+
+#info .info-box:first-child {
+	justify-content: flex-start;
+}
+
+#info .info-box:last-child {
+	justify-content: flex-end;
+}
+
+
 #game-grid {
 	position: relative;
 	height: var(--gridHeight);

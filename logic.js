@@ -537,7 +537,7 @@ const destroyBlocks = (cell) => {
   });
 
   currentScore += 10;
-  score.textContent = `Score ${currentScore}`;
+  score.textContent = `Score: ${currentScore}`;
 };
 
 const killEnemy = (cell) => {
