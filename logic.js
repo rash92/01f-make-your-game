@@ -99,6 +99,9 @@ let countdownTimer;
 let remainingSeconds = totalTime;
 
 const startCountdown = () => {
+  if(!isKilled) {
+    clearInterval(countdownTimer);
+  }
   countdownTimer = setInterval(() => {
     remainingSeconds--;
     timer.textContent = `Time: ${remainingSeconds}`;
@@ -109,6 +112,7 @@ const startCountdown = () => {
     }
   }, 1000);
 };
+
 
 const pauseCountdown = () => {
   clearInterval(countdownTimer);
@@ -234,7 +238,7 @@ const generateLevel = (numPowerups) => {
   level.textContent = `Level: ${currentLevel}`;
   lives.textContent = `Lives: ${currentLives}`;
   score.textContent = `Score: ${currentScore}`;
-  power.textContent = `PowerUp: ${currentPower}`;
+  power.innerHTML = `PowerUp:</br>${currentPower}`;
   enemyCount = totalNoEnemy * currentLevel;
   numOfPowerUps = numPowerups;
 
@@ -275,7 +279,10 @@ const generateLevel = (numPowerups) => {
   document.addEventListener("keyup", onKeyUp);
   window.requestAnimationFrame(gameLoop);
   infoWrapper.style.display = "flex";
-  //   startCountdown();
+  if(isKilled) {
+    remainingSeconds = totalTime
+  }
+  startCountdown();
 };
 
 function isWalkable(cell, entity) {
@@ -431,7 +438,7 @@ const move = (direction) => {
         vest = false;
       }
 
-      power.textContent = `PowerUp: ${currentPower}`;
+      power.innerHTML = `PowerUp:</br>${currentPower}`;;
 
       // apply powerup
       switch (powerupValue) {
@@ -503,6 +510,7 @@ const killBomberMan = () => {
   if (vest) {
     return;
   }
+  pauseCountdown()
   document.removeEventListener("keydown", onKeyDown);
   isKilled = true;
   //   pauseCountdown();
@@ -861,13 +869,13 @@ const onKeyDown = (e) => {
     case "p":
       if (!isGameOver) {
         gamePaused = !gamePaused;
-        // pauseCountdown();
+        pauseCountdown();
         if (gamePaused) {
           document.body.classList.add("pause-animation");
           pause.style.display = "flex";
         } else {
           document.body.classList.remove("pause-animation");
-          //   startCountdown();
+          startCountdown();
           pause.style.display = "none";
           window.requestAnimationFrame(gameLoop);
         }
@@ -941,7 +949,7 @@ const gameLoop = (timestamp) => {
 };
 
 function gameOverHandler() {
-  //   pauseCountdown();
+  pauseCountdown();
   isGameOver = true;
   gameOver.style.display = "flex";
   document.addEventListener("keydown", onKeyDown);
