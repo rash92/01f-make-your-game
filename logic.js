@@ -955,11 +955,9 @@ socket.onopen = function (e) {
 };
 
 socket.onmessage = function (event) {
-  if (isGameOver) {
     scoreBoardData = JSON.parse(event.data);
     console.log("[message] Data received from server:", scoreBoardData);
     insertScoreTableData(scoreBoardData);
-  }
 };
 
 socket.onerror = function (error) {
