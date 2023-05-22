@@ -525,14 +525,13 @@ const killBomberMan = () => {
   bomberManWrapper.addEventListener("animationend", () => {
     bomberManWrapper.classList.remove("death");
     document.body.classList.add("pause-animation");
+    setTimeout(() => {
+      if (isGameOver) {
+        return;
+      }
+      generateLevel(2);
+    }, 3000);
   });
-
-  setTimeout(() => {
-    if (isGameOver) {
-      return;
-    }
-    generateLevel(2);
-  }, 3000);
 };
 
 const destroyBlocks = (cell) => {
@@ -921,8 +920,10 @@ const gameLoop = (timestamp) => {
   walkableCells = Array.from(document.querySelectorAll(".walkable"));
   if (currentLives === 0) {
     lives.textContent = `Lives: ${currentLives}`;
-    gameOverHandler();
-    return;
+    setTimeout(() => {
+      gameOverHandler();
+      return;
+    }, 2000)
   }
   if (gamePaused || isGameOver || isKilled || stageCleared) {
     return;
@@ -950,6 +951,7 @@ const gameLoop = (timestamp) => {
 
 let socket = new WebSocket("ws://localhost:8080/ws");
 const form = document.getElementById("enter-name");
+const arrowKeys = document.getElementById("scoreboard-wrapper");
 let currentPage = 1;
 let rowsPerPage = 5;
 
@@ -967,7 +969,27 @@ socket.onerror = function (error) {
   console.log(`[error] ${error.message}`);
 };
 
-
+arrowKeys.addEventListener("keydown", (e) => {
+  const numRows = scoreTableBody.querySelectorAll("tr").length;
+  const pagination = document.getElementById("pages");
+  const numPages = Math.ceil(numRows / rowsPerPage);
+  switch (e.key) {
+    case "ArrowRight":
+      if (currentPage < numPages) {
+        currentPage++;
+        pagination.textContent = `Page ${currentPage}/${numPages}`;
+        displayRows();
+      }
+      break;
+    case "ArrowLeft":
+      if (currentPage > 1) {
+        currentPage--;
+        pagination.textContent = `Page ${currentPage}/${numPages}`;
+        displayRows();
+      }
+      break;
+  }
+});
 
 form.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
@@ -981,8 +1003,9 @@ form.addEventListener("keydown", function (event) {
       };
       socket.send(JSON.stringify(newScore));
       form.style.display = "none";
+      arrowKeys.focus()
       isGameOver = false;
-      currentPage = 1
+      currentPage = 1;
     }
   }
 });
@@ -992,6 +1015,7 @@ function gameOverHandler() {
   isGameOver = true;
   gameOver.style.display = "flex";
   form.style.display = "flex";
+  form.elements.username.focus();
   document.addEventListener("keydown", onKeyDown);
 }
 
@@ -1011,9 +1035,6 @@ function start() {
 start();
 
 
-const prevButton = document.getElementById("prev");
-const nextButton = document.getElementById("next");
-
 function displayRows() {
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
@@ -1026,28 +1047,6 @@ function displayRows() {
     }
   });
 }
-
-nextButton.addEventListener("click", () => {
-  const numRows = scoreTableBody.querySelectorAll("tr").length;
-  const pagination = document.getElementById("pages")
-  const numPages = Math.ceil(numRows / rowsPerPage);
-  if (currentPage < numPages) {
-    currentPage++;
-    pagination.textContent = `Page ${currentPage}/${numPages}`
-    displayRows();
-  }
-});
-
-prevButton.addEventListener("click", () => {
-  const numRows = scoreTableBody.querySelectorAll("tr").length;
-  const pagination = document.getElementById("pages")
-  const numPages = Math.ceil(numRows / rowsPerPage);
-  if (currentPage > 1) {
-    currentPage--;
-    pagination.textContent = `Page ${currentPage}/${numPages}`
-    displayRows();
-  }
-});
 
 function insertScoreTableData(data) {
   scoreTableBody.innerHTML = "";

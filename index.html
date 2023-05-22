@@ -47,11 +47,13 @@
 					<h1>GAME OVER</h1>
 					<p>Press 'R' to restart</p>
 				</div>
-				<div id="scoreboard-wrapper">
-						<form id="enter-name">
-							<h2>Enter Your Name</h2>
-							<input type="text" name="username" autocomplete="off" autofocus maxlength="3">
-						</form>
+				<div id="scoreboard-wrapper" tabindex="0" autofocus>
+					<form id="enter-name">
+						<h2>Enter Your Name</h2>
+						<div class="input-container">
+							<input type="text" name="username" autocomplete="off" autofocus maxlength="3" required oninput="this.value = this.value.toUpperCase()">
+						</div>
+					</form>
 					<table id="scoreboard-table">
 						<thead>
 							<tr>
@@ -72,8 +74,7 @@
 						<tbody>
 						</tbody>
 					</table>
-					<div id="pagination"><button id="prev" type="submit">&lt;-</button> <div id="pages">Page 1/3</div>  <button id="next"
-							type="submit">-&gt;</button> </div>
+					<div id="pagination" tabindex="0">&lt;-<div id="pages">Page 1/3</div>-&gt;</div>
 				</div>
 			</div>
 			<div id="player-died">

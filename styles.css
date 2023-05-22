@@ -139,6 +139,10 @@ body {
 	border: 1px solid red;
 }
 
+#scoreboard-wrapper:focus {
+	outline: none;
+}
+
 #scoreboard-wrapper h2,
 #scoreboard-wrapper form {
 	margin: 2%;
@@ -156,6 +160,18 @@ form {
 	align-items: center;
 	width: 100%;
 }
+
+input {
+	background: transparent;
+	border: none;
+	color: white;
+	border-bottom: 1px solid white;
+}
+
+input:focus {
+	outline: none;
+}
+
 table {
 	margin: 10px;
 }
@@ -175,6 +191,13 @@ th div {
 	justify-content: center;
 	align-items: center;
 	width: 100%;
+}
+
+button {
+	background: transparent;
+	border: none;
+	color: white;
+	cursor: pointer;
 }
 
 #pages {
