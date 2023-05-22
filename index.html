@@ -43,8 +43,24 @@
 				</div>
 			</div>
 			<div id="game-over">
-				<h1>GAME OVER</h1>
-				<p>Press 'R' to restart</p>
+				<div id="gameover-mesage">
+					<h1>GAME OVER</h1>
+					<p>Press 'R' to restart</p>
+				</div>
+				<div id="scoreboard-wrapper">
+					<table id="scoreboard-table">
+						<thead>
+							<tr>
+								<th>Rank</th>
+								<th>Name</th>
+								<th>Score</th>
+								<th>Time</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<div id="player-died">
 				<h1>YOU DIED</h1>
@@ -63,8 +79,8 @@
 			</div>
 			<div class="info-box">
 				<div class="lives">Lives: 0</div>
-			<div class="level"></div>
-			</div>	
+				<div class="level"></div>
+			</div>
 		</div>
 		<div id="game-grid"></div>
 	</div>
