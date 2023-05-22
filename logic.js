@@ -988,7 +988,6 @@ form.addEventListener("keydown", function (event) {
 });
 
 function gameOverHandler() {
-  console.log("called");
   pauseCountdown();
   isGameOver = true;
   gameOver.style.display = "flex";
@@ -1030,17 +1029,22 @@ function displayRows() {
 
 nextButton.addEventListener("click", () => {
   const numRows = scoreTableBody.querySelectorAll("tr").length;
+  const pagination = document.getElementById("pages")
   const numPages = Math.ceil(numRows / rowsPerPage);
   if (currentPage < numPages) {
     currentPage++;
+    pagination.textContent = `Page ${currentPage}/${numPages}`
     displayRows();
   }
 });
 
 prevButton.addEventListener("click", () => {
   const numRows = scoreTableBody.querySelectorAll("tr").length;
+  const pagination = document.getElementById("pages")
+  const numPages = Math.ceil(numRows / rowsPerPage);
   if (currentPage > 1) {
     currentPage--;
+    pagination.textContent = `Page ${currentPage}/${numPages}`
     displayRows();
   }
 });

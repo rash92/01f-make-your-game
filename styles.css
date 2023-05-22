@@ -169,6 +169,18 @@ th div {
 	border-bottom: 1px solid white;
 }
 
+#pagination {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+#pages {
+	margin: 0 10px;
+}
+
 #game-grid {
 	position: relative;
 	height: var(--gridHeight);
