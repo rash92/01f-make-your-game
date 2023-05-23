@@ -80,12 +80,12 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			return scores[i].Score > scores[j].Score
 		})
 		mu.Unlock()
-		fmt.Println(scores)
 		data, err := json.Marshal(scores)
 		if err != nil {
 			fmt.Println("Marshalling Error: ", err)
 			continue
 		}
+		fmt.Println("Sending Data...")
 		if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
 			return
 		}
