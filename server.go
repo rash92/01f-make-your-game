@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"sort"
 	"sync"
 
@@ -37,7 +37,7 @@ func main() {
 }
 
 func loadInitialScores() {
-	data, err := ioutil.ReadFile("scores.json")
+	data, err := os.ReadFile("scores.json")
 	if err != nil {
 		fmt.Println("Error reading scores json file: ", err)
 		return
