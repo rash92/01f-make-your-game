@@ -232,6 +232,11 @@ const generateLevel = (numPowerups) => {
     passBombs = false;
     vest = false;
   }
+  if(currentPower === "bomb-up") {
+    numBombs = maxBomb
+  } else {
+    numBombs = 1
+  }
 
   isGameOver = false;
   isKilled = false;
@@ -709,8 +714,6 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
   }
   bombElement.addEventListener("animationend", () => {
     bombElement.remove();
-    // bombPlaced = !bombPlaced;
-    console.log("numBombs before reset:", numBombs);
     if (numBombs === 0) {
       if(currentPower === "bomb-up") {
         numBombs = maxBomb
@@ -718,16 +721,15 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
         numBombs = 1
       }
     }
-
     if (numBombs === 1 && currentPower === "bomb-up" ) {
         setTimeout(() => {
           numBombs = maxBomb
         }, 2000)
     }
-    console.log("numBombs after reset:", numBombs);
     bomberManCell.classList.remove("hasBomb");
     // Explosion Middle
     bomberManCell.classList.add("explosion-middle");
+    checkNotDead(bomberManCell, "bomberMan")
     bomberManCell.addEventListener("animationend", () => {
       bomberManCell.classList.remove("explosion-middle");
       bomberManCell.classList.add("walkable");
@@ -1093,4 +1095,3 @@ function start() {
 }
 
 start();
-``
