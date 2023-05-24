@@ -62,14 +62,14 @@ let remoteControl = false;
 let passBombs = false;
 let vest = false;
 const powerUpObj = [
-  {
-    name: "bomb-up",
-    count: 2,
-  },
-  {
-    name: "fire-up",
-    count: 1,
-  },
+  // {
+  //   name: "bomb-up",
+  //   count: 2,
+  // },
+  // {
+  //   name: "fire-up",
+  //   count: 1,
+  // },
   {
     name: "skate",
     count: 1,
@@ -78,22 +78,22 @@ const powerUpObj = [
     name: "soft-block-pass",
     count: 1,
   },
-  {
-    name: "remote-control",
-    count: 1,
-  },
-  {
-    name: "bomb-pass",
-    count: 1,
-  },
-  {
-    name: "full-fire",
-    count: 1,
-  },
-  {
-    name: "vest",
-    count: 1,
-  },
+  // {
+  //   name: "remote-control",
+  //   count: 1,
+  // },
+  // {
+  //   name: "bomb-pass",
+  //   count: 1,
+  // },
+  // {
+  //   name: "full-fire",
+  //   count: 1,
+  // },
+  // {
+  //   name: "vest",
+  //   count: 1,
+  // },
 ];
 const powerUpLists = powerUpObj.map((v) => v.name);
 
@@ -220,10 +220,10 @@ const generateLevel = (numPowerups) => {
   if (currentLevel > 1) {
     remainingSeconds = totalTime;
   }
-
+  console.log(speed);
   // Reset Power Ups if died or reset but not if next level
   if (currentLevel === 1 || isKilled) {
-    speed = 50;
+    step = 0.25;
     currentPower = "";
     fireRange = 1;
     numBombs = 1;
@@ -260,12 +260,6 @@ const generateLevel = (numPowerups) => {
   breakableCells = Array.from(document.querySelectorAll(".breakable"));
   powerUps = Array.from(document.querySelectorAll(".powerUp"));
   enemyArr = createEnemies();
-
-  // // level change background colour beginning WIP
-  // if (currentLevel == 2) {
-  //   walkableCells.forEach(cell => cell.style.background = "teal")
-  // }
-
   playerDied.style.display = "none";
   gameOver.style.display = "none";
   bomberManCurrentPosition = { y: 64, x: 64 };
