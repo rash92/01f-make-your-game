@@ -67,34 +67,34 @@ const powerUpObj = [
     name: "bomb-up",
     count: 2,
   },
-  // {
-  //   name: "fire-up",
-  //   count: 1,
-  // },
-  // {
-  //   name: "skate",
-  //   count: 1,
-  // },
-  // {
-  //   name: "soft-block-pass",
-  //   count: 1,
-  // },
-  // {
-  //   name: "remote-control",
-  //   count: 1,
-  // },
-  // {
-  //   name: "bomb-pass",
-  //   count: 1,
-  // },
-  // {
-  //   name: "full-fire",
-  //   count: 1,
-  // },
-  // {
-  //   name: "vest",
-  //   count: 1,
-  // },
+  {
+    name: "fire-up",
+    count: 1,
+  },
+  {
+    name: "skate",
+    count: 1,
+  },
+  {
+    name: "soft-block-pass",
+    count: 1,
+  },
+  {
+    name: "remote-control",
+    count: 1,
+  },
+  {
+    name: "bomb-pass",
+    count: 1,
+  },
+  {
+    name: "full-fire",
+    count: 1,
+  },
+  {
+    name: "vest",
+    count: 1,
+  },
 ];
 const powerUpLists = powerUpObj.map((v) => v.name);
 
@@ -864,11 +864,7 @@ const onKeyDown = (e) => {
       break;
     case "x":
       console.log("numBombs:", numBombs);
-      // if(numBombs < 1) {
-      //   bombPlaced = !bombPlaced
-      // } 
       if (!isGameOver && numBombs >= 1 ) {
-        // bombPlaced = !bombPlaced;
         bomb();
         numBombs--
       console.log("numBombs after placed:", numBombs)
