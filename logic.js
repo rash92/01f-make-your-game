@@ -729,7 +729,6 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
     bomberManCell.classList.remove("hasBomb");
     // Explosion Middle
     bomberManCell.classList.add("explosion-middle");
-    checkNotDead(bomberManCell, "bomberMan")
     bomberManCell.addEventListener("animationend", () => {
       bomberManCell.classList.remove("explosion-middle");
       bomberManCell.classList.add("walkable");
@@ -845,6 +844,7 @@ function getNewDirection(posY, posX, oldDirection) {
 }
 
 const onKeyDown = (e) => {
+  console.log(e.key);
   switch (e.key) {
     case "ArrowUp":
     case "ArrowDown":
@@ -865,7 +865,6 @@ const onKeyDown = (e) => {
       }
       break;
     case "x":
-      console.log("numBombs:", numBombs);
       if (!isGameOver && numBombs >= 1 ) {
         bomb();
         numBombs--
@@ -904,7 +903,7 @@ const onKeyDown = (e) => {
         }
       }
       break;
-    case "r":
+    case "Escape":
       pause.style.display = "none";
       gamePaused = false;
       currentScore = startingScore;
