@@ -727,14 +727,9 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
         }, 2000)
     }
     bomberManCell.classList.remove("hasBomb");
-    // Explosion Middle
-    bomberManCell.classList.add("explosion-middle");
-    bomberManCell.addEventListener("animationend", () => {
-      bomberManCell.classList.remove("explosion-middle");
-      bomberManCell.classList.add("walkable");
-      
-    });
+    bomberManCell.classList.add("walkable")
     // Loop through the object and call explode
+    explode(bomberManCell, "explosion-middle")
     Object.keys(explosionMap).forEach((direction) => {
       explosionMap[direction].forEach((cell) => {
         explode(cell.cell, cell.style);
