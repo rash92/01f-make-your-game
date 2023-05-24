@@ -1,105 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="styles.css" />
+		<title>BOMBERMAN | WIP</title>
+	</head>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-	<link rel="stylesheet" href="styles.css" />
-	<title>BOMBERMAN | WIP</title>
-</head>
-
-<body>
-	<div id="grid-wrapper">
-		<div id="game-status">
-			<div id="start-up">
-				<h1 id="title">BOMBERMAN</h1>
-				<h1>Press 'S' to start</h1>
-				<div>
-					<p>Made by</p>
-					<p>Mohammed Rashidur Rahman</p>
-					<p>Michael Adeleke</p>
-					<p>Peter Coles</p>
+	<body>
+		<div id="grid-wrapper">
+			<div id="game-status">
+				<div id="start-up">
+					<h1 id="title">BOMBERMAN</h1>
+					<h1>Press 'S' to start</h1>
+					<div>
+						<p>Made by</p>
+						<p>Mohammed Rashidur Rahman</p>
+						<p>Michael Adeleke</p>
+						<p>Peter Coles</p>
+					</div>
 				</div>
-
-			</div>
-			<div id="pause">
-				<h1>GAME PAUSED</h1>
-				<p>Press 'P' to resume</p>
-				<p>Press 'ESC' to restart</p>
-				<div id="powerUP-info">
-					<h1>Power Ups:</h1>
-					<p>Bomb Up: More bombs!</p>
-					<p>Fire Up: Bigger explosions!</p>
-					<p>Skate: Go faster!</p>
-					<p>Soft Block Pass: Go through blocks!</p>
-					<p>Remote Control: Press 'Space' to explode!</p>
-					<p>Bomb Pass: Go through bombs!</p>
-					<p>Full Fire: Even bigger explosions!</p>
-					<p>Vest: Nothing can kill you!</p>
-				</div>
-			</div>
-			<div id="game-over">
-				<div id="gameover-mesage">
-					<h1>GAME OVER</h1>
+				<div id="pause">
+					<h1>GAME PAUSED</h1>
+					<p>Press 'P' to resume</p>
 					<p>Press 'ESC' to restart</p>
+					<div id="powerUP-info">
+						<h1>Power Ups:</h1>
+						<p>Bomb Up: More bombs!</p>
+						<p>Fire Up: Bigger explosions!</p>
+						<p>Skate: Go faster!</p>
+						<p>Soft Block Pass: Go through blocks!</p>
+						<p>Remote Control: Press 'Space' to explode!</p>
+						<p>Bomb Pass: Go through bombs!</p>
+						<p>Full Fire: Even bigger explosions!</p>
+						<p>Vest: Nothing can kill you!</p>
+					</div>
 				</div>
-				<div id="scoreboard-wrapper" tabindex="0" autofocus>
-					<form id="enter-name">
-						<h2>Enter Your Name</h2>
-						<div class="input-container">
-							<input type="text" name="username" autocomplete="off" autofocus maxlength="3" required oninput="this.value = this.value.toUpperCase()">
+				<div id="game-over">
+					<div id="gameover-mesage">
+						<h1>GAME OVER</h1>
+						<p>Press 'ESC' to restart</p>
+					</div>
+					<div id="scoreboard-wrapper" tabindex="0" autofocus>
+						<form id="enter-name">
+							<h2>Enter Your Name</h2>
+							<div class="input-container">
+								<input
+									type="text"
+									name="username"
+									autocomplete="off"
+									autofocus
+									maxlength="3"
+									required
+									oninput="this.value = this.value.toUpperCase()"
+								/>
+							</div>
+						</form>
+						<table id="scoreboard-table">
+							<thead>
+								<tr>
+									<th>
+										<div>Rank</div>
+									</th>
+									<th>
+										<div>Name</div>
+									</th>
+									<th>
+										<div>Score</div>
+									</th>
+									<th>
+										<div>Time</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+						<div id="pagination" tabindex="0">
+							&lt;-
+							<div id="pages"></div>
+							-&gt;
 						</div>
-					</form>
-					<table id="scoreboard-table">
-						<thead>
-							<tr>
-								<th>
-									<div>Rank</div>
-								</th>
-								<th>
-									<div>Name</div>
-								</th>
-								<th>
-									<div>Score</div>
-								</th>
-								<th>
-									<div>Time</div>
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-					<div id="pagination" tabindex="0">&lt;-<div id="pages">Page 1/3</div>-&gt;</div>
+					</div>
+				</div>
+				<div id="player-died">
+					<h1>YOU DIED</h1>
+				</div>
+				<div id="stage-complete">
+					<h1>STAGE COMPLETE</h1>
 				</div>
 			</div>
-			<div id="player-died">
-				<h1>YOU DIED</h1>
+			<div id="info">
+				<div class="info-box">
+					<div id="timer">Time:</div>
+					<div class="score">Score: 0</div>
+				</div>
+				<div class="info-box">
+					<div id="powerUp">Powerup:</div>
+				</div>
+				<div class="info-box">
+					<div class="lives">Lives: 0</div>
+					<div class="level"></div>
+				</div>
 			</div>
-			<div id="stage-complete">
-				<h1>STAGE COMPLETE</h1>
-			</div>
+			<div id="game-grid"></div>
 		</div>
-		<div id="info">
-			<div class="info-box">
-				<div id="timer">Time:</div>
-				<div class="score">Score: 0</div>
-			</div>
-			<div class="info-box">
-				<div id="powerUp">Powerup:</div>
-			</div>
-			<div class="info-box">
-				<div class="lives">Lives: 0</div>
-				<div class="level"></div>
-			</div>
-		</div>
-		<div id="game-grid"></div>
-	</div>
-</body>
-<script src="logic.js"></script>
-
+	</body>
+	<script src="logic.js"></script>
 </html>
