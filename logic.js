@@ -70,10 +70,10 @@ const powerUpObj = [
   //   name: "fire-up",
   //   count: 1,
   // },
-  {
-    name: "skate",
-    count: 1,
-  },
+  // {
+  //   name: "skate",
+  //   count: 1,
+  // },
   {
     name: "soft-block-pass",
     count: 1,
@@ -220,7 +220,7 @@ const generateLevel = (numPowerups) => {
   if (currentLevel > 1) {
     remainingSeconds = totalTime;
   }
-  console.log(speed);
+
   // Reset Power Ups if died or reset but not if next level
   if (currentLevel === 1 || isKilled) {
     step = 0.25;
@@ -256,8 +256,12 @@ const generateLevel = (numPowerups) => {
   cellsArr = createCellsArr();
   grid.appendChild(bomberManWrapper);
 
+
   walkableCells = Array.from(document.querySelectorAll(".walkable"));
   breakableCells = Array.from(document.querySelectorAll(".breakable"));
+  if (currentPower === "soft-block-pass") {
+    breakableCells.forEach((cell) => cell.classList.add("walkable"));
+  }
   powerUps = Array.from(document.querySelectorAll(".powerUp"));
   enemyArr = createEnemies();
   playerDied.style.display = "none";
@@ -767,9 +771,9 @@ const enemyAI = () => {
         Math.floor((originalEnemyPosition.x + enemyData.relx) / cellSize),
         enemyData.direction
       );
-      if(enemyData.direction === undefined) {
-        enemyData.direction = 0
-      };
+      if (enemyData.direction === undefined) {
+        enemyData.direction = 0;
+      }
     }
     checkNotDead(cell, "enemy");
     enemy.dataset.enemy = JSON.stringify(enemyData);
@@ -921,7 +925,7 @@ const gameLoop = (timestamp) => {
     setTimeout(() => {
       gameOverHandler();
       return;
-    }, 2000)
+    }, 2000);
   }
   if (gamePaused || isGameOver || isKilled || stageCleared) {
     return;
@@ -1002,7 +1006,7 @@ form.addEventListener("keydown", function (event) {
       };
       socket.send(JSON.stringify(newScore));
       form.style.display = "none";
-      arrowKeys.focus()
+      arrowKeys.focus();
       isGameOver = false;
       currentPage = 1;
     }
@@ -1068,6 +1072,3 @@ function start() {
 }
 
 start();
-
-
-
