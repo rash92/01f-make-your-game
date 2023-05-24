@@ -773,6 +773,9 @@ const enemyAI = () => {
         Math.floor((originalEnemyPosition.x + enemyData.relx) / cellSize),
         enemyData.direction
       );
+      if(enemyData.direction === undefined) {
+        enemyData.direction = 0
+      };
     }
     checkNotDead(cell, "enemy");
     enemy.dataset.enemy = JSON.stringify(enemyData);
@@ -912,6 +915,7 @@ const getBombermanDirection = () => {
   return undefined;
 };
 
+/* GAMELOOP */
 const enemyInterval = 500;
 const moveInterval = 50;
 let lastEnemyMove = 0;
@@ -949,6 +953,7 @@ const gameLoop = (timestamp) => {
   window.requestAnimationFrame(gameLoop);
 };
 
+/* SCOREBOARD LOGIC */
 let socket = new WebSocket("ws://localhost:8080/ws");
 const form = document.getElementById("enter-name");
 const arrowKeys = document.getElementById("scoreboard-wrapper");
@@ -1010,31 +1015,6 @@ form.addEventListener("keydown", function (event) {
   }
 });
 
-function gameOverHandler() {
-  pauseCountdown();
-  isGameOver = true;
-  gameOver.style.display = "flex";
-  form.style.display = "flex";
-  form.elements.username.focus();
-  document.addEventListener("keydown", onKeyDown);
-}
-
-function start() {
-  function keydownHandler(e) {
-    if (e.key === "s") {
-      setTimeout(() => {
-        startUp.style.display = "none";
-        document.removeEventListener("keydown", keydownHandler);
-        generateLevel(totalNoPowerups);
-      }, 500);
-    }
-  }
-  document.addEventListener("keydown", keydownHandler);
-}
-
-start();
-
-
 function displayRows() {
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
@@ -1069,3 +1049,31 @@ function getOrdinal(n) {
     v = n % 100;
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
+
+/* START/END GAME LOGIC */
+function gameOverHandler() {
+  pauseCountdown();
+  isGameOver = true;
+  gameOver.style.display = "flex";
+  form.style.display = "flex";
+  form.elements.username.focus();
+  document.addEventListener("keydown", onKeyDown);
+}
+
+function start() {
+  function keydownHandler(e) {
+    if (e.key === "s") {
+      setTimeout(() => {
+        startUp.style.display = "none";
+        document.removeEventListener("keydown", keydownHandler);
+        generateLevel(totalNoPowerups);
+      }, 500);
+    }
+  }
+  document.addEventListener("keydown", keydownHandler);
+}
+
+start();
+
+
+
