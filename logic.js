@@ -57,15 +57,16 @@ let currentPower;
 const totalNoPowerups = 2;
 let numOfPowerUps = totalNoPowerups;
 let fireRange = 1;
+const maxBomb = 2;
 let numBombs = 1;
 let remoteControl = false;
 let passBombs = false;
 let vest = false;
 const powerUpObj = [
-  // {
-  //   name: "bomb-up",
-  //   count: 2,
-  // },
+  {
+    name: "bomb-up",
+    count: 2,
+  },
   // {
   //   name: "fire-up",
   //   count: 1,
@@ -74,10 +75,10 @@ const powerUpObj = [
   //   name: "skate",
   //   count: 1,
   // },
-  {
-    name: "soft-block-pass",
-    count: 1,
-  },
+  // {
+  //   name: "soft-block-pass",
+  //   count: 1,
+  // },
   // {
   //   name: "remote-control",
   //   count: 1,
@@ -442,7 +443,7 @@ const move = (direction) => {
       // apply powerup
       switch (powerupValue) {
         case "bomb-up": // increase number of bomb
-          numBombs += 1;
+          numBombs = maxBomb
           break;
         case "fire-up": // change explosion and range by 1 tile
           fireRange = 2;
@@ -594,7 +595,6 @@ const bomb = () => {
   bombElement.style.top = bomberManCell.style.top;
   bombElement.style.left = bomberManCell.style.left;
   grid.appendChild(bombElement);
-  bombPlaced = !bombPlaced;
   if (!passBombs) {
     bomberManCell.classList.remove("walkable");
   } else {
@@ -709,13 +709,29 @@ function detonate(bombElement, bomberManPosition, bomberManCell) {
   }
   bombElement.addEventListener("animationend", () => {
     bombElement.remove();
+    // bombPlaced = !bombPlaced;
+    console.log("numBombs before reset:", numBombs);
+    if (numBombs === 0) {
+      if(currentPower === "bomb-up") {
+        numBombs = maxBomb
+      } else {
+        numBombs = 1
+      }
+    }
+
+    if (numBombs === 1 && currentPower === "bomb-up" ) {
+        setTimeout(() => {
+          numBombs = maxBomb
+        }, 2000)
+    }
+    console.log("numBombs after reset:", numBombs);
     bomberManCell.classList.remove("hasBomb");
     // Explosion Middle
     bomberManCell.classList.add("explosion-middle");
     bomberManCell.addEventListener("animationend", () => {
       bomberManCell.classList.remove("explosion-middle");
       bomberManCell.classList.add("walkable");
-      bombPlaced = false;
+      
     });
     // Loop through the object and call explode
     Object.keys(explosionMap).forEach((direction) => {
@@ -847,7 +863,16 @@ const onKeyDown = (e) => {
       }
       break;
     case "x":
-      if (!isGameOver && !bombPlaced) bomb();
+      console.log("numBombs:", numBombs);
+      // if(numBombs < 1) {
+      //   bombPlaced = !bombPlaced
+      // } 
+      if (!isGameOver && numBombs >= 1 ) {
+        // bombPlaced = !bombPlaced;
+        bomb();
+        numBombs--
+      console.log("numBombs after placed:", numBombs)
+      }
       break;
     case " ":
       if (!isGameOver) {
@@ -1072,3 +1097,4 @@ function start() {
 }
 
 start();
+``
