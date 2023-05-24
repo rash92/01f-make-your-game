@@ -326,10 +326,10 @@ const bomberManEnemyCollision = () => {
 	return enemyArr.some((enemy) => {
 		const enemyBoundingBox = enemy.getBoundingClientRect()
 		return (
-			bomberManBounding.right > enemyBoundingBox.left + 10 &&
-			bomberManBounding.left < enemyBoundingBox.right - 10 &&
-			bomberManBounding.bottom > enemyBoundingBox.top + 10 &&
-			bomberManBounding.top < enemyBoundingBox.bottom - 10
+			bomberManBounding.right > enemyBoundingBox.left + 20 &&
+			bomberManBounding.left < enemyBoundingBox.right - 20 &&
+			bomberManBounding.bottom > enemyBoundingBox.top + 20 &&
+			bomberManBounding.top < enemyBoundingBox.bottom - 20
 		)
 	})
 }
