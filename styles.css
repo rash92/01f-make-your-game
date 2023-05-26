@@ -51,6 +51,7 @@ body {
 	height: var(--gridHeight);
 	width: var(--gridWidth);
 	background: rgba(0, 0, 0, 0.5);
+	text-transform: capitalize;
 	color: white;
 	z-index: 10;
 }
@@ -64,7 +65,8 @@ body {
 	border: 1px solid red;
 }
 
-#powerUP-info h1, #powerUP-info p {
+#powerUP-info h1,
+#powerUP-info p {
 	font-size: 1rem;
 	line-height: 2rem;
 	padding: 1%;
@@ -88,7 +90,6 @@ body {
 	justify-content: space-evenly;
 	align-items: center;
 }
-
 
 #game-over,
 #player-died,
@@ -405,8 +406,6 @@ button {
 	background-position-y: -192px;
 }
 
-
-
 .enemy {
 	background-image: url("sprites.png");
 	height: var(--cellHeight);
@@ -645,7 +644,6 @@ button {
 	}
 }
 
-
 @keyframes explosion-fire-up-bottom {
 	0% {
 		background-position-y: -448px;
@@ -666,7 +664,7 @@ button {
 	100% {
 		background-position-y: -448px;
 		background-position-x: -128px;
-	}	
+	}
 }
 
 @keyframes explosion-fire-up-right {

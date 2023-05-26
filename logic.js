@@ -218,7 +218,7 @@ let powerUps
 let enemyArr
 
 const generateLevel = (numPowerups) => {
-	if (currentLevel > 1) {
+	if (currentLevel > 1 && !stageCleared && !isKilled) {
 		stageComplete.textContent = `stage ${currentLevel - 1} cleared`
 		stageComplete.style.display = "flex"
 		pauseCountdown()
