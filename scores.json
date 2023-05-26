@@ -1,9 +1,9 @@
 [
-    {"player": "MIA", "score": 260, "time": 180},
-    {"player": "ZOE", "score": 100, "time": 90},
-    {"player": "ELI", "score": 630, "time": 20},
-    {"player": "AVA", "score": 240, "time": 140},    
-    {"player": "BEN", "score": 10, "time": 76},
-    {"player": "IVY", "score": 389, "time": 10},
-    {"player": "LEO", "score": 1000, "time": 69}
+	{ "player": "MIA", "score": 260, "time": 180 },
+	{ "player": "ZOE", "score": 100, "time": 90 },
+	{ "player": "ELI", "score": 630, "time": 20 },
+	{ "player": "AVA", "score": 240, "time": 140 },
+	{ "player": "BEN", "score": 10, "time": 76 },
+	{ "player": "IVY", "score": 389, "time": 10 },
+	{ "player": "LEO", "score": 1000, "time": 69 }
 ]

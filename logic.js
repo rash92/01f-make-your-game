@@ -218,7 +218,7 @@ let powerUps
 let enemyArr
 
 const generateLevel = (numPowerups) => {
-	if (currentLevel > 1 && !stageCleared && !isKilled) {
+	if (currentLevel > 1) {
 		stageComplete.textContent = `stage ${currentLevel - 1} cleared`
 		stageComplete.style.display = "flex"
 		pauseCountdown()
@@ -845,7 +845,6 @@ function getNewDirection(posY, posX, oldDirection) {
 }
 
 const onKeyDown = (e) => {
-	console.log(e.key)
 	switch (e.key) {
 		case "ArrowUp":
 		case "ArrowDown":
@@ -949,6 +948,9 @@ const gameLoop = (timestamp) => {
 			gameOverHandler()
 			return
 		}, 500)
+	}
+	if (currentLevel > 1 && !isKilled) {
+		stageComplete.style.display = "none"
 	}
 	if (gamePaused || isGameOver || isKilled || stageCleared) {
 		return
