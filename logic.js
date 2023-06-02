@@ -218,7 +218,7 @@ let powerUps
 let enemyArr
 
 const generateLevel = (numPowerups) => {
-	console.log(isKilled)
+	console.log(currentLives)
 	if (currentLevel > 1 && !isKilled) {
 		stageComplete.textContent = `stage ${currentLevel - 1} cleared`
 		stageComplete.style.display = "flex"
@@ -533,7 +533,7 @@ const deathAnimationEnd = () => {
 };
 
 const killBomberMan = () => {
-    if (vest) {
+    if (vest || isKilled) {
         return;
     }
     pauseCountdown();
