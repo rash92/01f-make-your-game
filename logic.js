@@ -38,7 +38,7 @@ const startingScore = 0
 let currentScore = startingScore
 const startinglives = 3
 let currentLives = startinglives
-const startingLevel = 1
+const startingLevel = 2
 let currentLevel = startingLevel
 let gamePaused = false
 let isGameOver = false
@@ -218,7 +218,8 @@ let powerUps
 let enemyArr
 
 const generateLevel = (numPowerups) => {
-	if (currentLevel > 1) {
+	console.log(isKilled)
+	if (currentLevel > 1 && !isKilled) {
 		stageComplete.textContent = `stage ${currentLevel - 1} cleared`
 		stageComplete.style.display = "flex"
 		pauseCountdown()
@@ -247,8 +248,8 @@ const generateLevel = (numPowerups) => {
 		numBombs = 1
 	}
 
-	isGameOver = false
 	isKilled = false
+	isGameOver = false
 	bombPlaced = false
 
 	level.textContent = `Level: ${currentLevel}`
@@ -519,32 +520,37 @@ const move = (direction) => {
 	}
 }
 
-const killBomberMan = () => {
-	if (vest) {
-		return
-	}
-	pauseCountdown()
-	document.removeEventListener("keydown", onKeyDown)
-	isKilled = true
-	currentLives -= 1
-	if (currentLives > 0) {
-		playerDied.style.display = "flex"
-		lives.textContent = `Lives ${currentLives}`
-	}
+const deathAnimationEnd = () => {
+    bomberManWrapper.classList.remove("death");
+    document.body.classList.add("pause-animation");
+    setTimeout(() => {
+        if (isGameOver) {
+            return;
+        }
+        generateLevel(totalNoPowerups + currentLevel);
+    }, 500);
+    bomberManWrapper.removeEventListener("animationend", deathAnimationEnd);
+};
 
-	bomberManWrapper.classList.remove("bomber-man")
-	bomberManWrapper.classList.add("death")
-	bomberManWrapper.addEventListener("animationend", () => {
-		bomberManWrapper.classList.remove("death")
-		document.body.classList.add("pause-animation")
-		setTimeout(() => {
-			if (isGameOver) {
-				return
-			}
-			generateLevel(2)
-		}, 500)
-	})
-}
+const killBomberMan = () => {
+    if (vest) {
+        return;
+    }
+    pauseCountdown();
+    document.removeEventListener("keydown", onKeyDown);
+    isKilled = true;
+    currentLives -= 1;
+    if (currentLives > 0) {
+        playerDied.style.display = "flex";
+        lives.textContent = `Lives: ${currentLives}`;
+    }
+
+    bomberManWrapper.classList.remove("bomber-man");
+    bomberManWrapper.classList.add("death");
+
+    bomberManWrapper.addEventListener("animationend", deathAnimationEnd);
+};
+
 
 const destroyBlocks = (cell) => {
 	cell.classList.remove("breakable")
@@ -949,9 +955,9 @@ const gameLoop = (timestamp) => {
 			return
 		}, 500)
 	}
-	if (currentLevel > 1 && !isKilled) {
-		stageComplete.style.display = "none"
-	}
+	// if (currentLevel > 1 && isKilled) {
+	// 	stageComplete.style.display = "none"
+	// }
 	if (gamePaused || isGameOver || isKilled || stageCleared) {
 		return
 	}
