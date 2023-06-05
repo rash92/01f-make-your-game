@@ -79,7 +79,6 @@ const powerUpObj = [
 		name: "soft-block-pass",
 		count: 1,
 	},
-
 	{
 		name: "remote-control",
 		count: 1,
@@ -103,7 +102,7 @@ const totalTime = 200
 let countdownTimer
 let remainingSeconds = totalTime
 
-function startCountdown() {
+const startCountdown = () => {
 	if (!isKilled) {
 		clearInterval(countdownTimer)
 	}
@@ -218,8 +217,8 @@ let breakableCells
 let powerUps
 let enemyArr
 
-function generateLevel(numPowerups) {
-	if (currentLevel > 1) {
+const generateLevel = (numPowerups) => {
+	if (currentLevel > 1 && !isKilled) {
 		stageComplete.textContent = `stage ${currentLevel - 1} cleared`
 		stageComplete.style.display = "flex"
 		pauseCountdown()
@@ -248,8 +247,8 @@ function generateLevel(numPowerups) {
 		numBombs = 1
 	}
 
-	isGameOver = false
 	isKilled = false
+	isGameOver = false
 	bombPlaced = false
 
 	level.textContent = `Level: ${currentLevel}`
@@ -308,7 +307,9 @@ function isWalkable(cell, entity) {
 			!cell.classList.contains("hasBomb")
 		)
 	} else {
-		return walkableCells.includes(cell)
+		return (
+			walkableCells.includes(cell) || cell.classList.contains("temp-walkable")
+		)
 	}
 }
 
@@ -381,7 +382,12 @@ function resetPowerUp(powerupValue) {
 	}
 
 	if (powerupValue !== "soft-block-pass") {
-		walkableCells = Array.from(document.querySelectorAll(".walkable"))
+		breakableCells = Array.from(document.querySelectorAll(".brekable"))
+		breakableCells.forEach((cell) => {
+			if (cell.classList.contains("temp-walkable")) {
+				cell.classList.remove("temp-walkable")
+			}
+		})
 	}
 
 	if (powerupValue !== "remote-control") {
@@ -410,7 +416,7 @@ function applyPowerUp(powerupValue) {
 			break
 		case "soft-block-pass": // soft block pass - Pass through Soft Blocks
 			// include breakable cells as walkable
-			breakableCells.forEach((cell) => cell.classList.add("walkable"))
+			breakableCells.forEach((cell) => cell.classList.add("temp-walkable"))
 			break
 		case "remote-control": // remote control - Manually detonate a Bombs with certain button
 			remoteControl = true
@@ -541,34 +547,6 @@ function move(direction) {
 	}
 }
 
-function killBomberMan() {
-	if (vest) {
-		return
-	}
-	pauseCountdown()
-	document.removeEventListener("keydown", onKeyDown)
-	isKilled = true
-	currentLives -= 1
-	if (currentLives > 0) {
-		playerDied.style.display = "flex"
-		lives.textContent = `Lives ${currentLives}`
-	}
-
-	bomberManWrapper.classList.remove("bomber-man")
-	bomberManWrapper.classList.add("death")
-	bomberManWrapper.addEventListener("animationend", () => {
-		bomberManWrapper.classList.remove("death")
-		document.body.classList.add("pause-animation")
-		setTimeout(() => {
-			if (isGameOver) {
-				return
-			}
-			generateLevel(2)
-		}, 500)
-	})
-}
-
-/** Destoy blocks */
 function destroyBlocks(cell) {
 	cell.classList.remove("breakable")
 	cell.classList.add("breakable-block-destruction")
@@ -582,7 +560,38 @@ function destroyBlocks(cell) {
 	score.textContent = `Score: ${currentScore}`
 }
 
-/** Killing */
+/** KILLING */
+function deathAnimationEnd() {
+	bomberManWrapper.classList.remove("death")
+	document.body.classList.add("pause-animation")
+	setTimeout(() => {
+		if (isGameOver) {
+			return
+		}
+		generateLevel(totalNoPowerups + currentLevel)
+	}, 500)
+	bomberManWrapper.removeEventListener("animationend", deathAnimationEnd)
+}
+
+function killBomberMan() {
+	if (vest || isKilled) {
+		return
+	}
+	pauseCountdown()
+	document.removeEventListener("keydown", onKeyDown)
+	isKilled = true
+	currentLives -= 1
+	if (currentLives > 0) {
+		playerDied.style.display = "flex"
+		lives.textContent = `Lives: ${currentLives}`
+	}
+
+	bomberManWrapper.classList.remove("bomber-man")
+	bomberManWrapper.classList.add("death")
+
+	bomberManWrapper.addEventListener("animationend", deathAnimationEnd)
+}
+
 function killEnemy(cell) {
 	const enemyToKill = enemyArr.find((enemy) => {
 		const enemyData = JSON.parse(enemy.dataset.enemy)
@@ -604,7 +613,7 @@ function killEnemy(cell) {
 		enemyToKill.classList.add("enemy-death")
 		enemyToKill.addEventListener("animationend", () => {
 			enemyToKill.classList.remove("enemy-death")
-			const enemyData = JSON.parse(enemyToKill.dataset.enemy)
+			// const enemyData = JSON.parse(enemyToKill.dataset.enemy)
 			enemyToKill.remove()
 			enemyArr = Array.from(document.querySelectorAll(".enemy"))
 			currentScore += 100
@@ -615,6 +624,7 @@ function killEnemy(cell) {
 
 const revealExit = (cell) => cell.classList.add("exit")
 
+/** BOMB */
 let remoteControlBombElements = {}
 function bomb() {
 	const bomberManPosition = {
@@ -630,6 +640,7 @@ function bomb() {
 	bombElement.style.top = bomberManCell.style.top
 	bombElement.style.left = bomberManCell.style.left
 	grid.appendChild(bombElement)
+	numBombs--
 	if (!passBombs) {
 		bomberManCell.classList.remove("walkable")
 	} else {
@@ -889,7 +900,7 @@ const onKeyDown = (e) => {
 		case "x":
 			if (!isGameOver && numBombs >= 1) {
 				bomb()
-				numBombs--
+				console.log("numBombs after placed:", numBombs)
 			}
 			break
 		case " ":
@@ -961,6 +972,8 @@ const enemyInterval = 500
 const moveInterval = 50
 let lastEnemyMove = 0
 let lastMove = 0
+let lastCollisionCheck = 0
+const collisionCheckInterval = 100
 const gameLoop = (timestamp) => {
 	walkableCells = Array.from(document.querySelectorAll(".walkable"))
 	if (currentLives === 0) {
@@ -970,14 +983,8 @@ const gameLoop = (timestamp) => {
 			return
 		}, 500)
 	}
-	if (currentLevel > 1 && !isKilled) {
-		stageComplete.style.display = "none"
-	}
 	if (gamePaused || isGameOver || isKilled || stageCleared) {
 		return
-	}
-	if (bomberManEnemyCollision()) {
-		killBomberMan()
 	}
 
 	const enemyDeltaTime = timestamp - lastEnemyMove
@@ -992,6 +999,9 @@ const gameLoop = (timestamp) => {
 		if (getBombermanDirection()) {
 			move(getBombermanDirection())
 			lastMove = timestamp
+		}
+		if (bomberManEnemyCollision()) {
+			killBomberMan()
 		}
 	}
 	window.requestAnimationFrame(gameLoop)

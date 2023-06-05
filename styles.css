@@ -240,7 +240,7 @@ button {
 
 /* power ups */
 .powerUp {
-	border: 5px solid red;
+	/* border: 5px solid red; */
 	background-image: url("sprites.png");
 	background-size: var(--spriteSheetsize);
 }
