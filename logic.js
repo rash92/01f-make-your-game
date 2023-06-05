@@ -79,6 +79,7 @@ const powerUpObj = [
 		name: "soft-block-pass",
 		count: 1,
 	},
+
 	{
 		name: "remote-control",
 		count: 1,
@@ -102,7 +103,7 @@ const totalTime = 200
 let countdownTimer
 let remainingSeconds = totalTime
 
-const startCountdown = () => {
+function startCountdown() {
 	if (!isKilled) {
 		clearInterval(countdownTimer)
 	}
@@ -117,11 +118,11 @@ const startCountdown = () => {
 	}, 1000)
 }
 
-const pauseCountdown = () => {
+function pauseCountdown() {
 	clearInterval(countdownTimer)
 }
 
-const buildGrid = () => {
+function buildGrid() {
 	for (let row = 0; row < gridRow; row++) {
 		for (let col = 0; col < gridCol; col++) {
 			const cell = document.createElement("div")
@@ -161,7 +162,7 @@ const buildGrid = () => {
 	}
 }
 
-const createCellsArr = () => {
+function createCellsArr() {
 	let oneDArr = [].slice.call(document.getElementsByClassName("cell"))
 	let twoDArr = []
 	for (let i = 0; i < gridCol; i++) {
@@ -170,7 +171,7 @@ const createCellsArr = () => {
 	return twoDArr
 }
 
-const setSprite = (spriteX, spriteY) => {
+function setSprite(spriteX, spriteY) {
 	const bomberMan = document.querySelector(".bomber-man")
 	const spriteSize = 64
 	bomberMan.style.backgroundPosition = `-${spriteX * spriteSize}px -${
@@ -178,7 +179,7 @@ const setSprite = (spriteX, spriteY) => {
 	}px`
 }
 
-const createEnemies = () => {
+function createEnemies() {
 	while (enemyCount > 0) {
 		let randomWalkableCell =
 			walkableCells[Math.floor(Math.random() * walkableCells.length)]
@@ -217,7 +218,7 @@ let breakableCells
 let powerUps
 let enemyArr
 
-const generateLevel = (numPowerups) => {
+function generateLevel(numPowerups) {
 	if (currentLevel > 1) {
 		stageComplete.textContent = `stage ${currentLevel - 1} cleared`
 		stageComplete.style.display = "flex"
@@ -311,17 +312,7 @@ function isWalkable(cell, entity) {
 	}
 }
 
-function isPowerUp(cell) {
-	return powerUps.includes(cell)
-}
-
-const checkPowerUp = (cell) => {
-	const classes = cell.classList
-	const powerup = powerUpLists.filter((v) => v === classes[classes.length - 2])
-	return powerup[0]
-}
-
-const bomberManEnemyCollision = () => {
+function bomberManEnemyCollision() {
 	const bomberManBounding = bomberManWrapper.getBoundingClientRect()
 	return enemyArr.some((enemy) => {
 		const enemyBoundingBox = enemy.getBoundingClientRect()
@@ -335,7 +326,7 @@ const bomberManEnemyCollision = () => {
 }
 
 // CheckNotDead checks whether when an entity walks into a cell, it kills them.
-const checkNotDead = (cell, entity) => {
+function checkNotDead(cell, entity) {
 	const classNames = [
 		"explosion-middle",
 		"explosion-top",
@@ -365,7 +356,103 @@ const checkNotDead = (cell, entity) => {
 
 const isbetweenCells = (position) => position % cellSize !== 0
 
-const move = (direction) => {
+/** POWER UPS */
+function isPowerUp(cell) {
+	return powerUps.includes(cell)
+}
+
+function checkPowerUp(cell) {
+	const classes = cell.classList
+	const powerup = powerUpLists.filter((v) => v === classes[classes.length - 2])
+	return powerup[0]
+}
+
+function resetPowerUp(powerupValue) {
+	if (powerupValue !== "bomb-up") {
+		numBombs = 1
+	}
+
+	if (powerupValue !== "fire-up" || powerupValue !== "full-fire") {
+		fireRange = 1
+	}
+
+	if (powerupValue !== "skate") {
+		step = 0.25
+	}
+
+	if (powerupValue !== "soft-block-pass") {
+		walkableCells = Array.from(document.querySelectorAll(".walkable"))
+	}
+
+	if (powerupValue !== "remote-control") {
+		remoteControl = false
+	}
+
+	if (powerupValue !== "bomb-pass") {
+		passBombs = false
+	}
+
+	if (powerupValue !== "vest") {
+		vest = false
+	}
+}
+
+function applyPowerUp(powerupValue) {
+	switch (powerupValue) {
+		case "bomb-up": // increase number of bomb
+			numBombs = maxBomb
+			break
+		case "fire-up": // change explosion and range by 1 tile
+			fireRange = 2
+			break
+		case "skate": // skate - Increase Bomberman's speed
+			step = 0.5
+			break
+		case "soft-block-pass": // soft block pass - Pass through Soft Blocks
+			// include breakable cells as walkable
+			breakableCells.forEach((cell) => cell.classList.add("walkable"))
+			break
+		case "remote-control": // remote control - Manually detonate a Bombs with certain button
+			remoteControl = true
+			break
+		case "bomb-pass": // bomb pass - Pass through Bombs
+			passBombs = true
+			break
+		case "full-fire": // full fire - Increase your firepower to the max
+			fireRange = 10
+			break
+		case "vest": // vest - Immune to both Bombs blast and enemies
+			vest = true
+			// enemy blast WIP
+			break
+	}
+}
+
+function getPowerUp(cell) {
+	if (isPowerUp(cell)) {
+		const powerupValue = checkPowerUp(cell)
+		if (
+			!cell.classList.contains("breakable") &&
+			cell.classList.contains("powerUp") &&
+			cell.classList.contains(powerupValue)
+		) {
+			currentPower = powerupValue
+			cell.classList.remove("powerUp")
+			cell.classList.remove(powerupValue)
+
+			// reset power ups
+			resetPowerUp(powerupValue)
+
+			power.innerHTML = `PowerUp:</br>${currentPower}`
+
+			// apply powerup
+			applyPowerUp(powerupValue)
+		}
+	}
+}
+
+/** MOVE */
+function bomberManNewPosition(direction) {
 	let newPosition = {
 		x: bomberManCurrentPosition.x,
 		y: bomberManCurrentPosition.y,
@@ -410,80 +497,15 @@ const move = (direction) => {
 	}
 	// Check if the new position is within the boundaries of the grid
 	const cell = cellsArr[newY][newX]
+	return { cell, newPosition }
+}
 
-	if (isPowerUp(cell)) {
-		const powerupValue = checkPowerUp(cell)
-		if (
-			!cell.classList.contains("breakable") &&
-			cell.classList.contains("powerUp") &&
-			cell.classList.contains(powerupValue)
-		) {
-			currentPower = powerupValue
-			cell.classList.remove("powerUp")
-			cell.classList.remove(powerupValue)
+function move(direction) {
+	// Check if the new position is within the boundaries of the grid
+	const cell = bomberManNewPosition(direction).cell
+	let newPosition = bomberManNewPosition(direction).newPosition
 
-			// reset power ups
-			if (powerupValue !== "bomb-up") {
-				numBombs = 1
-			}
-
-			if (powerupValue !== "fire-up" || powerupValue !== "full-fire") {
-				fireRange = 1
-			}
-
-			if (powerupValue !== "skate") {
-				step = 0.25
-			}
-
-			if (powerupValue !== "soft-block-pass") {
-				walkableCells = Array.from(document.querySelectorAll(".walkable"))
-			}
-
-			if (powerupValue !== "remote-control") {
-				remoteControl = false
-			}
-
-			if (powerupValue !== "bomb-pass") {
-				passBombs = false
-			}
-
-			if (powerupValue !== "vest") {
-				vest = false
-			}
-
-			power.innerHTML = `PowerUp:</br>${currentPower}`
-
-			// apply powerup
-			switch (powerupValue) {
-				case "bomb-up": // increase number of bomb
-					numBombs = maxBomb
-					break
-				case "fire-up": // change explosion and range by 1 tile
-					fireRange = 2
-					break
-				case "skate": // skate - Increase Bomberman's speed
-					step = 0.5
-					break
-				case "soft-block-pass": // soft block pass - Pass through Soft Blocks
-					// include breakable cells as walkable
-					breakableCells.forEach((cell) => cell.classList.add("walkable"))
-					break
-				case "remote-control": // remote control - Manually detonate a Bombs with certain button
-					remoteControl = true
-					break
-				case "bomb-pass": // bomb pass - Pass through Bombs
-					passBombs = true
-					break
-				case "full-fire": // full fire - Increase your firepower to the max
-					fireRange = 10
-					break
-				case "vest": // vest - Immune to both Bombs blast and enemies
-					vest = true
-					// enemy blast WIP
-					break
-			}
-		}
-	}
+	getPowerUp(cell)
 
 	if (
 		isWalkable(cell) ||
@@ -519,7 +541,7 @@ const move = (direction) => {
 	}
 }
 
-const killBomberMan = () => {
+function killBomberMan() {
 	if (vest) {
 		return
 	}
@@ -546,7 +568,8 @@ const killBomberMan = () => {
 	})
 }
 
-const destroyBlocks = (cell) => {
+/** Destoy blocks */
+function destroyBlocks(cell) {
 	cell.classList.remove("breakable")
 	cell.classList.add("breakable-block-destruction")
 	cell.addEventListener("animationend", () => {
@@ -559,7 +582,8 @@ const destroyBlocks = (cell) => {
 	score.textContent = `Score: ${currentScore}`
 }
 
-const killEnemy = (cell) => {
+/** Killing */
+function killEnemy(cell) {
 	const enemyToKill = enemyArr.find((enemy) => {
 		const enemyData = JSON.parse(enemy.dataset.enemy)
 		let originalEnemyPosition = {
@@ -589,12 +613,10 @@ const killEnemy = (cell) => {
 	}
 }
 
-const revealExit = (cell) => {
-	cell.classList.add("exit")
-}
+const revealExit = (cell) => cell.classList.add("exit")
 
 let remoteControlBombElements = {}
-const bomb = () => {
+function bomb() {
 	const bomberManPosition = {
 		y: Math.round(bomberManCurrentPosition.y / cellSize),
 		x: Math.round(bomberManCurrentPosition.x / cellSize),
@@ -868,7 +890,6 @@ const onKeyDown = (e) => {
 			if (!isGameOver && numBombs >= 1) {
 				bomb()
 				numBombs--
-				console.log("numBombs after placed:", numBombs)
 			}
 			break
 		case " ":
