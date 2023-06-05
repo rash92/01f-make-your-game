@@ -959,14 +959,6 @@ const gameLoop = (timestamp) => {
 	if (gamePaused || isGameOver || isKilled || stageCleared) {
 		return
 	}
-	const collisionCheckDeltaTime = timestamp - lastCollisionCheck;
-	
-	if (collisionCheckDeltaTime >= collisionCheckInterval) {
-		if (bomberManEnemyCollision()) {
-			killBomberMan()
-		}
-		lastCollisionCheck = timestamp;
-	}
 
 	const enemyDeltaTime = timestamp - lastEnemyMove
 	const moveDeltaTime = timestamp - lastMove
@@ -980,6 +972,9 @@ const gameLoop = (timestamp) => {
 		if (getBombermanDirection()) {
 			move(getBombermanDirection())
 			lastMove = timestamp
+		}
+		if (bomberManEnemyCollision()) {
+			killBomberMan()
 		}
 	}
 	window.requestAnimationFrame(gameLoop)
