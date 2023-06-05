@@ -63,38 +63,38 @@ let remoteControl = false
 let passBombs = false
 let vest = false
 const powerUpObj = [
-	{
-		name: "bomb-up",
-		count: 2,
-	},
-	{
-		name: "fire-up",
-		count: 1,
-	},
-	{
-		name: "skate",
-		count: 1,
-	},
+	// {
+	// 	name: "bomb-up",
+	// 	count: 2,
+	// },
+	// {
+	// 	name: "fire-up",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "skate",
+	// 	count: 1,
+	// },
 	{
 		name: "soft-block-pass",
 		count: 1,
 	},
-	{
-		name: "remote-control",
-		count: 1,
-	},
-	{
-		name: "bomb-pass",
-		count: 1,
-	},
-	{
-		name: "full-fire",
-		count: 1,
-	},
-	{
-		name: "vest",
-		count: 1,
-	},
+	// {
+	// 	name: "remote-control",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "bomb-pass",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "full-fire",
+	// 	count: 1,
+	// },
+	// {
+	// 	name: "vest",
+	// 	count: 1,
+	// },
 ]
 const powerUpLists = powerUpObj.map((v) => v.name)
 
@@ -307,7 +307,7 @@ function isWalkable(cell, entity) {
 			!cell.classList.contains("hasBomb")
 		)
 	} else {
-		return walkableCells.includes(cell)
+		return walkableCells.includes(cell) || cell.classList.contains("temp-walkable")
 	}
 }
 
@@ -436,7 +436,12 @@ const move = (direction) => {
 			}
 
 			if (powerupValue !== "soft-block-pass") {
-				walkableCells = Array.from(document.querySelectorAll(".walkable"))
+				breakableCells = Array.from(document.querySelectorAll(".brekable"))
+				breakableCells.forEach((cell) => {
+					if (cell.classList.contains("temp-walkable")) {
+						cell.classList.remove("temp-walkable")
+					}
+				})
 			}
 
 			if (powerupValue !== "remote-control") {
@@ -466,7 +471,7 @@ const move = (direction) => {
 					break
 				case "soft-block-pass": // soft block pass - Pass through Soft Blocks
 					// include breakable cells as walkable
-					breakableCells.forEach((cell) => cell.classList.add("walkable"))
+					breakableCells.forEach((cell) => cell.classList.add("temp-walkable"))
 					break
 				case "remote-control": // remote control - Manually detonate a Bombs with certain button
 					remoteControl = true
@@ -613,6 +618,7 @@ const bomb = () => {
 	bombElement.style.top = bomberManCell.style.top
 	bombElement.style.left = bomberManCell.style.left
 	grid.appendChild(bombElement)
+	numBombs--
 	if (!passBombs) {
 		bomberManCell.classList.remove("walkable")
 	} else {
@@ -872,7 +878,6 @@ const onKeyDown = (e) => {
 		case "x":
 			if (!isGameOver && numBombs >= 1) {
 				bomb()
-				numBombs--
 				console.log("numBombs after placed:", numBombs)
 			}
 			break
