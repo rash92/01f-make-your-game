@@ -38,7 +38,7 @@ const startingScore = 0
 let currentScore = startingScore
 const startinglives = 3
 let currentLives = startinglives
-const startingLevel = 2
+const startingLevel = 1
 let currentLevel = startingLevel
 let gamePaused = false
 let isGameOver = false
@@ -218,7 +218,6 @@ let powerUps
 let enemyArr
 
 const generateLevel = (numPowerups) => {
-	console.log(currentLives)
 	if (currentLevel > 1 && !isKilled) {
 		stageComplete.textContent = `stage ${currentLevel - 1} cleared`
 		stageComplete.style.display = "flex"
@@ -946,6 +945,8 @@ const enemyInterval = 500
 const moveInterval = 50
 let lastEnemyMove = 0
 let lastMove = 0
+let lastCollisionCheck = 0;
+const collisionCheckInterval = 100;
 const gameLoop = (timestamp) => {
 	walkableCells = Array.from(document.querySelectorAll(".walkable"))
 	if (currentLives === 0) {
@@ -955,14 +956,16 @@ const gameLoop = (timestamp) => {
 			return
 		}, 500)
 	}
-	// if (currentLevel > 1 && isKilled) {
-	// 	stageComplete.style.display = "none"
-	// }
 	if (gamePaused || isGameOver || isKilled || stageCleared) {
 		return
 	}
-	if (bomberManEnemyCollision()) {
-		killBomberMan()
+	const collisionCheckDeltaTime = timestamp - lastCollisionCheck;
+	
+	if (collisionCheckDeltaTime >= collisionCheckInterval) {
+		if (bomberManEnemyCollision()) {
+			killBomberMan()
+		}
+		lastCollisionCheck = timestamp;
 	}
 
 	const enemyDeltaTime = timestamp - lastEnemyMove
